@@ -1,189 +1,739 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hôm nay dùng file nào</title>
-
-<style>
-body {
-  margin:0;
-  font-family:Arial;
-  background:#02050a;
-  color:#eafff8;
-  text-align:center;
-}
-
-.container {
-  padding:40px;
-}
-
-h1 {
-  font-size:40px;
-}
-
-button {
-  padding:12px 20px;
-  margin:10px;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-}
-
-.primary { background:#00ff88; }
-.danger { background:#ff5470; color:white; }
-
-input {
-  padding:10px;
-  border-radius:10px;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#04111d" />
+  <title>Hôm nay dùng file nào</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg0: #02050a;
+      --bg1: #04111d;
+      --bg2: #08131f;
+      --panel: rgba(5, 15, 24, 0.84);
+      --line: rgba(59, 246, 190, 0.14);
+      --green: #3bffbe;
+      --green2: #00ff88;
+      --cyan: #22d3ee;
+      --text: #eafff8;
+      --muted: #8ac7b0;
+      --shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+      --danger: #ff5470;
+      --warn: #ffd166;
+      --violet: #8b5cf6;
+    }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: Inter, Arial, sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, var(--bg0), var(--bg1) 45%, var(--bg2));
+      overflow-x: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        repeating-linear-gradient(0deg, rgba(0,255,136,0.05) 0px, rgba(0,255,136,0.05) 1px, transparent 1px, transparent 36px),
+        repeating-linear-gradient(90deg, rgba(59,255,190,0.04) 0px, rgba(59,255,190,0.04) 1px, transparent 1px, transparent 36px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .rain {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      opacity: 0.16;
+      pointer-events: none;
+    }
+    .rain span {
+      position: absolute;
+      top: -120px;
+      color: var(--green);
+      font-size: 14px;
+      font-family: Consolas, monospace;
+      animation: fall linear infinite;
+      text-shadow: 0 0 10px rgba(0,255,136,0.5);
+      user-select: none;
+      white-space: nowrap;
+    }
+    @keyframes fall { from { transform: translateY(-120px); } to { transform: translateY(110vh); } }
+    .scan {
+      position: fixed;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: linear-gradient(to bottom, rgba(59,255,190,0), rgba(59,255,190,0.08), rgba(59,255,190,0));
+      box-shadow: 0 0 40px rgba(59,255,190,0.08);
+      animation: scan 6s linear infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+    @keyframes scan { 0% { top: -140px; } 100% { top: 110vh; } }
+    .wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      position: relative;
+      z-index: 2;
+    }
+    .card {
+      width: min(1120px, 100%);
+      border-radius: 28px;
+      padding: 26px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(34,211,238,0.1), transparent 26%);
+      pointer-events: none;
+    }
+    .hud {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: rgba(0,255,136,0.08);
+      border: 1px solid rgba(59,255,190,0.18);
+      color: #b7ffd8;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--green2);
+      box-shadow: 0 0 14px rgba(0,255,136,0.7);
+      animation: blink 1.4s infinite;
+    }
+    @keyframes blink { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.88); } }
+    .date-bar {
+      max-width: 860px;
+      margin: 0 auto 14px;
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 10px;
+      align-items: end;
+      position: relative;
+      z-index: 1;
+    }
+    .date-group label {
+      display: block;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 900;
+      color: #c4b5fd;
+      margin-bottom: 6px;
+      text-align: left;
+    }
+    .date-group input {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid rgba(139,92,246,0.2);
+      background: rgba(255,255,255,0.04);
+      color: #eafff8;
+      padding: 12px 14px;
+      outline: none;
+    }
+    .btn {
+      border: 0;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: .18s ease;
+      white-space: nowrap;
+    }
+    .btn:hover { transform: translateY(-1px); }
+    .violet-btn { color: #f3e8ff; background: rgba(139,92,246,0.16); border: 1px solid rgba(139,92,246,0.2); }
+    .secondary { color: #d1fff0; background: rgba(255,255,255,0.04); border: 1px solid rgba(59,255,190,0.12); }
+    .primary { color: #032816; background: linear-gradient(135deg, #3bffbe, #22d3ee); box-shadow: 0 12px 24px rgba(59,255,190,0.18); }
+    .danger-btn { color: #ffd8de; background: rgba(255,84,112,0.12); border: 1px solid rgba(255,84,112,0.18); }
+    .title {
+      margin: 6px 0 10px;
+      text-align: center;
+      font-size: clamp(30px, 5vw, 62px);
+      line-height: 1;
+      letter-spacing: -1.8px;
+      font-weight: 900;
+      color: #eafff8;
+      text-shadow: 0 0 20px rgba(59,255,190,0.12);
+      position: relative;
+      z-index: 1;
+    }
+    .subtitle {
+      margin: 0 auto 20px;
+      max-width: 820px;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 15px;
+      position: relative;
+      z-index: 1;
+    }
+    .terminal {
+      margin: 0 auto 18px;
+      max-width: 900px;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(59,255,190,0.12);
+      background: rgba(2, 10, 16, 0.95);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+      position: relative;
+      z-index: 1;
+    }
+    .terminal-top { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-bottom: 1px solid rgba(59,255,190,0.1); background: rgba(6, 18, 28, 0.98); }
+    .term-dot { width: 10px; height: 10px; border-radius: 50%; }
+    .term-dot.red { background: #ff5f56; }
+    .term-dot.yellow { background: #ffbd2e; }
+    .term-dot.green { background: #27c93f; }
+    .terminal-body { padding: 14px 16px; min-height: 125px; font-family: Consolas, monospace; color: #98ffd3; white-space: pre-wrap; line-height: 1.7; font-size: 14px; text-align: left; }
+    .alert {
+      margin: 0 auto 18px;
+      max-width: 900px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,84,112,0.2);
+      background: rgba(255,84,112,0.08);
+      color: #ffd4dc;
+      display: none;
+      text-align: center;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+    .alert.show { display: block; }
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+      align-items: stretch;
+      position: relative;
+      z-index: 1;
+    }
+    .today {
+      border-radius: 24px;
+      padding: 28px 20px;
+      background: linear-gradient(180deg, rgba(2,10,16,0.96), rgba(3,20,26,0.84));
+      border: 1px solid rgba(59,255,190,0.14);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      min-height: 100%;
+    }
+    .today::after { content: ""; position: absolute; inset: auto -80px -80px auto; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(0,255,136,0.14), transparent 70%); pointer-events: none; }
+    .side-panel {
+      border-radius: 24px;
+      padding: 22px 18px;
+      background: linear-gradient(180deg, rgba(8,13,28,0.94), rgba(5,14,26,0.86));
+      border: 1px solid rgba(139,92,246,0.16);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .section-head { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; font-weight: 900; color: #c4b5fd; }
+    .level-box, .notify-box, .command-box { padding: 16px; border-radius: 18px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); }
+    .level-name { font-size: 28px; font-weight: 900; color: #efe9ff; margin: 6px 0; }
+    .level-sub, .notify-status { color: #b7a8e8; font-size: 14px; line-height: 1.6; }
+    .command-log { min-height: 84px; font-family: Consolas, monospace; color: #bfeee2; white-space: pre-wrap; line-height: 1.6; font-size: 13px; margin-bottom: 10px; text-align: left; }
+    .command-row { display: flex; gap: 8px; }
+    .command-row input { flex: 1; border-radius: 12px; border: 1px solid rgba(59,255,190,0.14); background: rgba(0,0,0,0.25); color: #ddfff3; padding: 12px 12px; outline: none; }
+    .today-label { color: #9fffd2; text-transform: uppercase; letter-spacing: 1.2px; font-size: 12px; font-weight: 900; margin-bottom: 12px; }
+    .today-day { font-size: clamp(18px, 2.6vw, 28px); color: #c7ffea; font-weight: 800; margin-bottom: 10px; }
+    .today-files { font-size: clamp(48px, 9vw, 92px); font-weight: 900; line-height: 1.02; letter-spacing: -2.5px; color: var(--green); text-shadow: 0 0 24px rgba(59,255,190,0.25), 0 0 44px rgba(0,255,136,0.1); margin: 12px 0; word-break: break-word; }
+    .today-note { color: #b1d8c7; max-width: 720px; margin: 0 auto; line-height: 1.7; font-size: 15px; }
+    .lock-screen { margin: 18px auto 0; max-width: 620px; padding: 18px; border-radius: 18px; border: 1px solid rgba(255,84,112,0.18); background: rgba(255,84,112,0.08); display: none; }
+    .lock-screen.show { display: block; }
+    .lock-title { font-size: 22px; font-weight: 900; color: #ffdce3; margin-bottom: 6px; }
+    .lock-text { color: #ffcad5; line-height: 1.6; font-size: 14px; }
+    .actions, .notify-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 20px; }
+    .stats {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 14px;
+      position: relative;
+      z-index: 1;
+    }
+    .stat { padding: 16px; border-radius: 18px; background: rgba(2,14,18,0.72); border: 1px solid rgba(59,255,190,0.1); text-align: center; }
+    .stat-label { color: #78c7ab; font-size: 12px; text-transform: uppercase; letter-spacing: 0.9px; margin-bottom: 8px; font-weight: 800; }
+    .stat-value { font-size: 22px; font-weight: 900; color: #edfff7; }
+    .history { margin-top: 18px; border-radius: 18px; padding: 16px; background: rgba(2,12,18,0.72); border: 1px solid rgba(59,255,190,0.1); position: relative; z-index: 1; }
+    .history h3 { margin: 0 0 10px; font-size: 16px; }
+    .history-list { max-height: 140px; overflow: auto; color: #cfeee2; font-size: 14px; line-height: 1.8; text-align: left; }
+    .history-item.ok { color: #bbffe4; }
+    .history-item.miss { color: #ffc5d0; }
+    .hint { margin-top: 18px; text-align: center; color: #7fb8a2; font-size: 13px; line-height: 1.6; position: relative; z-index: 1; }
+    .install-banner { margin-top: 16px; display: none; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .install-banner.show { display: flex; }
+    @media (max-width: 980px) {
+      .main-grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(3, 1fr); }
+      .date-bar { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 760px) {
+      .card { padding: 22px 16px; }
+      .stats { grid-template-columns: 1fr 1fr; }
+      .subtitle, .today-note { font-size: 14px; }
+    }
+    @media (max-width: 520px) {
+      .stats { grid-template-columns: 1fr; }
+      .command-row, .notify-actions, .actions { flex-direction: column; }
+    }
+  </style>
 </head>
-
 <body>
-<div class="container">
+  <div class="rain" id="rain"></div>
+  <div class="scan"></div>
 
-<h1>Hôm nay dùng file nào</h1>
+  <main class="wrap">
+    <section class="card">
+      <div class="hud">
+        <div class="chip"><span class="dot"></span>HỆ THỐNG ĐANG CHẠY</div>
+        <div class="chip" id="startText">Bắt đầu từ ngày mai</div>
+      </div>
 
-<div>
-  <input type="date" id="startDateInput">
-  <button onclick="saveDate()">Lưu ngày</button>
-  <button onclick="resetDate()">Mặc định</button>
-</div>
+      <div class="date-bar">
+        <div class="date-group">
+          <label for="startDateInput">Ngày bắt đầu chu kỳ</label>
+          <input id="startDateInput" type="date" />
+        </div>
+        <button class="btn violet-btn" id="saveStartDateBtn">Lưu ngày</button>
+        <button class="btn secondary" id="resetStartDateBtn">Mặc định</button>
+      </div>
 
-<h2 id="todayText">Loading...</h2>
+      <h1 class="title">Hôm nay dùng file nào</h1>
+      <p class="subtitle">
+        V2 có điểm danh, streak, khóa file nếu chưa check-in, level hệ thống, sound effect, command line, lịch sử, banner cảnh báo và thông báo trình duyệt khi tab đang mở.
+      </p>
 
-<button class="primary" onclick="checkin()">✔ Điểm danh</button>
-<button class="danger" onclick="resetAll()">Reset</button>
+      <div class="terminal">
+        <div class="terminal-top">
+          <span class="term-dot red"></span>
+          <span class="term-dot yellow"></span>
+          <span class="term-dot green"></span>
+        </div>
+        <div class="terminal-body" id="terminalText"></div>
+      </div>
 
-</div>
+      <div class="alert" id="warningBox"></div>
 
-<script>
+      <div class="main-grid">
+        <div class="today">
+          <div class="today-label">File hôm nay</div>
+          <div class="today-day" id="todayDate">Đang tải ngày...</div>
+          <div class="today-files" id="todayFiles">...</div>
+          <div class="today-note" id="todayNote"></div>
 
-const FILES = ["1","2","3","4","5","6","7"];
-let blink = null;
+          <div class="lock-screen" id="lockScreen">
+            <div class="lock-title">ACCESS DENIED</div>
+            <div class="lock-text">Bạn chưa điểm danh hôm nay. Hoàn thành check-in để mở file đầy đủ và giữ streak.</div>
+          </div>
 
-function getState(){
-  return JSON.parse(localStorage.getItem("data")) || {
-    start:null,
-    last:null,
-    streak:0
-  };
-}
+          <div class="actions">
+            <button class="btn primary" id="checkInBtn">✔ Đã điểm danh hôm nay</button>
+            <button class="btn danger-btn" id="resetBtn">💀 Reset streak</button>
+          </div>
+        </div>
 
-function saveState(s){
-  localStorage.setItem("data", JSON.stringify(s));
-}
+        <div class="side-panel">
+          <div class="level-box">
+            <div class="section-head">Level hệ thống</div>
+            <div class="level-name" id="levelName">ROOKIE</div>
+            <div class="level-sub" id="levelSub">Giữ streak để tăng cấp.</div>
+          </div>
 
-function today(){
-  let d = new Date();
-  d.setHours(0,0,0,0);
-  return d;
-}
+          <div class="notify-box">
+            <div class="section-head">Thông báo máy qua web</div>
+            <div class="notify-status" id="notifyStatus">Chưa bật thông báo.</div>
+            <div class="notify-actions">
+              <button class="btn violet-btn" id="enableNotifyBtn">🔔 Bật thông báo</button>
+              <button class="btn secondary" id="testNotifyBtn">🧪 Test thông báo</button>
+            </div>
+          </div>
 
-function diff(a,b){
-  return Math.floor((a-b)/86400000);
-}
+          <div class="command-box">
+            <div class="section-head">Command line</div>
+            <div class="command-log" id="commandLog">Gõ: status | checkin | reset | notify | history</div>
+            <div class="command-row">
+              <input id="commandInput" placeholder="nhập lệnh..." />
+              <button class="btn secondary" id="runCommandBtn">Run</button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-function render(){
+      <div class="stats">
+        <div class="stat"><div class="stat-label">Ngày trong chu kỳ</div><div class="stat-value" id="cycleDay">-</div></div>
+        <div class="stat"><div class="stat-label">Ngày bắt đầu</div><div class="stat-value" id="startDate">-</div></div>
+        <div class="stat"><div class="stat-label">Tổng file hôm nay</div><div class="stat-value" id="fileCount">-</div></div>
+        <div class="stat"><div class="stat-label">🔥 Streak</div><div class="stat-value" id="streakCount">0</div></div>
+        <div class="stat"><div class="stat-label">📊 Thành công</div><div class="stat-value" id="successRate">0%</div></div>
+        <div class="stat"><div class="stat-label">⏳ Qua ngày sau</div><div class="stat-value" id="countdown">--:--:--</div></div>
+      </div>
 
-  let state = getState();
-  let t = today();
+      <div class="history">
+        <h3>Lịch sử gần đây</h3>
+        <div class="history-list" id="historyList"></div>
+      </div>
 
-  let start = state.start ? new Date(state.start) : null;
+      <div class="hint">Nếu chưa điểm danh, tab sẽ nhấp nháy để bạn chú ý.</div>
+    </section>
+  </main>
 
-  if(!start){
-    document.getElementById("todayText").innerText = "Chưa chọn ngày bắt đầu";
-    return;
-  }
+  <script>
+    const FILES = ['1', '2', '3', '4', '5', '6', '7'];
+    const STORAGE_KEY = 'attendance_hacker_state_v5';
+    let currentView = null;
+    let audioCtx = null;
+    let titleInterval = null;
 
-  let day = diff(t,start)+1;
+    function loadState() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : {
+        streak: 0,
+        totalCheckins: 0,
+        totalMisses: 0,
+        lastCheckinDate: null,
+        customStartDate: null,
+        history: []
+      };
+    }
 
-  if(day <= 0){
-    document.getElementById("todayText").innerText = "Chưa tới ngày bắt đầu";
-    return;
-  }
+    function saveState(state) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
 
-  let files = FILES.slice(0, day>7?7:day);
+    function pushHistory(state, type, text) {
+      state.history = state.history || [];
+      state.history.unshift({ type, text, at: new Date().toLocaleString('vi-VN') });
+      state.history = state.history.slice(0, 20);
+    }
 
-  let checked = state.last === t.toDateString();
+    function isoDate(date) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
 
-  document.getElementById("todayText").innerText =
-    checked ? "✔ "+files.join("+") : "⚠ "+files.join("+");
+    function fromIsoDate(s) {
+      const [y, m, d] = s.split('-').map(Number);
+      return new Date(y, m - 1, d);
+    }
 
-  // TITLE NHẤP NHÁY
-  if(blink) clearInterval(blink);
+    function startOfDay(date = new Date()) {
+      const d = new Date(date);
+      d.setHours(0, 0, 0, 0);
+      return d;
+    }
 
-  if(!checked){
-    let toggle=false;
-    blink = setInterval(()=>{
-      document.title = toggle ? "⚠ CHECK NGAY" : "❗ HÔM NAY";
-      toggle=!toggle;
-    },1000);
-  }else{
-    document.title = "✔ DONE";
-  }
+    function addDays(date, days) {
+      const d = new Date(date);
+      d.setDate(d.getDate() + days);
+      return d;
+    }
 
-}
+    function diffDays(a, b) {
+      return Math.floor((startOfDay(a) - startOfDay(b)) / 86400000);
+    }
 
-function checkin(){
-  let state = getState();
-  let t = today();
+    function formatDate(date) {
+      return new Intl.DateTimeFormat('vi-VN', { weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
+    }
 
-  if(state.last === t.toDateString()) return;
+    function formatShort(date) {
+      return new Intl.DateTimeFormat('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(date);
+    }
 
-  if(state.last){
-    let d = diff(t, new Date(state.last));
-    if(d===1) state.streak++;
-    else state.streak=1;
-  }else{
-    state.streak=1;
-  }
+    function createRain() {
+      const rain = document.getElementById('rain');
+      if (rain.children.length) return;
+      const chars = ['0', '1', '1', '0', '1', '7', '4', '2', '3'];
+      for (let i = 0; i < 54; i++) {
+        const span = document.createElement('span');
+        let txt = '';
+        const len = 12 + Math.floor(Math.random() * 18);
+        for (let j = 0; j < len; j++) txt += chars[Math.floor(Math.random() * chars.length)] + ' ';
+        span.textContent = txt;
+        span.style.left = Math.random() * 100 + 'vw';
+        span.style.animationDuration = 8 + Math.random() * 10 + 's';
+        span.style.animationDelay = -(Math.random() * 12) + 's';
+        span.style.fontSize = (10 + Math.random() * 8) + 'px';
+        rain.appendChild(span);
+      }
+    }
 
-  state.last = t.toDateString();
+    function beep(type = 'ok') {
+      try {
+        audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g); g.connect(audioCtx.destination);
+        const map = { ok: [780, 0.08], error: [220, 0.18], warn: [440, 0.12], click: [620, 0.05] };
+        const [freq, dur] = map[type] || map.ok;
+        o.type = type === 'error' ? 'sawtooth' : 'sine';
+        o.frequency.value = freq;
+        g.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 0.01);
+        g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+        o.start();
+        o.stop(audioCtx.currentTime + dur + 0.02);
+      } catch {}
+    }
 
-  saveState(state);
-  notify("Check-in thành công!");
-  render();
-}
+    function getLevel(streak) {
+      if (streak >= 15) return ['GOD MODE', 'Chuỗi cực mạnh.'];
+      if (streak >= 8) return ['PRO', 'Streak cao, giữ nhịp tốt.'];
+      if (streak >= 4) return ['SKILLED', 'Bạn đang vào form.'];
+      return ['ROOKIE', 'Giữ streak để tăng cấp.'];
+    }
 
-function resetAll(){
-  localStorage.removeItem("data");
-  location.reload();
-}
+    function deriveView(state) {
+      const today = startOfDay(new Date());
+      const startDate = state.customStartDate ? fromIsoDate(state.customStartDate) : addDays(today, 1);
+      const checkedInToday = state.lastCheckinDate === isoDate(today);
+      let cycleDay = 0;
+      let files = ['1'];
+      let note = 'Hôm nay chưa vào chu kỳ. Hãy chọn ngày bắt đầu hoặc để mặc định là ngày mai.';
+      let warning = '';
 
-function saveDate(){
-  let val = document.getElementById("startDateInput").value;
-  if(!val) return;
+      if (diffDays(today, startDate) >= 0) {
+        cycleDay = (diffDays(today, startDate) % 7) + 1;
+        files = FILES.slice(0, cycleDay);
+        note = checkedInToday
+          ? `Hôm nay bạn đã điểm danh ${files.length} file: ${files.join(', ')}.`
+          : `Hôm nay bạn cần dùng ${files.length} file theo thứ tự: ${files.join(', ')}.`;
+        if (!checkedInToday) warning = '⚠️ Hôm nay chưa điểm danh. You are about to lose your streak.';
+      }
 
-  let state = getState();
-  state.start = val;
+      const [levelName, levelSub] = getLevel(state.streak);
+      return { today, startDate, cycleDay, files, note, checkedInToday, warning, state, levelName, levelSub };
+    }
 
-  saveState(state);
-  render();
-}
+    function updateTitle(files, cycleDay, checkedInToday) {
+      if (titleInterval) clearInterval(titleInterval);
+      if (cycleDay === 0) {
+        document.title = 'Ngày mai: 1';
+        return;
+      }
+      if (checkedInToday) {
+        document.title = `✔ ${files.join('+')}`;
+        return;
+      }
+      let toggle = false;
+      titleInterval = setInterval(() => {
+        document.title = toggle ? `⚠️ CHECK NGAY: ${files.join('+')}` : `❗ HÔM NAY: ${files.join('+')}`;
+        toggle = !toggle;
+      }, 1000);
+    }
 
-function resetDate(){
-  let state = getState();
-  state.start = null;
-  saveState(state);
-  render();
-}
+    function renderHistory(state) {
+      const list = document.getElementById('historyList');
+      if (!state.history || !state.history.length) {
+        list.innerHTML = '<div>Chưa có lịch sử.</div>';
+        return;
+      }
+      list.innerHTML = state.history.map(item => `<div class="history-item ${item.type === 'miss' ? 'miss' : 'ok'}">[${item.at}] ${item.text}</div>`).join('');
+    }
 
-function notify(msg){
-  if(Notification.permission==="granted"){
-    new Notification(msg);
-  }
-}
+    function runTerminal(view) {
+      const el = document.getElementById('terminalText');
+      const lines = [
+        '> Booting attendance core...',
+        `> Date: ${formatShort(view.today)}`,
+        `> Start date: ${formatShort(view.startDate)}`,
+        `> Cycle: ${view.cycleDay === 0 ? 'waiting' : 'day ' + view.cycleDay}`,
+        `> Files today: ${view.files.join(' + ')}`,
+        `> Streak: ${view.state.streak}`,
+        `> Level: ${view.levelName}`,
+        `> Status: ${view.checkedInToday ? 'checked in' : 'pending'}`
+      ];
+      el.textContent = lines.join('\n');
+    }
 
-function enableNotify(){
-  Notification.requestPermission();
-}
+    function render(view) {
+      currentView = view;
+      const { today, startDate, cycleDay, files, note, checkedInToday, warning, state, levelName, levelSub } = view;
+      document.getElementById('todayDate').textContent = formatDate(today);
+      document.getElementById('startDate').textContent = formatShort(startDate);
+      document.getElementById('startText').textContent = `Bắt đầu: ${formatShort(startDate)}`;
+      document.getElementById('startDateInput').value = isoDate(startDate);
+      document.getElementById('fileCount').textContent = files.length;
+      document.getElementById('cycleDay').textContent = cycleDay === 0 ? 'Chưa bắt đầu' : `Ngày ${cycleDay}`;
+      document.getElementById('streakCount').textContent = state.streak;
+      document.getElementById('levelName').textContent = levelName;
+      document.getElementById('levelSub').textContent = levelSub;
+      document.getElementById('todayNote').textContent = note;
+      document.getElementById('todayFiles').textContent = (!checkedInToday && cycleDay > 0) ? 'LOCKED' : files.join(' + ');
+      document.getElementById('lockScreen').classList.toggle('show', !checkedInToday && cycleDay > 0);
+      const totalAttempts = state.totalCheckins + state.totalMisses;
+      const rate = totalAttempts ? Math.round((state.totalCheckins / totalAttempts) * 100) : 0;
+      document.getElementById('successRate').textContent = `${rate}%`;
+      const warningBox = document.getElementById('warningBox');
+      if (warning) {
+        warningBox.textContent = warning;
+        warningBox.classList.add('show');
+      } else {
+        warningBox.textContent = '';
+        warningBox.classList.remove('show');
+      }
+      const btn = document.getElementById('checkInBtn');
+      btn.disabled = checkedInToday;
+      btn.textContent = checkedInToday ? '✔ Hôm nay đã điểm danh' : '✔ Đã điểm danh hôm nay';
+      btn.style.opacity = checkedInToday ? '0.6' : '1';
+      renderHistory(state);
+      runTerminal(view);
+      updateNotifyStatus();
+      updateTitle(files, cycleDay, checkedInToday);
+    }
 
-// INIT
-enableNotify();
-render();
+    function markCheckin() {
+      beep('click');
+      const state = loadState();
+      const today = startOfDay(new Date());
+      if (state.lastCheckinDate === isoDate(today)) return;
+      const prevLast = state.lastCheckinDate ? fromIsoDate(state.lastCheckinDate) : null;
+      state.lastCheckinDate = isoDate(today);
+      state.totalCheckins += 1;
+      if (!prevLast || diffDays(today, prevLast) > 1) state.streak = 1;
+      else if (diffDays(today, prevLast) === 1) state.streak += 1;
+      else state.streak = Math.max(1, state.streak);
+      pushHistory(state, 'ok', 'Đã điểm danh hôm nay thành công.');
+      saveState(state);
+      beep('ok');
+      maybeNotify('Điểm danh thành công', 'Streak đã được cập nhật.');
+      render(deriveView(state));
+    }
 
-</script>
+    function resetAll() {
+      const ok = confirm('Reset streak và dữ liệu điểm danh?');
+      if (!ok) return;
+      const state = { streak: 0, totalCheckins: 0, totalMisses: 0, lastCheckinDate: null, customStartDate: null, history: [{ type: 'miss', text: 'Reset thủ công toàn bộ streak.', at: new Date().toLocaleString('vi-VN') }] };
+      saveState(state);
+      beep('error');
+      render(deriveView(state));
+    }
+
+    function saveCustomStartDate() {
+      const input = document.getElementById('startDateInput').value;
+      if (!input) return;
+      const state = loadState();
+      state.customStartDate = input;
+      pushHistory(state, 'ok', `Đổi ngày bắt đầu chu kỳ thành ${input}.`);
+      saveState(state);
+      beep('click');
+      render(deriveView(state));
+    }
+
+    function resetCustomStartDate() {
+      const state = loadState();
+      state.customStartDate = null;
+      pushHistory(state, 'ok', 'Đã trả ngày bắt đầu về mặc định.');
+      saveState(state);
+      beep('click');
+      render(deriveView(state));
+    }
+
+    function updateCountdown() {
+      const now = new Date();
+      const tomorrow = startOfDay(addDays(now, 1));
+      const diff = tomorrow - now;
+      const h = String(Math.floor(diff / 3600000)).padStart(2, '0');
+      const m = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+      const s = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+      document.getElementById('countdown').textContent = `${h}:${m}:${s}`;
+    }
+
+    function updateNotifyStatus() {
+      const el = document.getElementById('notifyStatus');
+      if (!('Notification' in window)) {
+        el.textContent = 'Trình duyệt này không hỗ trợ thông báo.';
+        return;
+      }
+      if (Notification.permission === 'granted') el.textContent = 'Đã bật thông báo.';
+      else if (Notification.permission === 'denied') el.textContent = 'Bạn đã chặn thông báo.';
+      else el.textContent = 'Chưa bật thông báo.';
+    }
+
+    async function enableNotifications() {
+      if (!('Notification' in window)) return alert('Trình duyệt không hỗ trợ thông báo.');
+      const p = await Notification.requestPermission();
+      updateNotifyStatus();
+      if (p === 'granted') maybeNotify('Thông báo đã bật', 'Web có thể báo khi tab đang mở.');
+    }
+
+    function maybeNotify(title, body) {
+      if ('Notification' in window && Notification.permission === 'granted') new Notification(title, { body });
+    }
+
+    function testNotification() { beep('click'); maybeNotify('Test notification', 'Đây là thông báo test từ web của bạn.'); }
+
+    function appendCommand(text) {
+      const log = document.getElementById('commandLog');
+      log.textContent += `\n> ${text}`;
+      log.scrollTop = log.scrollHeight;
+    }
+
+    function runCommand() {
+      const input = document.getElementById('commandInput');
+      const cmd = input.value.trim().toLowerCase();
+      if (!cmd) return;
+      appendCommand(cmd);
+      if (cmd === 'status') appendCommand(currentView ? `files=${currentView.files.join('+')} streak=${currentView.state.streak}` : 'status unavailable');
+      else if (cmd === 'checkin') { markCheckin(); appendCommand('checkin executed'); }
+      else if (cmd === 'reset') { resetAll(); appendCommand('reset executed'); }
+      else if (cmd === 'notify') { enableNotifications(); appendCommand('notification request sent'); }
+      else if (cmd === 'history') { const state = loadState(); appendCommand((state.history || []).slice(0, 3).map(x => x.text).join(' | ') || 'no history'); }
+      else { appendCommand('unknown command'); beep('error'); }
+      input.value = '';
+    }
+
+    function init() {
+      createRain();
+      const state = loadState();
+      render(deriveView(state));
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+      document.getElementById('checkInBtn').addEventListener('click', markCheckin);
+      document.getElementById('resetBtn').addEventListener('click', resetAll);
+      document.getElementById('enableNotifyBtn').addEventListener('click', enableNotifications);
+      document.getElementById('testNotifyBtn').addEventListener('click', testNotification);
+      document.getElementById('runCommandBtn').addEventListener('click', runCommand);
+      document.getElementById('saveStartDateBtn').addEventListener('click', saveCustomStartDate);
+      document.getElementById('resetStartDateBtn').addEventListener('click', resetCustomStartDate);
+      document.getElementById('commandInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') runCommand(); });
+      updateNotifyStatus();
+    }
+
+    init();
+  </script>
 </body>
 </html>
