@@ -751,10 +751,30 @@
       return { today, startDate, cycleDay, files, note, checkedInToday, warning, state, levelName, levelSub };
     }
 
-    function updateTitle(files, cycleDay, checkedInToday) {
-      let prefix;
-      if (cycleDay === 0) prefix = 'Ngày mai: 1';
-      else prefix = checkedInToday ? `✔ ${files.join('+')}` : `Hôm nay: ${files.join('+')}`;
+    let titleInterval = null;
+
+function updateTitle(files, cycleDay, checkedInToday) {
+  if (titleInterval) clearInterval(titleInterval);
+
+  if (cycleDay === 0) {
+    document.title = 'Ngày mai: 1';
+    return;
+  }
+
+  if (checkedInToday) {
+    document.title = `✔ ${files.join('+')}`;
+    return;
+  }
+
+  // 🔥 CHƯA ĐIỂM DANH → NHẤP NHÁY LIÊN TỤC
+  let toggle = false;
+  titleInterval = setInterval(() => {
+    document.title = toggle
+      ? `⚠️ CHECK NGAY: ${files.join('+')}`
+      : `❗ HÔM NAY: ${files.join('+')}`;
+    toggle = !toggle;
+  }, 1000);
+}` : `Hôm nay: ${files.join('+')}`;
       document.title = prefix;
     }
 
