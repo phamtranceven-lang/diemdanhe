@@ -550,7 +550,7 @@
       }
       let toggle = false;
       titleInterval = setInterval(() => {
-        document.title = toggle ? `⚠️ CHECK NGAY: ${files.join('+')}` : `❗ HÔM NAY: ${files.join('+')}`;
+        document.title = toggle ? `⚠️ ${files.join('+')}` : `❗ ${files.join('+')}`;
         toggle = !toggle;
       }, 1000);
     }
