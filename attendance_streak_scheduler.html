@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hôm nay dùng file nào</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg0: #02050a;
+      --bg1: #04111d;
+      --bg2: #08131f;
+      --panel: rgba(5, 15, 24, 0.82);
+      --line: rgba(59, 246, 190, 0.14);
+      --green: #3bffbe;
+      --green2: #00ff88;
+      --cyan: #22d3ee;
+      --text: #eafff8;
+      --muted: #8ac7b0;
+      --shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+    }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: Inter, Arial, sans-serif;
+      color: var(--text);
+      background: linear-gradient(135deg, var(--bg0), var(--bg1) 45%, var(--bg2));
+      overflow: hidden;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          rgba(0, 255, 136, 0.05) 0px,
+          rgba(0, 255, 136, 0.05) 1px,
+          transparent 1px,
+          transparent 36px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          rgba(59, 255, 190, 0.04) 0px,
+          rgba(59, 255, 190, 0.04) 1px,
+          transparent 1px,
+          transparent 36px
+        );
+      pointer-events: none;
+      z-index: 0;
+    }
+    .rain {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      opacity: 0.16;
+      pointer-events: none;
+    }
+    .rain span {
+      position: absolute;
+      top: -120px;
+      color: var(--green);
+      font-size: 14px;
+      font-family: Consolas, monospace;
+      animation: fall linear infinite;
+      text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+      user-select: none;
+    }
+    @keyframes fall {
+      from { transform: translateY(-120px); }
+      to { transform: translateY(110vh); }
+    }
+    .scan {
+      position: fixed;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: linear-gradient(to bottom, rgba(59,255,190,0), rgba(59,255,190,0.08), rgba(59,255,190,0));
+      box-shadow: 0 0 40px rgba(59,255,190,0.08);
+      animation: scan 6s linear infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+    @keyframes scan {
+      0% { top: -140px; }
+      100% { top: 110vh; }
+    }
+    .wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      position: relative;
+      z-index: 2;
+    }
+    .card {
+      width: min(980px, 100%);
+      border-radius: 28px;
+      padding: 30px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(34, 211, 238, 0.1), transparent 26%);
+      pointer-events: none;
+    }
+    .hud {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: rgba(0,255,136,0.08);
+      border: 1px solid rgba(59,255,190,0.18);
+      color: #b7ffd8;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--green2);
+      box-shadow: 0 0 14px rgba(0,255,136,0.7);
+      animation: blink 1.4s infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(0.88); }
+    }
+    .title {
+      margin: 6px 0 10px;
+      text-align: center;
+      font-size: clamp(30px, 5vw, 62px);
+      line-height: 1;
+      letter-spacing: -1.8px;
+      font-weight: 900;
+      color: #eafff8;
+      text-shadow: 0 0 20px rgba(59,255,190,0.12);
+    }
+    .subtitle {
+      margin: 0 auto 24px;
+      max-width: 720px;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+    .today {
+      border-radius: 24px;
+      padding: 28px 20px;
+      background: linear-gradient(180deg, rgba(2,10,16,0.96), rgba(3, 20, 26, 0.84));
+      border: 1px solid rgba(59,255,190,0.14);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .today::after {
+      content: "";
+      position: absolute;
+      inset: auto -80px -80px auto;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0,255,136,0.14), transparent 70%);
+      pointer-events: none;
+    }
+    .today-label {
+      color: #9fffd2;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      font-size: 12px;
+      font-weight: 900;
+      margin-bottom: 12px;
+    }
+    .today-day {
+      font-size: clamp(18px, 2.6vw, 28px);
+      color: #c7ffea;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    .today-files {
+      font-size: clamp(48px, 9vw, 92px);
+      font-weight: 900;
+      line-height: 1.02;
+      letter-spacing: -2.5px;
+      color: var(--green);
+      text-shadow: 0 0 24px rgba(59,255,190,0.25), 0 0 44px rgba(0,255,136,0.1);
+      margin: 12px 0;
+      word-break: break-word;
+    }
+    .today-note {
+      color: #b1d8c7;
+      max-width: 720px;
+      margin: 0 auto;
+      line-height: 1.7;
+      font-size: 15px;
+    }
+    .stats {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .stat {
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(2, 14, 18, 0.72);
+      border: 1px solid rgba(59,255,190,0.1);
+      text-align: center;
+    }
+    .stat-label {
+      color: #78c7ab;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.9px;
+      margin-bottom: 8px;
+      font-weight: 800;
+    }
+    .stat-value {
+      font-size: 22px;
+      font-weight: 900;
+      color: #edfff7;
+    }
+    .hint {
+      margin-top: 18px;
+      text-align: center;
+      color: #7fb8a2;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    @media (max-width: 760px) {
+      .card { padding: 22px 16px; }
+      .stats { grid-template-columns: 1fr; }
+      .today { padding: 22px 14px; }
+      .subtitle, .today-note { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="rain" id="rain"></div>
+  <div class="scan"></div>
+
+  <main class="wrap">
+    <section class="card">
+      <div class="hud">
+        <div class="chip"><span class="dot"></span>ONLINE</div>
+        <div class="chip" id="startText">Bắt đầu từ ngày mai</div>
+      </div>
+
+      <h1 class="title">Hôm nay dùng file nào</h1>
+      <p class="subtitle">
+        Mở web là thấy ngay file hôm nay cần dùng. Chu kỳ chạy tự động từ ngày mai: 1 → 1 + 2 → 1 + 2 + 3 ... → 1 tới 7 rồi lặp lại.
+      </p>
+
+      <div class="today">
+        <div class="today-label">File hôm nay</div>
+        <div class="today-day" id="todayDate">Đang tải ngày...</div>
+        <div class="today-files" id="todayFiles">...</div>
+        <div class="today-note" id="todayNote"></div>
+      </div>
+
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Ngày trong chu kỳ</div>
+          <div class="stat-value" id="cycleDay">-</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Ngày bắt đầu</div>
+          <div class="stat-value" id="startDate">-</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Tổng file hôm nay</div>
+          <div class="stat-value" id="fileCount">-</div>
+        </div>
+      </div>
+
+      <div class="hint">
+        Tab trình duyệt cũng tự đổi thành số file hôm nay để bạn nhìn phát là biết ngay.
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const FILES = ["1", "2", "3", "4", "5", "6", "7"];
+
+    function createRain() {
+      const rain = document.getElementById('rain');
+      const chars = ['0', '1', '1', '0', '1', '7', '4', '2', '3'];
+      for (let i = 0; i < 48; i++) {
+        const span = document.createElement('span');
+        let txt = '';
+        const len = 12 + Math.floor(Math.random() * 18);
+        for (let j = 0; j < len; j++) txt += chars[Math.floor(Math.random() * chars.length)] + ' ';
+        span.textContent = txt;
+        span.style.left = Math.random() * 100 + 'vw';
+        span.style.animationDuration = 8 + Math.random() * 10 + 's';
+        span.style.animationDelay = -(Math.random() * 12) + 's';
+        span.style.fontSize = (10 + Math.random() * 8) + 'px';
+        rain.appendChild(span);
+      }
+    }
+
+    function getStartDate() {
+      const d = new Date();
+      d.setHours(0, 0, 0, 0);
+      d.setDate(d.getDate() + 1);
+      return d;
+    }
+
+    function formatDate(date) {
+      return new Intl.DateTimeFormat('vi-VN', {
+        weekday: 'long',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      }).format(date);
+    }
+
+    function formatShort(date) {
+      return new Intl.DateTimeFormat('vi-VN', {
+        day: '2-digit', month: '2-digit', year: 'numeric'
+      }).format(date);
+    }
+
+    function diffDays(a, b) {
+      return Math.floor((a - b) / (1000 * 60 * 60 * 24));
+    }
+
+    function getCycleDay(today, start) {
+      const diff = diffDays(today, start);
+      if (diff < 0) return 0;
+      return (diff % 7) + 1;
+    }
+
+    function getFiles(cycleDay) {
+      if (cycleDay <= 0) return ["1"];
+      return FILES.slice(0, cycleDay);
+    }
+
+    function updateTitle(files, cycleDay) {
+      const prefix = cycleDay === 0 ? 'Ngày mai: 1' : `Hôm nay: ${files.join('+')}`;
+      document.title = prefix;
+    }
+
+    function init() {
+      createRain();
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const start = getStartDate();
+      const cycleDay = getCycleDay(today, start);
+      const files = getFiles(cycleDay);
+
+      document.getElementById('todayDate').textContent = formatDate(today);
+      document.getElementById('startDate').textContent = formatShort(start);
+      document.getElementById('startText').textContent = `Bắt đầu: ${formatShort(start)}`;
+      document.getElementById('fileCount').textContent = files.length;
+
+      if (cycleDay === 0) {
+        document.getElementById('todayFiles').textContent = '1';
+        document.getElementById('cycleDay').textContent = 'Chưa bắt đầu';
+        document.getElementById('todayNote').textContent = 'Hôm nay chưa vào chu kỳ. Ngày mai bắt đầu ngày 1, dùng file 1.';
+      } else {
+        document.getElementById('todayFiles').textContent = files.join(' + ');
+        document.getElementById('cycleDay').textContent = `Ngày ${cycleDay}`;
+        document.getElementById('todayNote').textContent = `Hôm nay bạn cần dùng ${files.length} file theo thứ tự: ${files.join(', ')}.`;
+      }
+
+      updateTitle(files, cycleDay);
+    }
+
+    init();
+  </script>
+</body>
+</html>
