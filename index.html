@@ -471,6 +471,15 @@
         <div class="chip" id="startText">Bắt đầu từ ngày mai</div>
       </div>
 
+      <div style="max-width:900px;margin:0 auto 18px;display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:end;">
+        <div>
+          <div style="font-size:12px;letter-spacing:1px;text-transform:uppercase;font-weight:900;color:#c4b5fd;margin-bottom:6px;">Ngày bắt đầu chu kỳ</div>
+          <input id="startDateInput" type="date" style="width:100%;border-radius:14px;border:1px solid rgba(139,92,246,0.2);background:rgba(255,255,255,0.04);color:#eafff8;padding:12px 14px;outline:none;" />
+        </div>
+        <button class="violet-btn" id="saveStartDateBtn">Lưu ngày</button>
+        <button class="secondary" id="resetStartDateBtn">Mặc định</button>
+      </div>
+
       <h1 class="title">Hôm nay dùng file nào</h1>
       <p class="subtitle">
         V2 có điểm danh, streak, khóa file nếu chưa check-in, level hệ thống, sound effect, command line, lịch sử, banner cảnh báo và thông báo trình duyệt khi tab đang mở. Muốn nhận thông báo ngay trên máy qua web thì cấp quyền notification bên dưới.
@@ -577,7 +586,7 @@
 
   <script>
     const FILES = ["1", "2", "3", "4", "5", "6", "7"];
-    const STORAGE_KEY = 'attendance_hacker_state_v3';
+    const STORAGE_KEY = 'attendance_hacker_state_v4';
     let installPromptEvent = null;
     let currentView = null;
     let audioCtx = null;
@@ -702,13 +711,15 @@
       let startDate;
       let warning = '';
 
-      if (!state.startedAt) {
+      if (state.customStartDate) {
+        startDate = fromIsoDate(state.customStartDate);
+      } else if (!state.startedAt) {
         startDate = addDays(today, 1);
       } else {
         startDate = fromIsoDate(state.startedAt);
       }
 
-      if (state.lastCheckinDate) {
+      if (!state.customStartDate && state.lastCheckinDate) {
         const lastCheck = fromIsoDate(state.lastCheckinDate);
         const daysSince = diffDays(today, lastCheck);
         if (daysSince > 1) {
@@ -726,7 +737,7 @@
       const checkedInToday = state.lastCheckinDate === isoDate(today);
       let cycleDay = 0;
       let files = ['1'];
-      let note = 'Hôm nay chưa vào chu kỳ. Ngày mai bắt đầu ngày 1, dùng file 1.';
+      let note = 'Hôm nay chưa vào chu kỳ. Chọn ngày bắt đầu hoặc để mặc định là ngày mai.';
 
       if (diffDays(today, startDate) >= 0) {
         cycleDay = (diffDays(today, startDate) % 7) + 1;
@@ -763,6 +774,7 @@
       document.getElementById('todayDate').textContent = formatDate(today);
       document.getElementById('startDate').textContent = formatShort(startDate);
       document.getElementById('startText').textContent = `Bắt đầu: ${formatShort(startDate)}`;
+      document.getElementById('startDateInput').value = isoDate(startDate);
       document.getElementById('fileCount').textContent = files.length;
       document.getElementById('cycleDay').textContent = cycleDay === 0 ? 'Chưa bắt đầu' : `Ngày ${cycleDay}`;
       document.getElementById('streakCount').textContent = state.streak;
@@ -981,6 +993,27 @@
       });
     }
 
+    function saveCustomStartDate() {
+      const input = document.getElementById('startDateInput').value;
+      if (!input) return;
+      const state = loadState();
+      state.customStartDate = input;
+      pushHistory(state, 'ok', `Đổi ngày bắt đầu chu kỳ thành ${input}.`);
+      saveState(state);
+      beep('click');
+      render(deriveView(state));
+    }
+
+    function resetCustomStartDate() {
+      const state = loadState();
+      delete state.customStartDate;
+      if (!state.startedAt) state.startedAt = null;
+      pushHistory(state, 'ok', 'Đã trả ngày bắt đầu về mặc định.');
+      saveState(state);
+      beep('click');
+      render(deriveView(state));
+    }
+
     function init() {
       createRain();
       const state = loadState();
@@ -992,6 +1025,8 @@
       document.getElementById('enableNotifyBtn').addEventListener('click', enableNotifications);
       document.getElementById('testNotifyBtn').addEventListener('click', testNotification);
       document.getElementById('runCommandBtn').addEventListener('click', runCommand);
+      document.getElementById('saveStartDateBtn').addEventListener('click', saveCustomStartDate);
+      document.getElementById('resetStartDateBtn').addEventListener('click', resetCustomStartDate);
       document.getElementById('commandInput').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') runCommand();
       });
