@@ -11,7 +11,7 @@
       --bg0: #02050a;
       --bg1: #04111d;
       --bg2: #08131f;
-      --panel: rgba(5, 15, 24, 0.84);
+      --panel: rgba(5, 15, 24, 0.78);
       --line: rgba(59, 246, 190, 0.14);
       --green: #3bffbe;
       --green2: #00ff88;
@@ -22,8 +22,6 @@
       --danger: #ff5470;
       --warn: #ffd166;
       --violet: #8b5cf6;
-      --dangerBg: rgba(255, 84, 112, 0.12);
-      --goodBg: rgba(59, 255, 190, 0.09);
     }
 
     html, body {
@@ -40,26 +38,70 @@
       position: fixed;
       inset: 0;
       background:
-        repeating-linear-gradient(0deg, rgba(0,255,136,0.05) 0px, rgba(0,255,136,0.05) 1px, transparent 1px, transparent 36px),
-        repeating-linear-gradient(90deg, rgba(59,255,190,0.04) 0px, rgba(59,255,190,0.04) 1px, transparent 1px, transparent 36px);
+        repeating-linear-gradient(0deg, rgba(0,255,136,0.04) 0px, rgba(0,255,136,0.04) 1px, transparent 1px, transparent 42px),
+        repeating-linear-gradient(90deg, rgba(59,255,190,0.035) 0px, rgba(59,255,190,0.035) 1px, transparent 1px, transparent 42px);
       pointer-events: none;
       z-index: 0;
     }
 
-    body.rookie-theme .card { box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55); }
-    body.skilled-theme .card { box-shadow: 0 30px 80px rgba(34, 211, 238, 0.18); }
-    body.pro-theme .card { box-shadow: 0 30px 90px rgba(59, 255, 190, 0.22), 0 0 40px rgba(34,211,238,0.12); }
-    body.god-theme .card {
-      box-shadow: 0 35px 100px rgba(59, 255, 190, 0.25), 0 0 60px rgba(139,92,246,0.18);
-      border-color: rgba(139,92,246,0.26);
+    body::after {
+      content: "";
+      position: fixed;
+      inset: -20%;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(34,211,238,0.18), transparent 20%),
+        radial-gradient(circle at 85% 18%, rgba(139,92,246,0.18), transparent 22%),
+        radial-gradient(circle at 50% 85%, rgba(59,255,190,0.12), transparent 24%),
+        conic-gradient(from 0deg at 50% 50%, rgba(34,211,238,0.06), rgba(59,255,190,0.02), rgba(139,92,246,0.06), rgba(34,211,238,0.06));
+      filter: blur(42px) saturate(135%);
+      animation: auroraSpin 18s linear infinite;
+      opacity: 0.9;
+      pointer-events: none;
+      z-index: 0;
     }
 
-    .danger-pulse {
-      animation: pulseDanger 1.4s infinite;
+    @keyframes auroraSpin {
+      from { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.06); }
+      to { transform: rotate(360deg) scale(1); }
     }
-    @keyframes pulseDanger {
-      0%,100% { box-shadow: 0 0 0 0 rgba(255,84,112,0.0); }
-      50% { box-shadow: 0 0 0 10px rgba(255,84,112,0.08); }
+
+    .bg-glow, .bg-glow2, .bg-glow3 {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.28;
+      pointer-events: none;
+      z-index: 0;
+      animation: floatGlow 12s ease-in-out infinite;
+    }
+    .bg-glow {
+      width: 380px;
+      height: 380px;
+      left: -60px;
+      top: 12%;
+      background: rgba(34, 211, 238, 0.42);
+    }
+    .bg-glow2 {
+      width: 460px;
+      height: 460px;
+      right: -120px;
+      top: 8%;
+      background: rgba(139, 92, 246, 0.34);
+      animation-delay: -4s;
+    }
+    .bg-glow3 {
+      width: 420px;
+      height: 420px;
+      left: 28%;
+      bottom: -140px;
+      background: rgba(59, 255, 190, 0.28);
+      animation-delay: -8s;
+    }
+
+    @keyframes floatGlow {
+      0%, 100% { transform: translate3d(0,0,0) scale(1); }
+      50% { transform: translate3d(20px,-26px,0) scale(1.08); }
     }
 
     .rain {
@@ -90,15 +132,15 @@
       position: fixed;
       left: 0;
       right: 0;
-      height: 120px;
+      height: 140px;
       background: linear-gradient(to bottom, rgba(59,255,190,0), rgba(59,255,190,0.08), rgba(59,255,190,0));
-      box-shadow: 0 0 40px rgba(59,255,190,0.08);
+      box-shadow: 0 0 50px rgba(59,255,190,0.09);
       animation: scan 6s linear infinite;
       z-index: 1;
       pointer-events: none;
     }
     @keyframes scan {
-      0% { top: -140px; }
+      0% { top: -160px; }
       100% { top: 110vh; }
     }
 
@@ -119,7 +161,7 @@
       background: var(--panel);
       border: 1px solid var(--line);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(12px);
+      backdrop-filter: blur(14px);
       position: relative;
       overflow: hidden;
       transition: box-shadow .25s ease, border-color .25s ease;
@@ -130,6 +172,20 @@
       inset: 0;
       background: radial-gradient(circle at top right, rgba(34,211,238,0.1), transparent 26%);
       pointer-events: none;
+    }
+
+    body.rookie-theme .card { box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55); }
+    body.skilled-theme .card { box-shadow: 0 30px 80px rgba(34, 211, 238, 0.18); }
+    body.pro-theme .card { box-shadow: 0 30px 90px rgba(59, 255, 190, 0.22), 0 0 40px rgba(34,211,238,0.12); }
+    body.god-theme .card {
+      box-shadow: 0 35px 100px rgba(59, 255, 190, 0.25), 0 0 60px rgba(139,92,246,0.18);
+      border-color: rgba(139,92,246,0.26);
+    }
+
+    .danger-pulse { animation: pulseDanger 1.4s infinite; }
+    @keyframes pulseDanger {
+      0%,100% { box-shadow: 0 0 0 0 rgba(255,84,112,0.0); }
+      50% { box-shadow: 0 0 0 10px rgba(255,84,112,0.08); }
     }
 
     .hud {
@@ -342,7 +398,6 @@
       position: relative;
       overflow: hidden;
       min-height: 100%;
-      transition: filter .2s ease, opacity .2s ease;
     }
     .today::after {
       content: "";
@@ -353,24 +408,6 @@
       border-radius: 50%;
       background: radial-gradient(circle, rgba(0,255,136,0.14), transparent 70%);
       pointer-events: none;
-    }
-    .today.locked-mode .today-core {
-      filter: blur(7px);
-      opacity: 0.2;
-      pointer-events: none;
-      user-select: none;
-    }
-    .today-overlay-lock {
-      position: absolute;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      z-index: 3;
-    }
-    .today.locked-mode .today-overlay-lock {
-      display: flex;
     }
 
     .side-panel {
@@ -397,7 +434,6 @@
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.06);
     }
-
     .level-name {
       font-size: 28px;
       font-weight: 900;
@@ -485,28 +521,6 @@
       margin: 0 auto;
       line-height: 1.7;
       font-size: 15px;
-    }
-
-    .lock-screen {
-      max-width: 620px;
-      padding: 18px;
-      border-radius: 18px;
-      border: 1px solid rgba(255,84,112,0.18);
-      background: rgba(255,84,112,0.12);
-      width: 100%;
-      text-align: center;
-    }
-    .lock-title {
-      font-size: 22px;
-      font-weight: 900;
-      color: #ffdce3;
-      margin-bottom: 6px;
-    }
-    .lock-text {
-      color: #ffcad5;
-      line-height: 1.6;
-      font-size: 14px;
-      margin-bottom: 14px;
     }
 
     .actions, .notify-actions {
@@ -599,6 +613,9 @@
   </style>
 </head>
 <body>
+  <div class="bg-glow"></div>
+  <div class="bg-glow2"></div>
+  <div class="bg-glow3"></div>
   <div class="rain" id="rain"></div>
   <div class="scan"></div>
 
@@ -621,7 +638,7 @@
 
       <h1 class="title">Hôm nay dùng file nào</h1>
       <p class="subtitle">
-        V3 có anti-quên, deadline bar, streak effect, combo system, thống kê chi tiết, smart start và hard lock mạnh hơn.
+        Giao diện đã nâng cấp nền aurora neon động. Đã bỏ phần ACCESS DENIED che giữa màn hình, vẫn giữ đầy đủ logic điểm danh, streak, combo và nhắc nhở.
       </p>
 
       <div class="deadline-wrap" id="deadlineWrap">
@@ -647,24 +664,14 @@
 
       <div class="main-grid">
         <div class="today" id="todayPanel">
-          <div class="today-core" id="todayCore">
-            <div class="today-label">File hôm nay</div>
-            <div class="today-day" id="todayDate">Đang tải ngày...</div>
-            <div class="today-files" id="todayFiles">...</div>
-            <div class="today-note" id="todayNote"></div>
+          <div class="today-label">File hôm nay</div>
+          <div class="today-day" id="todayDate">Đang tải ngày...</div>
+          <div class="today-files" id="todayFiles">...</div>
+          <div class="today-note" id="todayNote"></div>
 
-            <div class="actions">
-              <button class="btn primary" id="checkInBtn">✔ Đã điểm danh hôm nay</button>
-              <button class="btn danger-btn" id="resetBtn">💀 Reset streak</button>
-            </div>
-          </div>
-
-          <div class="today-overlay-lock" id="todayOverlayLock">
-            <div class="lock-screen">
-              <div class="lock-title">ACCESS DENIED</div>
-              <div class="lock-text">Bạn chưa điểm danh hôm nay. Hoàn thành check-in để mở file đầy đủ, giữ streak và combo.</div>
-              <button class="btn primary" id="overlayCheckInBtn">Mở khóa ngay</button>
-            </div>
+          <div class="actions">
+            <button class="btn primary" id="checkInBtn">✔ Đã điểm danh hôm nay</button>
+            <button class="btn danger-btn" id="resetBtn">💀 Reset streak</button>
           </div>
         </div>
 
@@ -790,18 +797,13 @@
 
     function formatDate(date) {
       return new Intl.DateTimeFormat('vi-VN', {
-        weekday: 'long',
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
+        weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric'
       }).format(date);
     }
 
     function formatShort(date) {
       return new Intl.DateTimeFormat('vi-VN', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
+        day: '2-digit', month: '2-digit', year: 'numeric'
       }).format(date);
     }
 
@@ -834,7 +836,6 @@
         const g = audioCtx.createGain();
         o.connect(g);
         g.connect(audioCtx.destination);
-
         const map = {
           ok: [780, 0.08],
           error: [220, 0.18],
@@ -874,7 +875,6 @@
 
       const missDay = addDays(lastCheck, 1);
       const weekday = weekdayNameVi(missDay);
-
       state.totalMisses += 1;
       state.combo = 0;
       state.streak = 0;
@@ -901,10 +901,7 @@
         note = checkedInToday
           ? `Hôm nay bạn đã điểm danh ${files.length} file: ${files.join(', ')}.`
           : `Hôm nay bạn cần dùng ${files.length} file theo thứ tự: ${files.join(', ')}.`;
-
-        if (!checkedInToday) {
-          warning = '⚠️ Hôm nay chưa điểm danh. Bạn đang có nguy cơ mất streak và combo.';
-        }
+        if (!checkedInToday) warning = '⚠️ Hôm nay chưa điểm danh. Bạn đang có nguy cơ mất streak và combo.';
       }
 
       const [levelName, levelSub, themeClass] = getLevel(state.streak);
@@ -913,22 +910,17 @@
 
     function updateTitle(files, cycleDay, checkedInToday) {
       if (titleInterval) clearInterval(titleInterval);
-
       if (cycleDay === 0) {
         document.title = 'Ngày mai: 1';
         return;
       }
-
       if (checkedInToday) {
         document.title = `✔ ${files.join('+')}`;
         return;
       }
-
       let toggle = false;
       titleInterval = setInterval(() => {
-        document.title = toggle
-          ? `⚠️ CHECK NGAY: ${files.join('+')}`
-          : `❗ HÔM NAY: ${files.join('+')}`;
+        document.title = toggle ? `⚠️ ${files.join('+')}` : `❗ ${files.join('+')}`;
         toggle = !toggle;
       }, 900);
     }
@@ -939,9 +931,7 @@
         list.innerHTML = '<div>Chưa có lịch sử.</div>';
         return;
       }
-      list.innerHTML = state.history
-        .map(item => `<div class="history-item ${item.type === 'miss' ? 'miss' : 'ok'}">[${item.at}] ${item.text}</div>`)
-        .join('');
+      list.innerHTML = state.history.map(item => `<div class="history-item ${item.type === 'miss' ? 'miss' : 'ok'}">[${item.at}] ${item.text}</div>`).join('');
     }
 
     function averageTimeText(hours) {
@@ -981,10 +971,7 @@
       const totalAttempts = state.totalCheckins + state.totalMisses;
       const successRate = totalAttempts ? Math.round((state.totalCheckins / totalAttempts) * 100) : 0;
       const avgTime = averageTimeText(state.checkinHours || []);
-      const onTimeRate = state.totalCheckins
-        ? Math.round(((state.earlyCheckins || 0) / state.totalCheckins) * 100)
-        : 0;
-
+      const onTimeRate = state.totalCheckins ? Math.round(((state.earlyCheckins || 0) / state.totalCheckins) * 100) : 0;
       document.getElementById('detailStatsText').innerHTML =
         `Giờ check-in trung bình: <b>${avgTime}</b><br>` +
         `Tỉ lệ đúng giờ trước 12:00: <b>${onTimeRate}%</b><br>` +
@@ -1000,9 +987,7 @@
     function render(view) {
       currentView = view;
       const { today, startDate, cycleDay, files, note, checkedInToday, warning, state, levelName, levelSub, themeClass } = view;
-
       applyTheme(themeClass);
-
       document.getElementById('todayDate').textContent = formatDate(today);
       document.getElementById('startDate').textContent = formatShort(startDate);
       document.getElementById('startText').textContent = `Bắt đầu: ${formatShort(startDate)}`;
@@ -1015,16 +1000,11 @@
       document.getElementById('levelName').textContent = levelName;
       document.getElementById('levelSub').textContent = levelSub;
       document.getElementById('todayNote').textContent = note;
-
-      const locked = !checkedInToday && cycleDay > 0;
-      document.getElementById('todayFiles').textContent = locked ? 'LOCKED' : files.join(' + ');
-      document.getElementById('todayPanel').classList.toggle('locked-mode', locked);
-
+      document.getElementById('todayFiles').textContent = files.join(' + ');
       const totalAttempts = state.totalCheckins + state.totalMisses;
       const rate = totalAttempts ? Math.round((state.totalCheckins / totalAttempts) * 100) : 0;
       document.getElementById('successRate').textContent = `${rate}%`;
       document.getElementById('avgCheckinTime').textContent = averageTimeText(state.checkinHours || []);
-
       const warningBox = document.getElementById('warningBox');
       if (warning) {
         warningBox.textContent = warning;
@@ -1033,12 +1013,10 @@
         warningBox.textContent = '';
         warningBox.classList.remove('show');
       }
-
       const btn = document.getElementById('checkInBtn');
       btn.disabled = checkedInToday;
       btn.textContent = checkedInToday ? '✔ Hôm nay đã điểm danh' : '✔ Đã điểm danh hôm nay';
       btn.style.opacity = checkedInToday ? '0.6' : '1';
-
       renderHistory(state);
       renderDetailStats(state);
       runTerminal(view);
@@ -1052,22 +1030,15 @@
       const state = loadState();
       const now = new Date();
       const today = startOfDay(now);
-
       if (state.lastCheckinDate === isoDate(today)) return;
-
       const prevLast = state.lastCheckinDate ? fromIsoDate(state.lastCheckinDate) : null;
       state.lastCheckinDate = isoDate(today);
       state.totalCheckins += 1;
-
       const decimalHour = now.getHours() + now.getMinutes() / 60;
       state.checkinHours = state.checkinHours || [];
       state.checkinHours.push(decimalHour);
       state.checkinHours = state.checkinHours.slice(-60);
-
-      if (now.getHours() < 12) {
-        state.earlyCheckins = (state.earlyCheckins || 0) + 1;
-      }
-
+      if (now.getHours() < 12) state.earlyCheckins = (state.earlyCheckins || 0) + 1;
       if (!prevLast || diffDays(today, prevLast) > 1) {
         state.streak = 1;
         state.combo = 1;
@@ -1078,10 +1049,8 @@
         state.streak = Math.max(1, state.streak);
         state.combo = Math.max(1, state.combo || 1);
       }
-
       pushHistory(state, 'ok', `Đã điểm danh hôm nay thành công. Combo hiện tại x${state.combo}.`);
       saveState(state);
-
       beep('ok');
       maybeNotify('Điểm danh thành công', `Streak: ${state.streak} | Combo: x${state.combo}`);
       render(deriveView(state));
@@ -1090,7 +1059,6 @@
     function resetAll() {
       const ok = confirm('Reset streak và dữ liệu điểm danh?');
       if (!ok) return;
-
       const state = {
         streak: 0,
         combo: 0,
@@ -1098,16 +1066,11 @@
         totalMisses: 0,
         lastCheckinDate: null,
         customStartDate: null,
-        history: [{
-          type: 'miss',
-          text: 'Reset thủ công toàn bộ streak và combo.',
-          at: new Date().toLocaleString('vi-VN')
-        }],
+        history: [{ type: 'miss', text: 'Reset thủ công toàn bộ streak và combo.', at: new Date().toLocaleString('vi-VN') }],
         checkinHours: [],
         earlyCheckins: 0,
         missedWeekdays: {}
       };
-
       saveState(state);
       beep('error');
       render(deriveView(state));
@@ -1161,18 +1124,11 @@
       const fill = document.getElementById('deadlineFill');
       const percentText = document.getElementById('deadlinePercentText');
       const text = document.getElementById('deadlineText');
-
       fill.style.width = `${percent}%`;
       percentText.textContent = `${percent.toFixed(0)}%`;
-
-      if (percent >= 85) {
-        fill.style.background = 'linear-gradient(90deg, #ff5470, #ffd166)';
-      } else if (percent >= 60) {
-        fill.style.background = 'linear-gradient(90deg, #ffd166, #22d3ee)';
-      } else {
-        fill.style.background = 'linear-gradient(90deg, #3bffbe, #22d3ee)';
-      }
-
+      if (percent >= 85) fill.style.background = 'linear-gradient(90deg, #ff5470, #ffd166)';
+      else if (percent >= 60) fill.style.background = 'linear-gradient(90deg, #ffd166, #22d3ee)';
+      else fill.style.background = 'linear-gradient(90deg, #3bffbe, #22d3ee)';
       const hoursLeft = Math.floor(diffToTomorrow / 3600000);
       text.textContent = `Tiến độ ngày • Còn ${hoursLeft}h trước khi qua ngày`;
     }
@@ -1216,28 +1172,13 @@
       const input = document.getElementById('commandInput');
       const cmd = input.value.trim().toLowerCase();
       if (!cmd) return;
-
       appendCommand(cmd);
-
-      if (cmd === 'status') {
-        appendCommand(currentView ? `files=${currentView.files.join('+')} streak=${currentView.state.streak} combo=x${currentView.state.combo || 0}` : 'status unavailable');
-      } else if (cmd === 'checkin') {
-        markCheckin();
-        appendCommand('checkin executed');
-      } else if (cmd === 'reset') {
-        resetAll();
-        appendCommand('reset executed');
-      } else if (cmd === 'notify') {
-        enableNotifications();
-        appendCommand('notification request sent');
-      } else if (cmd === 'history') {
-        const state = loadState();
-        appendCommand((state.history || []).slice(0, 3).map(x => x.text).join(' | ') || 'no history');
-      } else {
-        appendCommand('unknown command');
-        beep('error');
-      }
-
+      if (cmd === 'status') appendCommand(currentView ? `files=${currentView.files.join('+')} streak=${currentView.state.streak} combo=x${currentView.state.combo || 0}` : 'status unavailable');
+      else if (cmd === 'checkin') { markCheckin(); appendCommand('checkin executed'); }
+      else if (cmd === 'reset') { resetAll(); appendCommand('reset executed'); }
+      else if (cmd === 'notify') { enableNotifications(); appendCommand('notification request sent'); }
+      else if (cmd === 'history') { const state = loadState(); appendCommand((state.history || []).slice(0, 3).map(x => x.text).join(' | ') || 'no history'); }
+      else { appendCommand('unknown command'); beep('error'); }
       input.value = '';
     }
 
@@ -1245,21 +1186,16 @@
       if (reminderInterval) clearInterval(reminderInterval);
       document.getElementById('mainCard').classList.remove('danger-pulse');
       lastEscalationLevel = -1;
-
       if (view.checkedInToday || view.cycleDay === 0) return;
-
       reminderInterval = setInterval(() => {
         const now = new Date();
         const passedHours = now.getHours() + now.getMinutes() / 60;
         let level = 0;
-
         if (passedHours >= 12) level = 1;
         if (passedHours >= 18) level = 2;
         if (passedHours >= 22) level = 3;
-
         if (level !== lastEscalationLevel) {
           lastEscalationLevel = level;
-
           if (level === 1) {
             maybeNotify('Nhắc điểm danh', 'Bạn vẫn chưa check-in hôm nay.');
           } else if (level === 2) {
@@ -1276,15 +1212,11 @@
 
     function init() {
       createRain();
-
       const state = loadState();
       render(deriveView(state));
-
       updateCountdown();
       setInterval(updateCountdown, 1000);
-
       document.getElementById('checkInBtn').addEventListener('click', markCheckin);
-      document.getElementById('overlayCheckInBtn').addEventListener('click', markCheckin);
       document.getElementById('resetBtn').addEventListener('click', resetAll);
       document.getElementById('enableNotifyBtn').addEventListener('click', enableNotifications);
       document.getElementById('testNotifyBtn').addEventListener('click', testNotification);
@@ -1295,7 +1227,6 @@
       document.getElementById('commandInput').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') runCommand();
       });
-
       updateNotifyStatus();
     }
 
