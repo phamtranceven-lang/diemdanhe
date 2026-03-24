@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hôm nay dùng file nào</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --bg1: #030712;
+      --bg2: #0f172a;
+      --line: rgba(255,255,255,0.08);
+      --text: #eef2ff;
+      --muted: #a5b4fc;
+      --glow1: #22d3ee;
+      --glow2: #8b5cf6;
+      --glow3: #38bdf8;
+    }
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      font-family: Inter, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 20%, rgba(34,211,238,0.18), transparent 22%),
+        radial-gradient(circle at 80% 10%, rgba(139,92,246,0.18), transparent 24%),
+        radial-gradient(circle at 50% 80%, rgba(56,189,248,0.12), transparent 24%),
+        linear-gradient(135deg, var(--bg1), var(--bg2) 55%, #020617);
+      overflow: hidden;
+    }
+    .bg-orb, .bg-orb2, .bg-orb3 {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.35;
+      pointer-events: none;
+      animation: float 10s ease-in-out infinite;
+    }
+    .bg-orb {
+      width: 360px; height: 360px;
+      background: var(--glow1);
+      top: -60px; left: -80px;
+    }
+    .bg-orb2 {
+      width: 420px; height: 420px;
+      background: var(--glow2);
+      right: -120px; top: 10%;
+      animation-delay: -2s;
+    }
+    .bg-orb3 {
+      width: 320px; height: 320px;
+      background: var(--glow3);
+      left: 20%; bottom: -140px;
+      animation-delay: -4s;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0) translateX(0) scale(1); }
+      50% { transform: translateY(20px) translateX(12px) scale(1.06); }
+    }
+    .wrap {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      z-index: 2;
+    }
+    .card {
+      width: min(920px, 100%);
+      padding: 34px 28px;
+      border-radius: 32px;
+      position: relative;
+      overflow: hidden;
+      background: rgba(6, 11, 24, 0.7);
+      border: 1px solid var(--line);
+      backdrop-filter: blur(16px);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 1px;
+      border-radius: 32px;
+      background: linear-gradient(135deg, rgba(34,211,238,0.55), rgba(139,92,246,0.35), rgba(56,189,248,0.35));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(99, 102, 241, 0.12);
+      border: 1px solid rgba(165, 180, 252, 0.18);
+      color: #c7d2fe;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+    .title {
+      margin: 0;
+      text-align: center;
+      font-size: clamp(30px, 6vw, 60px);
+      line-height: 1;
+      letter-spacing: -1.6px;
+      font-weight: 900;
+    }
+    .subtitle {
+      margin: 14px auto 0;
+      text-align: center;
+      color: #cbd5e1;
+      max-width: 700px;
+      font-size: 16px;
+      line-height: 1.7;
+    }
+    .today {
+      margin-top: 28px;
+      padding: 26px;
+      border-radius: 28px;
+      background: linear-gradient(180deg, rgba(15,23,42,0.92), rgba(2,6,23,0.82));
+      border: 1px solid rgba(148,163,184,0.12);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .today::after {
+      content: "";
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(34,211,238,0.18), transparent 70%);
+      top: -80px;
+      right: -60px;
+    }
+    .today-label {
+      color: #93c5fd;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    .today-day {
+      font-size: clamp(20px, 3vw, 30px);
+      font-weight: 800;
+      color: #e2e8f0;
+      margin-bottom: 10px;
+    }
+    .today-files {
+      font-size: clamp(34px, 8vw, 86px);
+      font-weight: 900;
+      letter-spacing: -2px;
+      line-height: 1.05;
+      margin: 12px 0 8px;
+      background: linear-gradient(135deg, #67e8f9, #c4b5fd 45%, #93c5fd 80%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 20px rgba(103,232,249,0.15);
+    }
+    .today-note {
+      color: #cbd5e1;
+      font-size: 15px;
+      line-height: 1.7;
+      max-width: 660px;
+      margin: 0 auto;
+    }
+    .footer {
+      margin-top: 22px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .mini {
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(15,23,42,0.65);
+      border: 1px solid rgba(148,163,184,0.1);
+      text-align: center;
+    }
+    .mini-label {
+      color: #94a3b8;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    .mini-value {
+      font-size: 20px;
+      font-weight: 900;
+    }
+    .pulse {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 0 rgba(34,197,94,0.5);
+      animation: pulse 1.8s infinite;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
+      70% { box-shadow: 0 0 0 14px rgba(34,197,94,0); }
+      100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+    }
+    @media (max-width: 720px) {
+      .card { padding: 24px 18px; border-radius: 24px; }
+      .today { padding: 22px 16px; border-radius: 22px; }
+      .footer { grid-template-columns: 1fr; }
+      .subtitle { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-orb"></div>
+  <div class="bg-orb2"></div>
+  <div class="bg-orb3"></div>
+
+  <main class="wrap">
+    <section class="card">
+      <div class="top">
+        <div class="badge"><span class="pulse"></span>Hệ thống đang chạy</div>
+        <div class="badge" id="startText">Bắt đầu từ ngày mai</div>
+      </div>
+
+      <h1 class="title">Hôm nay dùng file nào?</h1>
+      <p class="subtitle">
+        Web này tự tính sẵn theo chu kỳ của bạn. Chỉ mở lên là thấy ngay hôm nay cần điểm danh file nào.
+      </p>
+
+      <div class="today">
+        <div class="today-label">File cần dùng hôm nay</div>
+        <div class="today-day" id="todayDate">Đang tải ngày...</div>
+        <div class="today-files" id="todayFiles">...</div>
+        <div class="today-note" id="todayNote"></div>
+      </div>
+
+      <div class="footer">
+        <div class="mini">
+          <div class="mini-label">Ngày trong chu kỳ</div>
+          <div class="mini-value" id="cycleDay">-</div>
+        </div>
+        <div class="mini">
+          <div class="mini-label">Ngày bắt đầu</div>
+          <div class="mini-value" id="startDate">-</div>
+        </div>
+        <div class="mini">
+          <div class="mini-label">Chu kỳ</div>
+          <div class="mini-value">7 ngày</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const FILES = ["11", "22", "33", "44", "55", "66", "77"];
+
+    function getStartDate() {
+      const d = new Date();
+      d.setHours(0, 0, 0, 0);
+      d.setDate(d.getDate() + 1);
+      return d;
+    }
+
+    function formatDate(date) {
+      return new Intl.DateTimeFormat('vi-VN', {
+        weekday: 'long',
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      }).format(date);
+    }
+
+    function diffDays(a, b) {
+      return Math.floor((a - b) / (1000 * 60 * 60 * 24));
+    }
+
+    function getCycleDay(today, start) {
+      const diff = diffDays(today, start);
+      if (diff < 0) return 0;
+      return (diff % 7) + 1;
+    }
+
+    function getFiles(cycleDay) {
+      if (cycleDay <= 0) return ["11"];
+      return FILES.slice(0, cycleDay);
+    }
+
+    function init() {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const start = getStartDate();
+      const cycleDay = getCycleDay(today, start);
+      const files = getFiles(cycleDay);
+
+      document.getElementById('todayDate').textContent = formatDate(today);
+      document.getElementById('startDate').textContent = new Intl.DateTimeFormat('vi-VN', {
+        day: '2-digit', month: '2-digit', year: 'numeric'
+      }).format(start);
+      document.getElementById('startText').textContent = `Bắt đầu: ${new Intl.DateTimeFormat('vi-VN', {
+        day: '2-digit', month: '2-digit', year: 'numeric'
+      }).format(start)}`;
+
+      if (cycleDay === 0) {
+        document.getElementById('todayFiles').textContent = '11';
+        document.getElementById('cycleDay').textContent = 'Chưa bắt đầu';
+        document.getElementById('todayNote').textContent = 'Hôm nay chưa vào chu kỳ. Ngày mai bắt đầu ngày 1, dùng file 11.';
+      } else {
+        document.getElementById('todayFiles').textContent = files.join(' + ');
+        document.getElementById('cycleDay').textContent = `Ngày ${cycleDay}`;
+        document.getElementById('todayNote').textContent = `Hôm nay bạn cần điểm danh ${files.length} file theo thứ tự: ${files.join(', ')}.`;
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
