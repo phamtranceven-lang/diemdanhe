@@ -7,128 +7,168 @@
   <style>
     * { box-sizing: border-box; }
     :root {
-      --bg1: #030712;
-      --bg2: #0f172a;
-      --line: rgba(255,255,255,0.08);
-      --text: #eef2ff;
-      --muted: #a5b4fc;
-      --glow1: #22d3ee;
-      --glow2: #8b5cf6;
-      --glow3: #38bdf8;
+      --bg0: #02050a;
+      --bg1: #04111d;
+      --bg2: #08131f;
+      --panel: rgba(5, 15, 24, 0.82);
+      --line: rgba(59, 246, 190, 0.14);
+      --green: #3bffbe;
+      --green2: #00ff88;
+      --cyan: #22d3ee;
+      --text: #eafff8;
+      --muted: #8ac7b0;
+      --shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
     }
     html, body {
       margin: 0;
       min-height: 100%;
       font-family: Inter, Arial, sans-serif;
       color: var(--text);
-      background:
-        radial-gradient(circle at 20% 20%, rgba(34,211,238,0.18), transparent 22%),
-        radial-gradient(circle at 80% 10%, rgba(139,92,246,0.18), transparent 24%),
-        radial-gradient(circle at 50% 80%, rgba(56,189,248,0.12), transparent 24%),
-        linear-gradient(135deg, var(--bg1), var(--bg2) 55%, #020617);
+      background: linear-gradient(135deg, var(--bg0), var(--bg1) 45%, var(--bg2));
       overflow: hidden;
     }
-    .bg-orb, .bg-orb2, .bg-orb3 {
+    body::before {
+      content: "";
       position: fixed;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.35;
+      inset: 0;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          rgba(0, 255, 136, 0.05) 0px,
+          rgba(0, 255, 136, 0.05) 1px,
+          transparent 1px,
+          transparent 36px
+        ),
+        repeating-linear-gradient(
+          90deg,
+          rgba(59, 255, 190, 0.04) 0px,
+          rgba(59, 255, 190, 0.04) 1px,
+          transparent 1px,
+          transparent 36px
+        );
       pointer-events: none;
-      animation: float 10s ease-in-out infinite;
+      z-index: 0;
     }
-    .bg-orb {
-      width: 360px; height: 360px;
-      background: var(--glow1);
-      top: -60px; left: -80px;
+    .rain {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      opacity: 0.16;
+      pointer-events: none;
     }
-    .bg-orb2 {
-      width: 420px; height: 420px;
-      background: var(--glow2);
-      right: -120px; top: 10%;
-      animation-delay: -2s;
+    .rain span {
+      position: absolute;
+      top: -120px;
+      color: var(--green);
+      font-size: 14px;
+      font-family: Consolas, monospace;
+      animation: fall linear infinite;
+      text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+      user-select: none;
     }
-    .bg-orb3 {
-      width: 320px; height: 320px;
-      background: var(--glow3);
-      left: 20%; bottom: -140px;
-      animation-delay: -4s;
+    @keyframes fall {
+      from { transform: translateY(-120px); }
+      to { transform: translateY(110vh); }
     }
-    @keyframes float {
-      0%,100% { transform: translateY(0) translateX(0) scale(1); }
-      50% { transform: translateY(20px) translateX(12px) scale(1.06); }
+    .scan {
+      position: fixed;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: linear-gradient(to bottom, rgba(59,255,190,0), rgba(59,255,190,0.08), rgba(59,255,190,0));
+      box-shadow: 0 0 40px rgba(59,255,190,0.08);
+      animation: scan 6s linear infinite;
+      z-index: 1;
+      pointer-events: none;
+    }
+    @keyframes scan {
+      0% { top: -140px; }
+      100% { top: 110vh; }
     }
     .wrap {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 22px;
       position: relative;
       z-index: 2;
     }
     .card {
-      width: min(920px, 100%);
-      padding: 34px 28px;
-      border-radius: 32px;
+      width: min(980px, 100%);
+      border-radius: 28px;
+      padding: 30px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
       position: relative;
       overflow: hidden;
-      background: rgba(6, 11, 24, 0.7);
-      border: 1px solid var(--line);
-      backdrop-filter: blur(16px);
-      box-shadow: 0 30px 80px rgba(0,0,0,0.45);
     }
     .card::before {
       content: "";
       position: absolute;
       inset: 0;
-      padding: 1px;
-      border-radius: 32px;
-      background: linear-gradient(135deg, rgba(34,211,238,0.55), rgba(139,92,246,0.35), rgba(56,189,248,0.35));
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
+      background: radial-gradient(circle at top right, rgba(34, 211, 238, 0.1), transparent 26%);
       pointer-events: none;
     }
-    .top {
+    .hud {
       display: flex;
-      align-items: center;
-      justify-content: center;
+      justify-content: space-between;
       gap: 12px;
-      margin-bottom: 16px;
       flex-wrap: wrap;
+      align-items: center;
+      margin-bottom: 18px;
     }
-    .badge {
-      padding: 8px 14px;
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 14px;
       border-radius: 999px;
-      background: rgba(99, 102, 241, 0.12);
-      border: 1px solid rgba(165, 180, 252, 0.18);
-      color: #c7d2fe;
+      background: rgba(0,255,136,0.08);
+      border: 1px solid rgba(59,255,190,0.18);
+      color: #b7ffd8;
       font-size: 13px;
       font-weight: 800;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.4px;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--green2);
+      box-shadow: 0 0 14px rgba(0,255,136,0.7);
+      animation: blink 1.4s infinite;
+    }
+    @keyframes blink {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.45; transform: scale(0.88); }
     }
     .title {
-      margin: 0;
+      margin: 6px 0 10px;
       text-align: center;
-      font-size: clamp(30px, 6vw, 60px);
+      font-size: clamp(30px, 5vw, 62px);
       line-height: 1;
-      letter-spacing: -1.6px;
+      letter-spacing: -1.8px;
       font-weight: 900;
+      color: #eafff8;
+      text-shadow: 0 0 20px rgba(59,255,190,0.12);
     }
     .subtitle {
-      margin: 14px auto 0;
+      margin: 0 auto 24px;
+      max-width: 720px;
       text-align: center;
-      color: #cbd5e1;
-      max-width: 700px;
-      font-size: 16px;
+      color: var(--muted);
       line-height: 1.7;
+      font-size: 15px;
     }
     .today {
-      margin-top: 28px;
-      padding: 26px;
-      border-radius: 28px;
-      background: linear-gradient(180deg, rgba(15,23,42,0.92), rgba(2,6,23,0.82));
-      border: 1px solid rgba(148,163,184,0.12);
+      border-radius: 24px;
+      padding: 28px 20px;
+      background: linear-gradient(180deg, rgba(2,10,16,0.96), rgba(3, 20, 26, 0.84));
+      border: 1px solid rgba(59,255,190,0.14);
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -136,137 +176,148 @@
     .today::after {
       content: "";
       position: absolute;
-      width: 240px;
-      height: 240px;
+      inset: auto -80px -80px auto;
+      width: 220px;
+      height: 220px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(34,211,238,0.18), transparent 70%);
-      top: -80px;
-      right: -60px;
+      background: radial-gradient(circle, rgba(0,255,136,0.14), transparent 70%);
+      pointer-events: none;
     }
     .today-label {
-      color: #93c5fd;
-      font-weight: 800;
+      color: #9fffd2;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      font-size: 13px;
+      letter-spacing: 1.2px;
+      font-size: 12px;
+      font-weight: 900;
       margin-bottom: 12px;
     }
     .today-day {
-      font-size: clamp(20px, 3vw, 30px);
+      font-size: clamp(18px, 2.6vw, 28px);
+      color: #c7ffea;
       font-weight: 800;
-      color: #e2e8f0;
       margin-bottom: 10px;
     }
     .today-files {
-      font-size: clamp(34px, 8vw, 86px);
+      font-size: clamp(48px, 9vw, 92px);
       font-weight: 900;
-      letter-spacing: -2px;
-      line-height: 1.05;
-      margin: 12px 0 8px;
-      background: linear-gradient(135deg, #67e8f9, #c4b5fd 45%, #93c5fd 80%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 20px rgba(103,232,249,0.15);
+      line-height: 1.02;
+      letter-spacing: -2.5px;
+      color: var(--green);
+      text-shadow: 0 0 24px rgba(59,255,190,0.25), 0 0 44px rgba(0,255,136,0.1);
+      margin: 12px 0;
+      word-break: break-word;
     }
     .today-note {
-      color: #cbd5e1;
-      font-size: 15px;
-      line-height: 1.7;
-      max-width: 660px;
+      color: #b1d8c7;
+      max-width: 720px;
       margin: 0 auto;
+      line-height: 1.7;
+      font-size: 15px;
     }
-    .footer {
-      margin-top: 22px;
+    .stats {
+      margin-top: 18px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 14px;
     }
-    .mini {
+    .stat {
       padding: 16px;
-      border-radius: 20px;
-      background: rgba(15,23,42,0.65);
-      border: 1px solid rgba(148,163,184,0.1);
+      border-radius: 18px;
+      background: rgba(2, 14, 18, 0.72);
+      border: 1px solid rgba(59,255,190,0.1);
       text-align: center;
     }
-    .mini-label {
-      color: #94a3b8;
+    .stat-label {
+      color: #78c7ab;
       font-size: 12px;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.9px;
       margin-bottom: 8px;
-      font-weight: 700;
+      font-weight: 800;
     }
-    .mini-value {
-      font-size: 20px;
+    .stat-value {
+      font-size: 22px;
       font-weight: 900;
+      color: #edfff7;
     }
-    .pulse {
-      display: inline-block;
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: #22c55e;
-      box-shadow: 0 0 0 rgba(34,197,94,0.5);
-      animation: pulse 1.8s infinite;
-      margin-right: 8px;
-      vertical-align: middle;
+    .hint {
+      margin-top: 18px;
+      text-align: center;
+      color: #7fb8a2;
+      font-size: 13px;
+      line-height: 1.6;
     }
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
-      70% { box-shadow: 0 0 0 14px rgba(34,197,94,0); }
-      100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
-    }
-    @media (max-width: 720px) {
-      .card { padding: 24px 18px; border-radius: 24px; }
-      .today { padding: 22px 16px; border-radius: 22px; }
-      .footer { grid-template-columns: 1fr; }
-      .subtitle { font-size: 14px; }
+    @media (max-width: 760px) {
+      .card { padding: 22px 16px; }
+      .stats { grid-template-columns: 1fr; }
+      .today { padding: 22px 14px; }
+      .subtitle, .today-note { font-size: 14px; }
     }
   </style>
 </head>
 <body>
-  <div class="bg-orb"></div>
-  <div class="bg-orb2"></div>
-  <div class="bg-orb3"></div>
+  <div class="rain" id="rain"></div>
+  <div class="scan"></div>
 
   <main class="wrap">
     <section class="card">
-      <div class="top">
-        <div class="badge"><span class="pulse"></span>Hệ thống đang chạy</div>
-        <div class="badge" id="startText">Bắt đầu từ ngày mai</div>
+      <div class="hud">
+        <div class="chip"><span class="dot"></span>ONLINE</div>
+        <div class="chip" id="startText">Bắt đầu từ ngày mai</div>
       </div>
 
-      <h1 class="title">Hôm nay dùng file nào?</h1>
+      <h1 class="title">Hôm nay dùng file nào</h1>
       <p class="subtitle">
-        Web này tự tính sẵn theo chu kỳ của bạn. Chỉ mở lên là thấy ngay hôm nay cần điểm danh file nào.
+        Mở web là thấy ngay file hôm nay cần dùng. Chu kỳ chạy tự động từ ngày mai: 1 → 1 + 2 → 1 + 2 + 3 ... → 1 tới 7 rồi lặp lại.
       </p>
 
       <div class="today">
-        <div class="today-label">File cần dùng hôm nay</div>
+        <div class="today-label">File hôm nay</div>
         <div class="today-day" id="todayDate">Đang tải ngày...</div>
         <div class="today-files" id="todayFiles">...</div>
         <div class="today-note" id="todayNote"></div>
       </div>
 
-      <div class="footer">
-        <div class="mini">
-          <div class="mini-label">Ngày trong chu kỳ</div>
-          <div class="mini-value" id="cycleDay">-</div>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-label">Ngày trong chu kỳ</div>
+          <div class="stat-value" id="cycleDay">-</div>
         </div>
-        <div class="mini">
-          <div class="mini-label">Ngày bắt đầu</div>
-          <div class="mini-value" id="startDate">-</div>
+        <div class="stat">
+          <div class="stat-label">Ngày bắt đầu</div>
+          <div class="stat-value" id="startDate">-</div>
         </div>
-        <div class="mini">
-          <div class="mini-label">Chu kỳ</div>
-          <div class="mini-value">7 ngày</div>
+        <div class="stat">
+          <div class="stat-label">Tổng file hôm nay</div>
+          <div class="stat-value" id="fileCount">-</div>
         </div>
+      </div>
+
+      <div class="hint">
+        Tab trình duyệt cũng tự đổi thành số file hôm nay để bạn nhìn phát là biết ngay.
       </div>
     </section>
   </main>
 
   <script>
-    const FILES = ["11", "22", "33", "44", "55", "66", "77"];
+    const FILES = ["1", "2", "3", "4", "5", "6", "7"];
+
+    function createRain() {
+      const rain = document.getElementById('rain');
+      const chars = ['0', '1', '1', '0', '1', '7', '4', '2', '3'];
+      for (let i = 0; i < 48; i++) {
+        const span = document.createElement('span');
+        let txt = '';
+        const len = 12 + Math.floor(Math.random() * 18);
+        for (let j = 0; j < len; j++) txt += chars[Math.floor(Math.random() * chars.length)] + ' ';
+        span.textContent = txt;
+        span.style.left = Math.random() * 100 + 'vw';
+        span.style.animationDuration = 8 + Math.random() * 10 + 's';
+        span.style.animationDelay = -(Math.random() * 12) + 's';
+        span.style.fontSize = (10 + Math.random() * 8) + 'px';
+        rain.appendChild(span);
+      }
+    }
 
     function getStartDate() {
       const d = new Date();
@@ -284,6 +335,12 @@
       }).format(date);
     }
 
+    function formatShort(date) {
+      return new Intl.DateTimeFormat('vi-VN', {
+        day: '2-digit', month: '2-digit', year: 'numeric'
+      }).format(date);
+    }
+
     function diffDays(a, b) {
       return Math.floor((a - b) / (1000 * 60 * 60 * 24));
     }
@@ -295,11 +352,17 @@
     }
 
     function getFiles(cycleDay) {
-      if (cycleDay <= 0) return ["11"];
+      if (cycleDay <= 0) return ["1"];
       return FILES.slice(0, cycleDay);
     }
 
+    function updateTitle(files, cycleDay) {
+      const prefix = cycleDay === 0 ? 'Ngày mai: 1' : `Hôm nay: ${files.join('+')}`;
+      document.title = prefix;
+    }
+
     function init() {
+      createRain();
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const start = getStartDate();
@@ -307,22 +370,21 @@
       const files = getFiles(cycleDay);
 
       document.getElementById('todayDate').textContent = formatDate(today);
-      document.getElementById('startDate').textContent = new Intl.DateTimeFormat('vi-VN', {
-        day: '2-digit', month: '2-digit', year: 'numeric'
-      }).format(start);
-      document.getElementById('startText').textContent = `Bắt đầu: ${new Intl.DateTimeFormat('vi-VN', {
-        day: '2-digit', month: '2-digit', year: 'numeric'
-      }).format(start)}`;
+      document.getElementById('startDate').textContent = formatShort(start);
+      document.getElementById('startText').textContent = `Bắt đầu: ${formatShort(start)}`;
+      document.getElementById('fileCount').textContent = files.length;
 
       if (cycleDay === 0) {
-        document.getElementById('todayFiles').textContent = '11';
+        document.getElementById('todayFiles').textContent = '1';
         document.getElementById('cycleDay').textContent = 'Chưa bắt đầu';
-        document.getElementById('todayNote').textContent = 'Hôm nay chưa vào chu kỳ. Ngày mai bắt đầu ngày 1, dùng file 11.';
+        document.getElementById('todayNote').textContent = 'Hôm nay chưa vào chu kỳ. Ngày mai bắt đầu ngày 1, dùng file 1.';
       } else {
         document.getElementById('todayFiles').textContent = files.join(' + ');
         document.getElementById('cycleDay').textContent = `Ngày ${cycleDay}`;
-        document.getElementById('todayNote').textContent = `Hôm nay bạn cần điểm danh ${files.length} file theo thứ tự: ${files.join(', ')}.`;
+        document.getElementById('todayNote').textContent = `Hôm nay bạn cần dùng ${files.length} file theo thứ tự: ${files.join(', ')}.`;
       }
+
+      updateTitle(files, cycleDay);
     }
 
     init();
