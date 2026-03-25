@@ -66,7 +66,7 @@
       to { transform: rotate(360deg) scale(1); }
     }
 
-    .bg-glow, .bg-glow2, .bg-glow3 {
+    .bg-glow, .bg-glow2, .bg-glow3, .bg-glow4 {
       position: fixed;
       border-radius: 50%;
       filter: blur(90px);
@@ -88,6 +88,12 @@
       width: 420px; height: 420px; left: 28%; bottom: -140px;
       background: rgba(59, 255, 190, 0.28);
       animation-delay: -8s;
+    }
+    .bg-glow4 {
+      width: 360px; height: 360px; right: 18%; bottom: 12%;
+      background: rgba(34, 211, 238, 0.30);
+      animation-delay: -6s;
+      opacity: 0.24;
     }
 
     @keyframes floatGlow {
@@ -119,6 +125,7 @@
       animation: borderElectric 7s linear infinite;
       opacity: 0.9;
     }
+
     @keyframes borderElectric {
       0% { transform: rotate(0deg) scale(1); }
       50% { transform: rotate(180deg) scale(1.01); }
@@ -140,6 +147,7 @@
       z-index: 1;
       overflow: hidden;
     }
+
     .wave-ring {
       position: absolute;
       left: 50%;
@@ -170,6 +178,7 @@
       pointer-events: none;
       overflow: hidden;
     }
+
     .icon-drop {
       position: absolute;
       top: -80px;
@@ -180,6 +189,7 @@
       user-select: none;
       will-change: transform;
     }
+
     @keyframes iconFall {
       0% { transform: translate3d(0,-80px,0) rotate(0deg); }
       100% { transform: translate3d(var(--drift, 0px),110vh,0) rotate(360deg); }
@@ -193,6 +203,7 @@
       opacity: 0.16;
       pointer-events: none;
     }
+
     .rain span {
       position: absolute;
       top: -120px;
@@ -204,6 +215,7 @@
       user-select: none;
       white-space: nowrap;
     }
+
     @keyframes fall {
       from { transform: translateY(-120px); }
       to { transform: translateY(110vh); }
@@ -220,6 +232,7 @@
       z-index: 1;
       pointer-events: none;
     }
+
     @keyframes scan {
       0% { top: -160px; }
       100% { top: 110vh; }
@@ -279,6 +292,7 @@
       position: relative;
       z-index: 1;
     }
+
     .chip {
       display: inline-flex;
       align-items: center;
@@ -292,6 +306,7 @@
       font-weight: 800;
       letter-spacing: 0.4px;
     }
+
     .dot {
       width: 10px;
       height: 10px;
@@ -300,6 +315,7 @@
       box-shadow: 0 0 14px rgba(0,255,136,0.7);
       animation: blink 1.4s infinite;
     }
+
     @keyframes blink {
       0%,100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.45; transform: scale(0.88); }
@@ -315,6 +331,7 @@
       position: relative;
       z-index: 1;
     }
+
     .date-group label {
       display: block;
       font-size: 12px;
@@ -325,6 +342,7 @@
       margin-bottom: 6px;
       text-align: left;
     }
+
     .date-group input {
       width: 100%;
       border-radius: 14px;
@@ -364,6 +382,7 @@
       position: relative;
       z-index: 1;
     }
+
     .subtitle {
       margin: 0 auto 20px;
       max-width: 860px;
@@ -385,6 +404,7 @@
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(59,255,190,0.1);
     }
+
     .deadline-top {
       display: flex;
       justify-content: space-between;
@@ -395,6 +415,7 @@
       color: #d5fff0;
       font-weight: 700;
     }
+
     .deadline-bar {
       width: 100%;
       height: 12px;
@@ -403,6 +424,7 @@
       overflow: hidden;
       border: 1px solid rgba(59,255,190,0.08);
     }
+
     .deadline-fill {
       height: 100%;
       width: 0%;
@@ -422,6 +444,7 @@
       position: relative;
       z-index: 1;
     }
+
     .terminal-top {
       display: flex;
       align-items: center;
@@ -430,10 +453,12 @@
       border-bottom: 1px solid rgba(59,255,190,0.1);
       background: rgba(6, 18, 28, 0.98);
     }
+
     .term-dot { width: 10px; height: 10px; border-radius: 50%; }
     .term-dot.red { background: #ff5f56; }
     .term-dot.yellow { background: #ffbd2e; }
     .term-dot.green { background: #27c93f; }
+
     .terminal-body {
       padding: 14px 16px;
       min-height: 125px;
@@ -469,6 +494,7 @@
       position: relative;
       z-index: 1;
     }
+
     .today {
       border-radius: 24px;
       padding: 28px 20px;
@@ -479,6 +505,7 @@
       overflow: hidden;
       min-height: 100%;
     }
+
     .today::after {
       content: "";
       position: absolute;
@@ -507,18 +534,21 @@
       font-weight: 900;
       color: #c4b5fd;
     }
+
     .level-box, .notify-box, .command-box, .detail-box {
       padding: 16px;
       border-radius: 18px;
       background: rgba(255,255,255,0.03);
       border: 1px solid rgba(255,255,255,0.06);
     }
+
     .level-name {
       font-size: 28px;
       font-weight: 900;
       color: #efe9ff;
       margin: 6px 0;
     }
+
     .level-sub, .notify-status, .detail-text {
       color: #b7a8e8;
       font-size: 14px;
@@ -532,6 +562,7 @@
       background: rgba(59,255,190,0.08);
       border: 1px solid rgba(59,255,190,0.12);
     }
+
     .combo-title {
       font-size: 12px;
       text-transform: uppercase;
@@ -540,6 +571,7 @@
       font-weight: 800;
       margin-bottom: 6px;
     }
+
     .combo-value {
       font-size: 28px;
       font-weight: 900;
@@ -556,10 +588,12 @@
       margin-bottom: 10px;
       text-align: left;
     }
+
     .command-row {
       display: flex;
       gap: 8px;
     }
+
     .command-row input {
       flex: 1;
       border-radius: 12px;
@@ -578,28 +612,39 @@
       font-weight: 900;
       margin-bottom: 12px;
     }
+
     .today-day {
       font-size: clamp(18px, 2.6vw, 28px);
       color: #c7ffea;
       font-weight: 800;
       margin-bottom: 10px;
     }
+
     .today-files {
-      font-size: clamp(48px, 9vw, 92px);
+      font-size: clamp(42px, 8vw, 86px);
       font-weight: 900;
-      line-height: 1.02;
-      letter-spacing: -2.5px;
+      line-height: 1.08;
+      letter-spacing: -2px;
       color: var(--green);
       text-shadow: 0 0 24px rgba(59,255,190,0.25), 0 0 44px rgba(0,255,136,0.1);
       margin: 12px 0;
       word-break: break-word;
     }
+
     .today-note {
-      color: #b1d8c7;
-      max-width: 720px;
+      color: #d8fff0;
+      max-width: 760px;
       margin: 0 auto;
-      line-height: 1.7;
-      font-size: 15px;
+      line-height: 1.8;
+      font-size: 18px;
+      font-weight: 700;
+      text-shadow: 0 0 12px rgba(59,255,190,0.12);
+    }
+
+    .today-note.secondary-note {
+      margin-top: 10px;
+      color: #ffe4a8;
+      font-size: 16px;
     }
 
     .actions, .notify-actions {
@@ -618,6 +663,7 @@
       position: relative;
       z-index: 1;
     }
+
     .stat {
       padding: 16px;
       border-radius: 18px;
@@ -625,6 +671,7 @@
       border: 1px solid rgba(59,255,190,0.1);
       text-align: center;
     }
+
     .stat-label {
       color: #78c7ab;
       font-size: 12px;
@@ -633,6 +680,7 @@
       margin-bottom: 8px;
       font-weight: 800;
     }
+
     .stat-value {
       font-size: 22px;
       font-weight: 900;
@@ -648,10 +696,12 @@
       position: relative;
       z-index: 1;
     }
+
     .history h3 {
       margin: 0 0 10px;
       font-size: 16px;
     }
+
     .history-list {
       max-height: 160px;
       overflow: auto;
@@ -660,6 +710,7 @@
       line-height: 1.8;
       text-align: left;
     }
+
     .history-item.ok { color: #bbffe4; }
     .history-item.miss { color: #ffc5d0; }
 
@@ -676,15 +727,18 @@
     @media (max-width: 1080px) {
       .stats { grid-template-columns: repeat(4, 1fr); }
     }
+
     @media (max-width: 980px) {
       .main-grid { grid-template-columns: 1fr; }
       .date-bar { grid-template-columns: 1fr; }
     }
+
     @media (max-width: 760px) {
       .card { padding: 22px 16px; }
       .stats { grid-template-columns: 1fr 1fr; }
       .subtitle, .today-note { font-size: 14px; }
     }
+
     @media (max-width: 520px) {
       .stats { grid-template-columns: 1fr; }
       .command-row, .notify-actions, .actions { flex-direction: column; }
@@ -695,6 +749,7 @@
   <div class="bg-glow"></div>
   <div class="bg-glow2"></div>
   <div class="bg-glow3"></div>
+  <div class="bg-glow4"></div>
   <div class="electric-border"></div>
   <canvas class="neural-network" id="neuralCanvas"></canvas>
   <div class="wave-layer">
@@ -718,6 +773,7 @@
           <label for="startDateInput">Ngày bắt đầu chu kỳ</label>
           <input id="startDateInput" type="date" />
         </div>
+
         <button class="btn violet-btn" id="saveStartDateBtn">Lưu ngày</button>
         <button class="btn secondary" id="resetStartDateBtn">Mặc định</button>
         <button class="btn warn-btn" id="smartTomorrowBtn">Bắt đầu ngày mai</button>
@@ -725,7 +781,7 @@
 
       <h1 class="title">Hôm nay dùng file nào</h1>
       <p class="subtitle">
-        Đã thêm icon + số trên tab, đã xoá hiệu ứng chuột, giữ nền VIP PRO cùng toàn bộ logic điểm danh.
+        Tuần đầu mở file dần: 1 → 1+2 → ... → 1+2+3+4+5+6+7. Từ ngày thứ 8 trở đi, ngày nào cũng full 7 file.
       </p>
 
       <div class="deadline-wrap" id="deadlineWrap">
@@ -755,6 +811,7 @@
           <div class="today-day" id="todayDate">Đang tải ngày...</div>
           <div class="today-files" id="todayFiles">...</div>
           <div class="today-note" id="todayNote"></div>
+          <div class="today-note secondary-note" id="seventhHitNote"></div>
 
           <div class="actions">
             <button class="btn primary" id="checkInBtn">✔ Đã điểm danh hôm nay</button>
@@ -799,7 +856,7 @@
       </div>
 
       <div class="stats">
-        <div class="stat"><div class="stat-label">Ngày trong chu kỳ</div><div class="stat-value" id="cycleDay">-</div></div>
+        <div class="stat"><div class="stat-label">Ngày thật</div><div class="stat-value" id="cycleDay">-</div></div>
         <div class="stat"><div class="stat-label">Ngày bắt đầu</div><div class="stat-value" id="startDate">-</div></div>
         <div class="stat"><div class="stat-label">Tổng file hôm nay</div><div class="stat-value" id="fileCount">-</div></div>
         <div class="stat"><div class="stat-label">🔥 Streak</div><div class="stat-value" id="streakCount">0</div></div>
@@ -814,13 +871,13 @@
         <div class="history-list" id="historyList"></div>
       </div>
 
-      <div class="hint">Nếu chưa điểm danh, tab sẽ hiện icon + số để bạn chú ý.</div>
+      <div class="hint">Đã xoá ngày muốn xem. Hệ thống luôn tính theo ngày hiện tại thật.</div>
     </section>
   </main>
 
   <script>
     const FILES = ['1', '2', '3', '4', '5', '6', '7'];
-    const STORAGE_KEY = 'attendance_hacker_state_v7';
+    const STORAGE_KEY = 'attendance_hacker_state_v10';
     let currentView = null;
     let audioCtx = null;
     let titleInterval = null;
@@ -1030,8 +1087,35 @@
       return addDays(today, 1);
     }
 
+    function getFilesForAbsoluteDay(absoluteDay) {
+      if (absoluteDay <= 0) return [];
+      if (absoluteDay <= 7) return FILES.slice(0, absoluteDay);
+      return [...FILES];
+    }
+
+    function countFileHitsUntilDay(totalDays) {
+      const hits = {};
+      FILES.forEach(file => hits[file] = 0);
+
+      for (let day = 1; day <= totalDays; day++) {
+        const filesToday = getFilesForAbsoluteDay(day);
+        for (const file of filesToday) {
+          hits[file] += 1;
+        }
+      }
+      return hits;
+    }
+
+    function get7thHitInfo(totalDays) {
+      const hits = countFileHitsUntilDay(totalDays);
+      const exactFiles = FILES.filter(file => hits[file] === 7);
+      const doneFiles = FILES.filter(file => hits[file] >= 7);
+      return { hits, exactFiles, doneFiles };
+    }
+
     function registerMissIfNeeded(state, today, effectiveStartDate) {
       if (!state.lastCheckinDate) return;
+
       const lastCheck = fromIsoDate(state.lastCheckinDate);
       const daysGap = diffDays(today, lastCheck);
       if (daysGap <= 1) return;
@@ -1051,45 +1135,86 @@
     function deriveView(state) {
       const today = startOfDay(new Date());
       const startDate = smartDefaultStartDate(state, today);
+
       registerMissIfNeeded(state, today, startDate);
 
       const checkedInToday = state.lastCheckinDate === isoDate(today);
-      let cycleDay = 0;
-      let files = ['1'];
-      let note = 'Hôm nay chưa vào chu kỳ. Hãy chọn ngày bắt đầu hoặc để mặc định là ngày mai.';
-      let warning = '';
 
-      if (diffDays(today, startDate) >= 0) {
-        cycleDay = (diffDays(today, startDate) % 7) + 1;
-        files = FILES.slice(0, cycleDay);
-        note = checkedInToday
-          ? `Hôm nay bạn đã điểm danh ${files.length} file: ${files.join(', ')}.`
-          : `Hôm nay bạn cần dùng ${files.length} file theo thứ tự: ${files.join(', ')}.`;
-        if (!checkedInToday) warning = '⚠️ Hôm nay chưa điểm danh. Bạn đang có nguy cơ mất streak và combo.';
+      let absoluteDay = 0;
+      let files = [];
+      let note = 'Chưa tới ngày bắt đầu chu kỳ.';
+      let warning = '';
+      let seventhHitText = 'Chưa có file nào chạm lần thứ 7.';
+      let seventhHitFiles = [];
+      let fileHitCounts = null;
+
+      const passedDays = diffDays(today, startDate);
+
+      if (passedDays >= 0) {
+        absoluteDay = passedDays + 1;
+        files = getFilesForAbsoluteDay(absoluteDay);
+
+        note = absoluteDay <= 7
+          ? `Ngày thứ ${absoluteDay} • Hôm nay điểm danh: ${files.join(' + ')}`
+          : `Ngày thứ ${absoluteDay} • Hôm nay điểm danh full: ${files.join(' + ')}`;
+
+        const hitInfo = get7thHitInfo(absoluteDay);
+        seventhHitFiles = hitInfo.exactFiles;
+        fileHitCounts = hitInfo.hits;
+
+        if (seventhHitFiles.length) {
+          seventhHitText = `Hôm nay file chạm lần thứ 7: ${seventhHitFiles.join(', ')}`;
+        } else {
+          const doneFiles = hitInfo.doneFiles;
+          seventhHitText = doneFiles.length
+            ? `Đã đủ 7 lần: ${doneFiles.join(', ')}`
+            : 'Chưa có file nào chạm lần thứ 7.';
+        }
+
+        if (checkedInToday) {
+          note += ' • Đã điểm danh';
+        } else {
+          note += ' • Chưa điểm danh';
+          warning = '⚠️ Hôm nay chưa điểm danh. Bạn đang có nguy cơ mất streak và combo.';
+        }
       }
 
       const [levelName, levelSub, themeClass] = getLevel(state.streak);
-      return { today, startDate, cycleDay, files, note, checkedInToday, warning, state, levelName, levelSub, themeClass };
+
+      return {
+        today,
+        startDate,
+        absoluteDay,
+        files,
+        note,
+        checkedInToday,
+        warning,
+        state,
+        levelName,
+        levelSub,
+        themeClass,
+        seventhHitText,
+        seventhHitFiles,
+        fileHitCounts
+      };
     }
 
-    function updateTitle(files, cycleDay, checkedInToday) {
+    function updateTitle(files, checkedInToday) {
       if (titleInterval) clearInterval(titleInterval);
 
-      if (cycleDay === 0) {
-        document.title = '⏳ 1';
+      if (!files.length) {
+        document.title = '⏳ Chưa bắt đầu';
         return;
       }
 
       if (checkedInToday) {
-        document.title = `✔️ ${files.length}`;
+        document.title = `✔️ ${files.join('+')}`;
         return;
       }
 
       let toggle = false;
       titleInterval = setInterval(() => {
-        document.title = toggle
-          ? `⚠️ ${files.length}`
-          : `❗ ${files.length}`;
+        document.title = toggle ? `⚠️ ${files.join('+')}` : `❗ ${files.join('+')}`;
         toggle = !toggle;
       }, 900);
     }
@@ -1100,7 +1225,9 @@
         list.innerHTML = '<div>Chưa có lịch sử.</div>';
         return;
       }
-      list.innerHTML = state.history.map(item => `<div class="history-item ${item.type === 'miss' ? 'miss' : 'ok'}">[${item.at}] ${item.text}</div>`).join('');
+      list.innerHTML = state.history.map(item =>
+        `<div class="history-item ${item.type === 'miss' ? 'miss' : 'ok'}">[${item.at}] ${item.text}</div>`
+      ).join('');
     }
 
     function averageTimeText(hours) {
@@ -1125,8 +1252,9 @@
         '> Booting attendance core...',
         `> Date: ${formatShort(view.today)}`,
         `> Start date: ${formatShort(view.startDate)}`,
-        `> Cycle: ${view.cycleDay === 0 ? 'waiting' : 'day ' + view.cycleDay}`,
-        `> Files today: ${view.files.join(' + ')}`,
+        `> Absolute day: ${view.absoluteDay || 'waiting'}`,
+        `> Files today: ${view.files.length ? view.files.join(' + ') : 'waiting'}`,
+        `> 7th hit today: ${view.seventhHitFiles.length ? view.seventhHitFiles.join(', ') : 'none'}`,
         `> Streak: ${view.state.streak}`,
         `> Combo: x${view.state.combo || 0}`,
         `> Level: ${view.levelName}`,
@@ -1156,7 +1284,7 @@
 
     function render(view) {
       currentView = view;
-      const { today, startDate, cycleDay, files, note, checkedInToday, warning, state, levelName, levelSub, themeClass } = view;
+      const { today, startDate, files, note, checkedInToday, warning, state, levelName, levelSub, themeClass } = view;
 
       applyTheme(themeClass);
 
@@ -1164,15 +1292,17 @@
       document.getElementById('startDate').textContent = formatShort(startDate);
       document.getElementById('startText').textContent = `Bắt đầu: ${formatShort(startDate)}`;
       document.getElementById('startDateInput').value = isoDate(startDate);
-      document.getElementById('fileCount').textContent = files.length;
-      document.getElementById('cycleDay').textContent = cycleDay === 0 ? 'Chưa bắt đầu' : `Ngày ${cycleDay}`;
+
+      document.getElementById('fileCount').textContent = files.length || '-';
+      document.getElementById('cycleDay').textContent = view.absoluteDay === 0 ? 'Chưa bắt đầu' : `Ngày ${view.absoluteDay}`;
       document.getElementById('streakCount').textContent = state.streak;
       document.getElementById('comboStat').textContent = `x${state.combo || 0}`;
       document.getElementById('comboValue').textContent = `x${state.combo || 0}`;
       document.getElementById('levelName').textContent = levelName;
       document.getElementById('levelSub').textContent = levelSub;
       document.getElementById('todayNote').textContent = note;
-      document.getElementById('todayFiles').textContent = files.join(' + ');
+      document.getElementById('seventhHitNote').textContent = view.seventhHitText;
+      document.getElementById('todayFiles').textContent = files.length ? files.join(' + ') : '...';
 
       const totalAttempts = state.totalCheckins + state.totalMisses;
       const rate = totalAttempts ? Math.round((state.totalCheckins / totalAttempts) * 100) : 0;
@@ -1189,15 +1319,15 @@
       }
 
       const btn = document.getElementById('checkInBtn');
-      btn.disabled = checkedInToday;
+      btn.disabled = checkedInToday || !files.length;
       btn.textContent = checkedInToday ? '✔ Hôm nay đã điểm danh' : '✔ Đã điểm danh hôm nay';
-      btn.style.opacity = checkedInToday ? '0.6' : '1';
+      btn.style.opacity = (checkedInToday || !files.length) ? '0.6' : '1';
 
       renderHistory(state);
       renderDetailStats(state);
       runTerminal(view);
       updateNotifyStatus();
-      updateTitle(files, cycleDay, checkedInToday);
+      updateTitle(files, checkedInToday);
       updateReminderMode(view);
     }
 
@@ -1363,11 +1493,22 @@
 
       appendCommand(cmd);
 
-      if (cmd === 'status') appendCommand(currentView ? `files=${currentView.files.join('+')} streak=${currentView.state.streak} combo=x${currentView.state.combo || 0}` : 'status unavailable');
-      else if (cmd === 'checkin') { markCheckin(); appendCommand('checkin executed'); }
-      else if (cmd === 'reset') { resetAll(); appendCommand('reset executed'); }
-      else if (cmd === 'notify') { enableNotifications(); appendCommand('notification request sent'); }
-      else if (cmd === 'history') {
+      if (cmd === 'status') {
+        appendCommand(
+          currentView
+            ? `day=${currentView.absoluteDay} files=${currentView.files.join('+')} hit7=${currentView.seventhHitFiles.join(',') || 'none'} streak=${currentView.state.streak}`
+            : 'status unavailable'
+        );
+      } else if (cmd === 'checkin') {
+        markCheckin();
+        appendCommand('checkin executed');
+      } else if (cmd === 'reset') {
+        resetAll();
+        appendCommand('reset executed');
+      } else if (cmd === 'notify') {
+        enableNotifications();
+        appendCommand('notification request sent');
+      } else if (cmd === 'history') {
         const state = loadState();
         appendCommand((state.history || []).slice(0, 3).map(x => x.text).join(' | ') || 'no history');
       } else {
@@ -1383,7 +1524,7 @@
       document.getElementById('mainCard').classList.remove('danger-pulse');
       lastEscalationLevel = -1;
 
-      if (view.checkedInToday || view.cycleDay === 0) return;
+      if (view.checkedInToday || !view.files.length) return;
 
       reminderInterval = setInterval(() => {
         const now = new Date();
