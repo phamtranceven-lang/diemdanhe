@@ -815,27 +815,27 @@
 
           <div class="actions">
             <button class="btn primary" id="checkInBtn">✔ Đã điểm danh hôm nay</button>
-            <button class="btn danger-btn" id="resetBtn">💀 Reset streak</button>
+            <button class="btn danger-btn" id="resetBtn">💀 Reset chuỗi</button>
           </div>
         </div>
 
         <div class="side-panel">
           <div class="level-box">
-            <div class="section-head">Level hệ thống</div>
-            <div class="level-name" id="levelName">ROOKIE</div>
-            <div class="level-sub" id="levelSub">Giữ streak để tăng cấp.</div>
+            <div class="section-head">Cấp độ hệ thống</div>
+            <div class="level-name" id="levelName">TÂN BINH</div>
+            <div class="level-sub" id="levelSub">Giữ chuỗi để tăng cấp.</div>
             <div class="combo-box">
-              <div class="combo-title">Combo system</div>
+              <div class="combo-title">Combo hệ thống</div>
               <div class="combo-value" id="comboValue">x0</div>
             </div>
           </div>
 
           <div class="notify-box">
-            <div class="section-head">Thông báo máy qua web</div>
+            <div class="section-head">Thông báo trên trình duyệt</div>
             <div class="notify-status" id="notifyStatus">Chưa bật thông báo.</div>
             <div class="notify-actions">
               <button class="btn violet-btn" id="enableNotifyBtn">🔔 Bật thông báo</button>
-              <button class="btn secondary" id="testNotifyBtn">🧪 Test thông báo</button>
+              <button class="btn secondary" id="testNotifyBtn">🧪 Thử thông báo</button>
             </div>
           </div>
 
@@ -845,25 +845,25 @@
           </div>
 
           <div class="command-box">
-            <div class="section-head">Command line</div>
-            <div class="command-log" id="commandLog">Gõ: status | checkin | reset | notify | history</div>
+            <div class="section-head">Dòng lệnh</div>
+            <div class="command-log" id="commandLog">Gõ: trangthai | diemdanh | reset | thongbao | lichsu</div>
             <div class="command-row">
               <input id="commandInput" placeholder="nhập lệnh..." />
-              <button class="btn secondary" id="runCommandBtn">Run</button>
+              <button class="btn secondary" id="runCommandBtn">Chạy</button>
             </div>
           </div>
         </div>
       </div>
 
       <div class="stats">
-        <div class="stat"><div class="stat-label">Ngày thật</div><div class="stat-value" id="cycleDay">-</div></div>
+        <div class="stat"><div class="stat-label">Ngày thực</div><div class="stat-value" id="cycleDay">-</div></div>
         <div class="stat"><div class="stat-label">Ngày bắt đầu</div><div class="stat-value" id="startDate">-</div></div>
         <div class="stat"><div class="stat-label">Tổng file hôm nay</div><div class="stat-value" id="fileCount">-</div></div>
-        <div class="stat"><div class="stat-label">🔥 Streak</div><div class="stat-value" id="streakCount">0</div></div>
+        <div class="stat"><div class="stat-label">🔥 Chuỗi</div><div class="stat-value" id="streakCount">0</div></div>
         <div class="stat"><div class="stat-label">⚡ Combo</div><div class="stat-value" id="comboStat">0</div></div>
         <div class="stat"><div class="stat-label">📊 Thành công</div><div class="stat-value" id="successRate">0%</div></div>
-        <div class="stat"><div class="stat-label">🕒 Avg check</div><div class="stat-value" id="avgCheckinTime">--:--</div></div>
-        <div class="stat"><div class="stat-label">⏳ Qua ngày sau</div><div class="stat-value" id="countdown">--:--:--</div></div>
+        <div class="stat"><div class="stat-label">🕒 Giờ TB</div><div class="stat-value" id="avgCheckinTime">--:--</div></div>
+        <div class="stat"><div class="stat-label">⏳ Sang ngày mới</div><div class="stat-value" id="countdown">--:--:--</div></div>
       </div>
 
       <div class="history">
@@ -871,7 +871,7 @@
         <div class="history-list" id="historyList"></div>
       </div>
 
-      <div class="hint">Đã xoá ngày muốn xem. Hệ thống luôn tính theo ngày hiện tại thật.</div>
+      <div class="hint">Hệ thống luôn tính theo ngày hiện tại thật.</div>
     </section>
   </main>
 
@@ -1076,10 +1076,10 @@
     }
 
     function getLevel(streak) {
-      if (streak >= 15) return ['GOD MODE', 'Chuỗi cực mạnh. Hệ thống glow full power.', 'god-theme'];
-      if (streak >= 8) return ['PRO', 'Streak cao, giữ nhịp cực tốt.', 'pro-theme'];
-      if (streak >= 4) return ['SKILLED', 'Bạn đang vào form.', 'skilled-theme'];
-      return ['ROOKIE', 'Giữ streak để tăng cấp.', 'rookie-theme'];
+      if (streak >= 15) return ['THẦN CẤP', 'Chuỗi cực mạnh. Hệ thống phát sáng tối đa.', 'god-theme'];
+      if (streak >= 8) return ['CHUYÊN NGHIỆP', 'Chuỗi cao, bạn đang giữ nhịp rất tốt.', 'pro-theme'];
+      if (streak >= 4) return ['THÀNH THẠO', 'Bạn đang vào guồng.', 'skilled-theme'];
+      return ['TÂN BINH', 'Giữ chuỗi để tăng cấp.', 'rookie-theme'];
     }
 
     function smartDefaultStartDate(state, today) {
@@ -1113,6 +1113,18 @@
       return { hits, exactFiles, doneFiles };
     }
 
+    function getTodaySeventhFile(totalDays) {
+      const hitsBeforeToday = countFileHitsUntilDay(Math.max(0, totalDays - 1));
+      const filesToday = getFilesForAbsoluteDay(totalDays);
+
+      for (const file of filesToday) {
+        const prevHits = hitsBeforeToday[file] || 0;
+        if (prevHits === 6) return file;
+      }
+
+      return null;
+    }
+
     function registerMissIfNeeded(state, today, effectiveStartDate) {
       if (!state.lastCheckinDate) return;
 
@@ -1128,7 +1140,7 @@
       state.streak = 0;
       state.missedWeekdays = state.missedWeekdays || {};
       state.missedWeekdays[weekday] = (state.missedWeekdays[weekday] || 0) + 1;
-      pushHistory(state, 'miss', `Miss ngày ${formatShort(missDay)}. Streak và combo đã reset.`);
+      pushHistory(state, 'miss', `Bỏ lỡ ngày ${formatShort(missDay)}. Chuỗi và combo đã bị reset.`);
       saveState(state);
     }
 
@@ -1144,8 +1156,9 @@
       let files = [];
       let note = 'Chưa tới ngày bắt đầu chu kỳ.';
       let warning = '';
-      let seventhHitText = 'Chưa có file nào chạm lần thứ 7.';
+      let seventhHitText = 'Chưa có file nào chạm mốc lần thứ 7.';
       let seventhHitFiles = [];
+      let todaySeventhFile = null;
       let fileHitCounts = null;
 
       const passedDays = diffDays(today, startDate);
@@ -1154,28 +1167,26 @@
         absoluteDay = passedDays + 1;
         files = getFilesForAbsoluteDay(absoluteDay);
 
-        note = absoluteDay <= 7
-          ? `Ngày thứ ${absoluteDay} • Hôm nay điểm danh: ${files.join(' + ')}`
-          : `Ngày thứ ${absoluteDay} • Hôm nay điểm danh full: ${files.join(' + ')}`;
-
         const hitInfo = get7thHitInfo(absoluteDay);
         seventhHitFiles = hitInfo.exactFiles;
+        todaySeventhFile = getTodaySeventhFile(absoluteDay);
         fileHitCounts = hitInfo.hits;
 
-        if (seventhHitFiles.length) {
-          seventhHitText = `Hôm nay file chạm lần thứ 7: ${seventhHitFiles.join(', ')}`;
+        if (absoluteDay <= 7) {
+          note = `Ngày thứ ${absoluteDay} • Cần điểm danh file: ${files.join(' + ')}`;
+          seventhHitText = 'Chưa tới giai đoạn hiện file thứ 7 hôm nay.';
         } else {
-          const doneFiles = hitInfo.doneFiles;
-          seventhHitText = doneFiles.length
-            ? `Đã đủ 7 lần: ${doneFiles.join(', ')}`
-            : 'Chưa có file nào chạm lần thứ 7.';
+          note = `Ngày thứ ${absoluteDay} • Hôm nay đã full 7 file`;
+          seventhHitText = todaySeventhFile
+            ? `File thứ 7 hôm nay: ${todaySeventhFile}`
+            : 'Hôm nay không có file nào vừa chạm mốc lần thứ 7.';
         }
 
         if (checkedInToday) {
           note += ' • Đã điểm danh';
         } else {
           note += ' • Chưa điểm danh';
-          warning = '⚠️ Hôm nay chưa điểm danh. Bạn đang có nguy cơ mất streak và combo.';
+          warning = '⚠️ Hôm nay bạn chưa điểm danh. Bạn đang có nguy cơ mất chuỗi và combo.';
         }
       }
 
@@ -1195,6 +1206,7 @@
         themeClass,
         seventhHitText,
         seventhHitFiles,
+        todaySeventhFile,
         fileHitCounts
       };
     }
@@ -1208,13 +1220,13 @@
       }
 
       if (checkedInToday) {
-        document.title = `✔️ ${files.join('+')}`;
+        document.title = `✔️ Đã điểm danh ${files.join('+')}`;
         return;
       }
 
       let toggle = false;
       titleInterval = setInterval(() => {
-        document.title = toggle ? `⚠️ ${files.join('+')}` : `❗ ${files.join('+')}`;
+        document.title = toggle ? `⚠️ Chưa điểm danh ${files.join('+')}` : `❗ Nhớ điểm danh ${files.join('+')}`;
         toggle = !toggle;
       }, 900);
     }
@@ -1249,17 +1261,17 @@
     function runTerminal(view) {
       const el = document.getElementById('terminalText');
       const lines = [
-        '> Booting attendance core...',
-        `> Date: ${formatShort(view.today)}`,
-        `> Start date: ${formatShort(view.startDate)}`,
-        `> Absolute day: ${view.absoluteDay || 'waiting'}`,
-        `> Files today: ${view.files.length ? view.files.join(' + ') : 'waiting'}`,
-        `> 7th hit today: ${view.seventhHitFiles.length ? view.seventhHitFiles.join(', ') : 'none'}`,
-        `> Streak: ${view.state.streak}`,
+        '> Khởi động lõi điểm danh...',
+        `> Ngày hiện tại: ${formatShort(view.today)}`,
+        `> Ngày bắt đầu: ${formatShort(view.startDate)}`,
+        `> Ngày trong chu kỳ: ${view.absoluteDay || 'đang chờ'}`,
+        `> File hôm nay: ${view.files.length ? view.files.join(' + ') : 'đang chờ'}`,
+        `> File thứ 7 hôm nay: ${view.todaySeventhFile || 'không có'}`,
+        `> Chuỗi: ${view.state.streak}`,
         `> Combo: x${view.state.combo || 0}`,
-        `> Level: ${view.levelName}`,
-        `> Status: ${view.checkedInToday ? 'checked in' : 'pending'}`,
-        `> Avg checkin: ${averageTimeText(view.state.checkinHours || [])}`
+        `> Cấp độ: ${view.levelName}`,
+        `> Trạng thái: ${view.checkedInToday ? 'đã điểm danh' : 'chờ điểm danh'}`,
+        `> Giờ điểm danh TB: ${averageTimeText(view.state.checkinHours || [])}`
       ];
       el.textContent = lines.join('\n');
     }
@@ -1271,9 +1283,9 @@
       const onTimeRate = state.totalCheckins ? Math.round(((state.earlyCheckins || 0) / state.totalCheckins) * 100) : 0;
 
       document.getElementById('detailStatsText').innerHTML =
-        `Giờ check-in trung bình: <b>${avgTime}</b><br>` +
+        `Giờ điểm danh trung bình: <b>${avgTime}</b><br>` +
         `Tỉ lệ đúng giờ trước 12:00: <b>${onTimeRate}%</b><br>` +
-        `Ngày hay miss nhất: <b>${mostMissedWeekdayText(state)}</b><br>` +
+        `Ngày hay bỏ lỡ nhất: <b>${mostMissedWeekdayText(state)}</b><br>` +
         `Tỉ lệ thành công tổng: <b>${successRate}%</b>`;
     }
 
@@ -1361,16 +1373,16 @@
         state.combo = Math.max(1, state.combo || 1);
       }
 
-      pushHistory(state, 'ok', `Đã điểm danh hôm nay thành công. Combo hiện tại x${state.combo}.`);
+      pushHistory(state, 'ok', `Điểm danh hôm nay thành công. Combo hiện tại x${state.combo}.`);
       saveState(state);
 
       beep('ok');
-      maybeNotify('Điểm danh thành công', `Streak: ${state.streak} | Combo: x${state.combo}`);
+      maybeNotify('Điểm danh thành công', `Chuỗi: ${state.streak} | Combo: x${state.combo}`);
       render(deriveView(state));
     }
 
     function resetAll() {
-      const ok = confirm('Reset streak và dữ liệu điểm danh?');
+      const ok = confirm('Bạn có muốn reset chuỗi và dữ liệu điểm danh không?');
       if (!ok) return;
 
       const state = {
@@ -1380,7 +1392,7 @@
         totalMisses: 0,
         lastCheckinDate: null,
         customStartDate: null,
-        history: [{ type: 'miss', text: 'Reset thủ công toàn bộ streak và combo.', at: new Date().toLocaleString('vi-VN') }],
+        history: [{ type: 'miss', text: 'Đã reset thủ công toàn bộ chuỗi và combo.', at: new Date().toLocaleString('vi-VN') }],
         checkinHours: [],
         earlyCheckins: 0,
         missedWeekdays: {}
@@ -1396,7 +1408,7 @@
       if (!input) return;
       const state = loadState();
       state.customStartDate = input;
-      pushHistory(state, 'ok', `Đổi ngày bắt đầu chu kỳ thành ${input}.`);
+      pushHistory(state, 'ok', `Đã đổi ngày bắt đầu chu kỳ thành ${input}.`);
       saveState(state);
       beep('click');
       render(deriveView(state));
@@ -1405,7 +1417,7 @@
     function resetCustomStartDate() {
       const state = loadState();
       state.customStartDate = null;
-      pushHistory(state, 'ok', 'Đã trả ngày bắt đầu về mặc định (ngày mai).');
+      pushHistory(state, 'ok', 'Đã đưa ngày bắt đầu về mặc định là ngày mai.');
       saveState(state);
       beep('click');
       render(deriveView(state));
@@ -1448,25 +1460,41 @@
       else fill.style.background = 'linear-gradient(90deg, #3bffbe, #22d3ee)';
 
       const hoursLeft = Math.floor(diffToTomorrow / 3600000);
-      text.textContent = `Tiến độ ngày • Còn ${hoursLeft}h trước khi qua ngày`;
+      text.textContent = `Tiến độ ngày • Còn ${hoursLeft} giờ trước khi sang ngày mới`;
     }
 
     function updateNotifyStatus() {
       const el = document.getElementById('notifyStatus');
+
       if (!('Notification' in window)) {
         el.textContent = 'Trình duyệt này không hỗ trợ thông báo.';
         return;
       }
-      if (Notification.permission === 'granted') el.textContent = 'Đã bật thông báo.';
-      else if (Notification.permission === 'denied') el.textContent = 'Bạn đã chặn thông báo.';
-      else el.textContent = 'Chưa bật thông báo.';
+
+      const permissionText =
+        Notification.permission === 'granted'
+          ? 'Đã bật thông báo.'
+          : Notification.permission === 'denied'
+          ? 'Bạn đã chặn thông báo.'
+          : 'Chưa bật thông báo.';
+
+      if (!currentView || !currentView.absoluteDay) {
+        el.innerHTML = `${permissionText}<br>Chưa tới ngày bắt đầu chu kỳ.`;
+        return;
+      }
+
+      if (currentView.absoluteDay <= 7) {
+        el.innerHTML = `${permissionText}<br>Cần điểm danh file hôm nay: <b>${currentView.files.join(' + ')}</b>`;
+      } else {
+        el.innerHTML = `${permissionText}<br>File thứ 7 hôm nay: <b>${currentView.todaySeventhFile || 'Không có'}</b>`;
+      }
     }
 
     async function enableNotifications() {
       if (!('Notification' in window)) return alert('Trình duyệt không hỗ trợ thông báo.');
       const p = await Notification.requestPermission();
       updateNotifyStatus();
-      if (p === 'granted') maybeNotify('Thông báo đã bật', 'Web có thể báo khi tab đang mở.');
+      if (p === 'granted') maybeNotify('Đã bật thông báo', 'Trang web có thể nhắc bạn khi tab đang mở.');
     }
 
     function maybeNotify(title, body) {
@@ -1477,7 +1505,16 @@
 
     function testNotification() {
       beep('click');
-      maybeNotify('Test notification', 'Đây là thông báo test từ web của bạn.');
+      if (!currentView || !currentView.absoluteDay) {
+        maybeNotify('Thông báo thử', 'Chưa tới ngày bắt đầu chu kỳ.');
+        return;
+      }
+
+      if (currentView.absoluteDay <= 7) {
+        maybeNotify('Nhắc điểm danh', `Hôm nay cần điểm danh file: ${currentView.files.join(' + ')}`);
+      } else {
+        maybeNotify('Thông tin hôm nay', `File thứ 7 hôm nay: ${currentView.todaySeventhFile || 'Không có'}`);
+      }
     }
 
     function appendCommand(text) {
@@ -1493,26 +1530,26 @@
 
       appendCommand(cmd);
 
-      if (cmd === 'status') {
+      if (cmd === 'trangthai' || cmd === 'status') {
         appendCommand(
           currentView
-            ? `day=${currentView.absoluteDay} files=${currentView.files.join('+')} hit7=${currentView.seventhHitFiles.join(',') || 'none'} streak=${currentView.state.streak}`
-            : 'status unavailable'
+            ? `ngay=${currentView.absoluteDay} file=${currentView.files.join('+')} file7homnay=${currentView.todaySeventhFile || 'không có'} chuoi=${currentView.state.streak}`
+            : 'không có trạng thái'
         );
-      } else if (cmd === 'checkin') {
+      } else if (cmd === 'diemdanh' || cmd === 'checkin') {
         markCheckin();
-        appendCommand('checkin executed');
+        appendCommand('đã chạy lệnh điểm danh');
       } else if (cmd === 'reset') {
         resetAll();
-        appendCommand('reset executed');
-      } else if (cmd === 'notify') {
+        appendCommand('đã chạy lệnh reset');
+      } else if (cmd === 'thongbao' || cmd === 'notify') {
         enableNotifications();
-        appendCommand('notification request sent');
-      } else if (cmd === 'history') {
+        appendCommand('đã gửi yêu cầu bật thông báo');
+      } else if (cmd === 'lichsu' || cmd === 'history') {
         const state = loadState();
-        appendCommand((state.history || []).slice(0, 3).map(x => x.text).join(' | ') || 'no history');
+        appendCommand((state.history || []).slice(0, 3).map(x => x.text).join(' | ') || 'chưa có lịch sử');
       } else {
-        appendCommand('unknown command');
+        appendCommand('lệnh không hợp lệ');
         beep('error');
       }
 
@@ -1537,12 +1574,24 @@
         if (level !== lastEscalationLevel) {
           lastEscalationLevel = level;
           if (level === 1) {
-            maybeNotify('Nhắc điểm danh', 'Bạn vẫn chưa check-in hôm nay.');
+            if (view.absoluteDay <= 7) {
+              maybeNotify('Nhắc điểm danh', `Hôm nay cần điểm danh file: ${view.files.join(' + ')}`);
+            } else {
+              maybeNotify('Nhắc điểm danh', 'Hôm nay nhớ điểm danh đủ 7 file.');
+            }
           } else if (level === 2) {
-            maybeNotify('Cảnh báo mạnh hơn', 'Ngày sắp hết. Check-in ngay.');
+            if (view.absoluteDay <= 7) {
+              maybeNotify('Cảnh báo mạnh hơn', `Ngày sắp hết. Cần điểm danh file: ${view.files.join(' + ')}`);
+            } else {
+              maybeNotify('Cảnh báo mạnh hơn', 'Ngày sắp hết. Hãy điểm danh đủ 7 file ngay.');
+            }
             beep('warn');
           } else if (level === 3) {
-            maybeNotify('CỰC GẤP', 'Còn rất ít thời gian trước khi qua ngày.');
+            if (view.absoluteDay <= 7) {
+              maybeNotify('CỰC GẤP', `Sắp sang ngày mới. Cần điểm danh file: ${view.files.join(' + ')}`);
+            } else {
+              maybeNotify('CỰC GẤP', 'Sắp sang ngày mới. Hãy điểm danh đủ 7 file ngay.');
+            }
             beep('alert');
             document.getElementById('mainCard').classList.add('danger-pulse');
           }
