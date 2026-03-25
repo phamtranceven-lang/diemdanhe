@@ -7,18 +7,19 @@
   <title>Hôm nay dùng file nào</title>
   <style>
     * { box-sizing: border-box; }
+
     :root {
       --bg0: #02050a;
       --bg1: #04111d;
       --bg2: #08131f;
-      --panel: rgba(5, 15, 24, 0.78);
+      --panel: rgba(5, 15, 24, 0.96);
       --line: rgba(59, 246, 190, 0.14);
       --green: #3bffbe;
       --green2: #00ff88;
       --cyan: #22d3ee;
       --text: #eafff8;
       --muted: #8ac7b0;
-      --shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
       --danger: #ff5470;
       --warn: #ffd166;
       --violet: #8b5cf6;
@@ -33,242 +34,6 @@
       overflow-x: hidden;
     }
 
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      background:
-        repeating-linear-gradient(0deg, rgba(0,255,136,0.04) 0px, rgba(0,255,136,0.04) 1px, transparent 1px, transparent 42px),
-        repeating-linear-gradient(90deg, rgba(59,255,190,0.035) 0px, rgba(59,255,190,0.035) 1px, transparent 1px, transparent 42px);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    body::after {
-      content: "";
-      position: fixed;
-      inset: -20%;
-      background:
-        radial-gradient(circle at 15% 20%, rgba(34,211,238,0.18), transparent 20%),
-        radial-gradient(circle at 85% 18%, rgba(139,92,246,0.18), transparent 22%),
-        radial-gradient(circle at 50% 85%, rgba(59,255,190,0.12), transparent 24%),
-        conic-gradient(from 0deg at 50% 50%, rgba(34,211,238,0.06), rgba(59,255,190,0.02), rgba(139,92,246,0.06), rgba(34,211,238,0.06));
-      filter: blur(42px) saturate(135%);
-      animation: auroraSpin 18s linear infinite;
-      opacity: 0.9;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    @keyframes auroraSpin {
-      from { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(180deg) scale(1.06); }
-      to { transform: rotate(360deg) scale(1); }
-    }
-
-    .bg-glow, .bg-glow2, .bg-glow3, .bg-glow4 {
-      position: fixed;
-      border-radius: 50%;
-      filter: blur(90px);
-      opacity: 0.28;
-      pointer-events: none;
-      z-index: 0;
-      animation: floatGlow 12s ease-in-out infinite;
-    }
-    .bg-glow {
-      width: 380px; height: 380px; left: -60px; top: 12%;
-      background: rgba(34, 211, 238, 0.42);
-    }
-    .bg-glow2 {
-      width: 460px; height: 460px; right: -120px; top: 8%;
-      background: rgba(139, 92, 246, 0.34);
-      animation-delay: -4s;
-    }
-    .bg-glow3 {
-      width: 420px; height: 420px; left: 28%; bottom: -140px;
-      background: rgba(59, 255, 190, 0.28);
-      animation-delay: -8s;
-    }
-    .bg-glow4 {
-      width: 360px; height: 360px; right: 18%; bottom: 12%;
-      background: rgba(34, 211, 238, 0.30);
-      animation-delay: -6s;
-      opacity: 0.24;
-    }
-
-    @keyframes floatGlow {
-      0%, 100% { transform: translate3d(0,0,0) scale(1); }
-      50% { transform: translate3d(20px,-26px,0) scale(1.08); }
-    }
-
-    .electric-border {
-      position: fixed;
-      inset: 10px;
-      border-radius: 28px;
-      pointer-events: none;
-      z-index: 1;
-      border: 1px solid rgba(59,255,190,0.10);
-      box-shadow:
-        inset 0 0 30px rgba(34,211,238,0.04),
-        0 0 24px rgba(59,255,190,0.06);
-    }
-
-    .electric-border::before {
-      content: "";
-      position: absolute;
-      inset: -2px;
-      border-radius: 30px;
-      padding: 2px;
-      background: linear-gradient(
-        90deg,
-        rgba(59,255,190,0) 0%,
-        rgba(59,255,190,0.95) 18%,
-        rgba(34,211,238,0.95) 38%,
-        rgba(139,92,246,0.95) 58%,
-        rgba(59,255,190,0.95) 78%,
-        rgba(59,255,190,0) 100%
-      );
-      background-size: 300% 100%;
-      animation: borderRun 4.5s linear infinite;
-      filter: drop-shadow(0 0 10px rgba(59,255,190,0.28))
-              drop-shadow(0 0 18px rgba(34,211,238,0.18));
-      -webkit-mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-    }
-
-    .electric-border::after {
-      content: "";
-      position: absolute;
-      inset: -1px;
-      border-radius: 29px;
-      background:
-        radial-gradient(circle at 0% 50%, rgba(59,255,190,0.0) 0 8px, rgba(59,255,190,0.85) 10px, rgba(59,255,190,0.0) 16px),
-        radial-gradient(circle at 100% 50%, rgba(34,211,238,0.0) 0 8px, rgba(34,211,238,0.75) 10px, rgba(34,211,238,0.0) 16px);
-      filter: blur(6px);
-      animation: borderSpark 6s linear infinite;
-      opacity: 0.9;
-    }
-
-    @keyframes borderRun {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 300% 50%; }
-    }
-
-    @keyframes borderSpark {
-      0%   { transform: rotate(0deg); opacity: 0.7; }
-      50%  { transform: rotate(180deg); opacity: 1; }
-      100% { transform: rotate(360deg); opacity: 0.7; }
-    }
-
-    .neural-network {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.38;
-    }
-
-    .wave-layer {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 1;
-      overflow: hidden;
-    }
-
-    .wave-ring {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      border: 1px solid rgba(59,255,190,0.22);
-      transform: translate(-50%, -50%) scale(0.6);
-      opacity: 0;
-      animation: pulseWave 5.4s ease-out infinite;
-      box-shadow: 0 0 50px rgba(59,255,190,0.08), inset 0 0 20px rgba(34,211,238,0.04);
-    }
-    .wave-ring.r2 { animation-delay: 1.8s; }
-    .wave-ring.r3 { animation-delay: 3.6s; }
-
-    @keyframes pulseWave {
-      0% { transform: translate(-50%, -50%) scale(0.35); opacity: 0; }
-      10% { opacity: 0.5; }
-      70% { opacity: 0.18; }
-      100% { transform: translate(-50%, -50%) scale(9); opacity: 0; }
-    }
-
-    .icon-rain {
-      position: fixed;
-      inset: 0;
-      z-index: 1;
-      pointer-events: none;
-      overflow: hidden;
-    }
-
-    .icon-drop {
-      position: absolute;
-      top: -80px;
-      font-size: 18px;
-      opacity: 0.18;
-      filter: drop-shadow(0 0 8px rgba(59,255,190,0.25));
-      animation: iconFall linear infinite;
-      user-select: none;
-      will-change: transform;
-    }
-
-    @keyframes iconFall {
-      0% { transform: translate3d(0,-80px,0) rotate(0deg); }
-      100% { transform: translate3d(var(--drift, 0px),110vh,0) rotate(360deg); }
-    }
-
-    .rain {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      overflow: hidden;
-      opacity: 0.16;
-      pointer-events: none;
-    }
-
-    .rain span {
-      position: absolute;
-      top: -120px;
-      color: var(--green);
-      font-size: 14px;
-      font-family: Consolas, monospace;
-      animation: fall linear infinite;
-      text-shadow: 0 0 10px rgba(0,255,136,0.5);
-      user-select: none;
-      white-space: nowrap;
-    }
-
-    @keyframes fall {
-      from { transform: translateY(-120px); }
-      to { transform: translateY(110vh); }
-    }
-
-    .scan {
-      position: fixed;
-      left: 0;
-      right: 0;
-      height: 140px;
-      background: linear-gradient(to bottom, rgba(59,255,190,0), rgba(59,255,190,0.08), rgba(59,255,190,0));
-      box-shadow: 0 0 50px rgba(59,255,190,0.09);
-      animation: scan 6s linear infinite;
-      z-index: 1;
-      pointer-events: none;
-    }
-
-    @keyframes scan {
-      0% { top: -160px; }
-      100% { top: 110vh; }
-    }
-
     .wrap {
       min-height: 100vh;
       display: flex;
@@ -276,7 +41,7 @@
       justify-content: center;
       padding: 22px;
       position: relative;
-      z-index: 2;
+      z-index: 1;
     }
 
     .card {
@@ -286,31 +51,31 @@
       background: var(--panel);
       border: 1px solid var(--line);
       box-shadow: var(--shadow);
-      backdrop-filter: blur(14px);
       position: relative;
       overflow: hidden;
-      transition: box-shadow .25s ease, border-color .25s ease;
+      transition: box-shadow .2s ease, border-color .2s ease;
     }
+
     .card::before {
       content: "";
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at top right, rgba(34,211,238,0.1), transparent 26%);
+      background: radial-gradient(circle at top right, rgba(34,211,238,0.06), transparent 26%);
       pointer-events: none;
     }
 
-    body.rookie-theme .card { box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55); }
-    body.skilled-theme .card { box-shadow: 0 30px 80px rgba(34, 211, 238, 0.18); }
-    body.pro-theme .card { box-shadow: 0 30px 90px rgba(59, 255, 190, 0.22), 0 0 40px rgba(34,211,238,0.12); }
+    body.rookie-theme .card { box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45); }
+    body.skilled-theme .card { box-shadow: 0 22px 54px rgba(34, 211, 238, 0.10); }
+    body.pro-theme .card { box-shadow: 0 24px 58px rgba(59, 255, 190, 0.12); }
     body.god-theme .card {
-      box-shadow: 0 35px 100px rgba(59, 255, 190, 0.25), 0 0 60px rgba(139,92,246,0.18);
-      border-color: rgba(139,92,246,0.26);
+      box-shadow: 0 26px 64px rgba(139,92,246,0.14);
+      border-color: rgba(139,92,246,0.24);
     }
 
-    .danger-pulse { animation: pulseDanger 1.4s infinite; }
+    .danger-pulse { animation: pulseDanger 1.5s infinite; }
     @keyframes pulseDanger {
       0%,100% { box-shadow: 0 0 0 0 rgba(255,84,112,0.0); }
-      50% { box-shadow: 0 0 0 10px rgba(255,84,112,0.08); }
+      50% { box-shadow: 0 0 0 8px rgba(255,84,112,0.06); }
     }
 
     .hud {
@@ -343,13 +108,13 @@
       height: 10px;
       border-radius: 50%;
       background: var(--green2);
-      box-shadow: 0 0 14px rgba(0,255,136,0.7);
+      box-shadow: 0 0 10px rgba(0,255,136,0.45);
       animation: blink 1.4s infinite;
     }
 
     @keyframes blink {
       0%,100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.45; transform: scale(0.88); }
+      50% { opacity: 0.55; transform: scale(0.9); }
     }
 
     .date-bar {
@@ -391,13 +156,15 @@
       font-size: 14px;
       font-weight: 800;
       cursor: pointer;
-      transition: .18s ease;
+      transition: .15s ease;
       white-space: nowrap;
     }
+
     .btn:hover { transform: translateY(-1px); }
+
     .violet-btn { color: #f3e8ff; background: rgba(139,92,246,0.16); border: 1px solid rgba(139,92,246,0.2); }
     .secondary { color: #d1fff0; background: rgba(255,255,255,0.04); border: 1px solid rgba(59,255,190,0.12); }
-    .primary { color: #032816; background: linear-gradient(135deg, #3bffbe, #22d3ee); box-shadow: 0 12px 24px rgba(59,255,190,0.18); }
+    .primary { color: #032816; background: linear-gradient(135deg, #3bffbe, #22d3ee); box-shadow: 0 10px 20px rgba(59,255,190,0.14); }
     .danger-btn { color: #ffd8de; background: rgba(255,84,112,0.12); border: 1px solid rgba(255,84,112,0.18); }
     .warn-btn { color: #221600; background: rgba(255,209,102,0.92); }
 
@@ -409,7 +176,7 @@
       letter-spacing: -1.8px;
       font-weight: 900;
       color: #eafff8;
-      text-shadow: 0 0 20px rgba(59,255,190,0.12);
+      text-shadow: 0 0 10px rgba(59,255,190,0.08);
       position: relative;
       z-index: 1;
     }
@@ -461,7 +228,7 @@
       width: 0%;
       border-radius: inherit;
       background: linear-gradient(90deg, #3bffbe, #22d3ee);
-      transition: width .5s ease, background .25s ease;
+      transition: width .4s ease, background .2s ease;
     }
 
     .terminal {
@@ -470,8 +237,7 @@
       border-radius: 18px;
       overflow: hidden;
       border: 1px solid rgba(59,255,190,0.12);
-      background: rgba(2, 10, 16, 0.95);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+      background: rgba(2, 10, 16, 0.98);
       position: relative;
       z-index: 1;
     }
@@ -515,6 +281,7 @@
       position: relative;
       z-index: 1;
     }
+
     .alert.show { display: block; }
 
     .main-grid {
@@ -529,7 +296,7 @@
     .today {
       border-radius: 24px;
       padding: 28px 20px;
-      background: linear-gradient(180deg, rgba(2,10,16,0.96), rgba(3,20,26,0.84));
+      background: linear-gradient(180deg, rgba(2,10,16,0.98), rgba(3,20,26,0.90));
       border: 1px solid rgba(59,255,190,0.14);
       text-align: center;
       position: relative;
@@ -537,21 +304,10 @@
       min-height: 100%;
     }
 
-    .today::after {
-      content: "";
-      position: absolute;
-      inset: auto -80px -80px auto;
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(0,255,136,0.14), transparent 70%);
-      pointer-events: none;
-    }
-
     .side-panel {
       border-radius: 24px;
       padding: 22px 18px;
-      background: linear-gradient(180deg, rgba(8,13,28,0.94), rgba(5,14,26,0.86));
+      background: linear-gradient(180deg, rgba(8,13,28,0.96), rgba(5,14,26,0.90));
       border: 1px solid rgba(139,92,246,0.16);
       display: flex;
       flex-direction: column;
@@ -657,7 +413,7 @@
       line-height: 1.08;
       letter-spacing: -2px;
       color: var(--green);
-      text-shadow: 0 0 24px rgba(59,255,190,0.25), 0 0 44px rgba(0,255,136,0.1);
+      text-shadow: 0 0 16px rgba(59,255,190,0.18);
       margin: 12px 0;
       word-break: break-word;
     }
@@ -669,7 +425,6 @@
       line-height: 1.8;
       font-size: 18px;
       font-weight: 700;
-      text-shadow: 0 0 12px rgba(59,255,190,0.12);
     }
 
     .today-note.secondary-note {
@@ -777,21 +532,6 @@
   </style>
 </head>
 <body>
-  <div class="bg-glow"></div>
-  <div class="bg-glow2"></div>
-  <div class="bg-glow3"></div>
-  <div class="bg-glow4"></div>
-  <div class="electric-border"></div>
-  <canvas class="neural-network" id="neuralCanvas"></canvas>
-  <div class="wave-layer">
-    <div class="wave-ring"></div>
-    <div class="wave-ring r2"></div>
-    <div class="wave-ring r3"></div>
-  </div>
-  <div class="icon-rain" id="iconRain"></div>
-  <div class="rain" id="rain"></div>
-  <div class="scan"></div>
-
   <main class="wrap">
     <section class="card" id="mainCard">
       <div class="hud">
@@ -914,8 +654,6 @@
     let titleInterval = null;
     let reminderInterval = null;
     let lastEscalationLevel = -1;
-    let neuralCtx = null;
-    let neuralNodes = [];
 
     function loadState() {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -985,100 +723,6 @@
 
     function weekdayNameVi(date) {
       return new Intl.DateTimeFormat('vi-VN', { weekday: 'long' }).format(date);
-    }
-
-    function createIconRain() {
-      const wrap = document.getElementById('iconRain');
-      if (!wrap || wrap.children.length) return;
-      const icons = ['✦', '✧', '◆', '◇', '⬢', '⬡', '◈', '◉', '◎', '✺'];
-      for (let i = 0; i < 26; i++) {
-        const el = document.createElement('span');
-        el.className = 'icon-drop';
-        el.textContent = icons[Math.floor(Math.random() * icons.length)];
-        el.style.left = Math.random() * 100 + 'vw';
-        el.style.animationDuration = 10 + Math.random() * 12 + 's';
-        el.style.animationDelay = -(Math.random() * 14) + 's';
-        el.style.fontSize = 14 + Math.random() * 16 + 'px';
-        el.style.setProperty('--drift', `${-60 + Math.random() * 120}px`);
-        wrap.appendChild(el);
-      }
-    }
-
-    function createRain() {
-      const rain = document.getElementById('rain');
-      if (rain.children.length) return;
-      const chars = ['0', '1', '1', '0', '1', '7', '4', '2', '3'];
-      for (let i = 0; i < 54; i++) {
-        const span = document.createElement('span');
-        let txt = '';
-        const len = 12 + Math.floor(Math.random() * 18);
-        for (let j = 0; j < len; j++) txt += chars[Math.floor(Math.random() * chars.length)] + ' ';
-        span.textContent = txt;
-        span.style.left = Math.random() * 100 + 'vw';
-        span.style.animationDuration = 8 + Math.random() * 10 + 's';
-        span.style.animationDelay = -(Math.random() * 12) + 's';
-        span.style.fontSize = (10 + Math.random() * 8) + 'px';
-        rain.appendChild(span);
-      }
-    }
-
-    function initNeuralBackground() {
-      const canvas = document.getElementById('neuralCanvas');
-      if (!canvas) return;
-      neuralCtx = canvas.getContext('2d');
-
-      function resize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        neuralNodes = Array.from({ length: 38 }, () => ({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          vx: (Math.random() - 0.5) * 0.35,
-          vy: (Math.random() - 0.5) * 0.35,
-          r: 1 + Math.random() * 2.4
-        }));
-      }
-
-      function draw() {
-        if (!neuralCtx) return;
-        neuralCtx.clearRect(0, 0, canvas.width, canvas.height);
-
-        for (const n of neuralNodes) {
-          n.x += n.vx;
-          n.y += n.vy;
-          if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
-          if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
-        }
-
-        for (let i = 0; i < neuralNodes.length; i++) {
-          for (let j = i + 1; j < neuralNodes.length; j++) {
-            const a = neuralNodes[i], b = neuralNodes[j];
-            const dx = a.x - b.x, dy = a.y - b.y;
-            const dist = Math.hypot(dx, dy);
-            if (dist < 150) {
-              neuralCtx.strokeStyle = `rgba(59,255,190,${(1 - dist / 150) * 0.18})`;
-              neuralCtx.lineWidth = 1;
-              neuralCtx.beginPath();
-              neuralCtx.moveTo(a.x, a.y);
-              neuralCtx.lineTo(b.x, b.y);
-              neuralCtx.stroke();
-            }
-          }
-        }
-
-        for (const n of neuralNodes) {
-          neuralCtx.fillStyle = 'rgba(127,255,224,0.7)';
-          neuralCtx.beginPath();
-          neuralCtx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
-          neuralCtx.fill();
-        }
-
-        requestAnimationFrame(draw);
-      }
-
-      resize();
-      window.addEventListener('resize', resize);
-      draw();
     }
 
     function beep(type = 'ok') {
@@ -1259,7 +903,7 @@
       titleInterval = setInterval(() => {
         document.title = toggle ? `⚠️ ${files.join('+')}` : `❗ ${files.join('+')}`;
         toggle = !toggle;
-      }, 900);
+      }, 2000);
     }
 
     function renderHistory(state) {
@@ -1631,10 +1275,6 @@
     }
 
     function init() {
-      createIconRain();
-      createRain();
-      initNeuralBackground();
-
       const state = loadState();
       render(deriveView(state));
       updateCountdown();
