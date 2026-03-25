@@ -1220,13 +1220,13 @@
       }
 
       if (checkedInToday) {
-        document.title = `✔️ Đã điểm danh ${files.join('+')}`;
+        document.title = `✔️ ${files.join('+')}`;
         return;
       }
 
       let toggle = false;
       titleInterval = setInterval(() => {
-        document.title = toggle ? `⚠️ Chưa điểm danh ${files.join('+')}` : `❗ Nhớ điểm danh ${files.join('+')}`;
+        document.title = toggle ? `⚠️ ${files.join('+')}` : `❗ ${files.join('+')}`;
         toggle = !toggle;
       }, 900);
     }
