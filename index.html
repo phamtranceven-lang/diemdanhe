@@ -1093,7 +1093,7 @@
             <div class="debt-form-row">
               <div>
                 <label class="debt-field-label" for="debtNameInput">Tên bạn đang nợ</label>
-                <input id="debtNameInput" type="text" placeholder="Ví dụ: Nam, Linh, Hưng..." />
+                <input id="debtNameInput" type="text" value="Thuận" placeholder="Ví dụ: Nam, Linh, Hưng..." />
               </div>
               <div>
                 <label class="debt-field-label" for="debtAmountInput">Số tiền</label>
@@ -1292,12 +1292,12 @@
     }
 
     function handleSaveDebt() {
-      const name = document.getElementById('debtNameInput').value.trim();
+      const name = document.getElementById('debtNameInput').value.trim() || 'Thuận';
       const amount = document.getElementById('debtAmountInput').value.trim();
       const note = document.getElementById('debtNoteInput').value.trim();
 
-      if (!name && !amount && !note) {
-        alert('Nhập ít nhất 1 thông tin rồi mới lưu.');
+      if (!name) {
+        alert('Phải có tên (mặc định Thuận).');
         beep('error');
         return;
       }
