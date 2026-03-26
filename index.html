@@ -1458,6 +1458,7 @@
             <button class="btn violet-btn" id="addMusicFileBtn">📂 Add file nhạc</button>
             <button class="btn primary" id="saveMusicFileBtn">💾 Lưu file</button>
             <button class="btn danger-btn" id="toggleMusicBtn">🔇 Tắt nhạc</button>
+            <button class="btn secondary" id="clearMusicFileBtn">🗑 Xoá file đã lưu</button>
           </div>
         </div>
       </div>
@@ -1470,6 +1471,9 @@
     const STORAGE_KEY = 'attendance_hacker_state_v10';
     const DEBT_STORAGE_KEY = 'friend_debt_note_v1';
     const MUSIC_MEDIA_STORAGE_KEY = 'wweb_tiktok_media_v1';
+    const MUSIC_MEDIA_DB_NAME = 'wweb_tiktok_media_db';
+    const MUSIC_MEDIA_STORE_NAME = 'media';
+    const MUSIC_MEDIA_RECORD_ID = 'current';
     let currentView = null;
     let audioCtx = null;
     let titleInterval = null;
@@ -1481,8 +1485,76 @@
     let pendingMusicSave = null;
     let currentMediaType = 'video';
 
+
+    function openMusicDb() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(MUSIC_MEDIA_DB_NAME, 1);
+        request.onupgradeneeded = () => {
+          const db = request.result;
+          if (!db.objectStoreNames.contains(MUSIC_MEDIA_STORE_NAME)) {
+            db.createObjectStore(MUSIC_MEDIA_STORE_NAME, { keyPath: 'id' });
+          }
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error || new Error('open db failed'));
+      });
+    }
+
+    async function idbSaveMusicMedia(record) {
+      const db = await openMusicDb();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(MUSIC_MEDIA_STORE_NAME, 'readwrite');
+        tx.objectStore(MUSIC_MEDIA_STORE_NAME).put({
+          id: MUSIC_MEDIA_RECORD_ID,
+          ...record
+        });
+        tx.oncomplete = () => {
+          db.close();
+          resolve(true);
+        };
+        tx.onerror = () => {
+          db.close();
+          reject(tx.error || new Error('save failed'));
+        };
+      });
+    }
+
+    async function idbLoadMusicMedia() {
+      const db = await openMusicDb();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(MUSIC_MEDIA_STORE_NAME, 'readonly');
+        const req = tx.objectStore(MUSIC_MEDIA_STORE_NAME).get(MUSIC_MEDIA_RECORD_ID);
+        req.onsuccess = () => {
+          db.close();
+          resolve(req.result || null);
+        };
+        req.onerror = () => {
+          db.close();
+          reject(req.error || new Error('load failed'));
+        };
+      });
+    }
+
+    async function idbClearMusicMedia() {
+      const db = await openMusicDb();
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(MUSIC_MEDIA_STORE_NAME, 'readwrite');
+        tx.objectStore(MUSIC_MEDIA_STORE_NAME).delete(MUSIC_MEDIA_RECORD_ID);
+        tx.oncomplete = () => {
+          db.close();
+          resolve(true);
+        };
+        tx.onerror = () => {
+          db.close();
+          reject(tx.error || new Error('clear failed'));
+        };
+      });
+    }
+
     function getBgVideo() {
-      return document.getElementById('bgVideo');
+      const video = document.getElementById('bgVideo');
+      if (video && !video.dataset.defaultSrc) video.dataset.defaultSrc = video.getAttribute('src') || '';
+      return video;
     }
 
     function getBgAudio() {
@@ -1659,70 +1731,111 @@
       window.addEventListener('resume', wake);
     }
 
+
     function handleMusicFilePick(event) {
       const file = event.target.files && event.target.files[0];
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = () => {
+      reader.onload = async () => {
         pendingMusicSave = {
           name: file.name,
           mimeType: file.type || 'application/octet-stream',
-          dataUrl: reader.result
+          dataUrl: reader.result,
+          savedAt: new Date().toISOString()
         };
         musicEnabled = true;
         manualMusicStopped = false;
         applySourceToPlayers(pendingMusicSave.dataUrl, pendingMusicSave.mimeType, pendingMusicSave.name);
-        updateMusicStatus('Đã nạp file mới. Nếu muốn giữ luôn cho lần sau thì bấm Lưu file.');
+        try {
+          await idbSaveMusicMedia(pendingMusicSave);
+          localStorage.setItem(MUSIC_MEDIA_STORAGE_KEY, JSON.stringify({
+            name: pendingMusicSave.name,
+            mimeType: pendingMusicSave.mimeType,
+            savedAt: pendingMusicSave.savedAt,
+            migrated: true
+          }));
+          updateMusicStatus(`Đã nạp và tự lưu file mới: ${pendingMusicSave.name}`);
+          beep('ok');
+        } catch (err) {
+          updateMusicStatus('Đã nạp file mới nhưng chưa lưu được vào bộ nhớ trình duyệt.');
+        }
         tryPlayBgMusic(true);
       };
       reader.readAsDataURL(file);
     }
 
-    function saveMusicSelection() {
+    async function saveMusicSelection() {
       if (!pendingMusicSave) {
         updateMusicStatus('Chưa có file mới để lưu. Muốn đổi thì bấm Add file nhạc trước.');
         return;
       }
 
       try {
-        localStorage.setItem(MUSIC_MEDIA_STORAGE_KEY, JSON.stringify(pendingMusicSave));
+        await idbSaveMusicMedia({
+          name: pendingMusicSave.name,
+          mimeType: pendingMusicSave.mimeType,
+          dataUrl: pendingMusicSave.dataUrl,
+          savedAt: new Date().toISOString()
+        });
+        localStorage.setItem(MUSIC_MEDIA_STORAGE_KEY, JSON.stringify({
+          name: pendingMusicSave.name,
+          mimeType: pendingMusicSave.mimeType,
+          savedAt: new Date().toISOString(),
+          migrated: true
+        }));
         updateMusicStatus(`Đã lưu file: ${pendingMusicSave.name}`);
         beep('ok');
       } catch {
-        updateMusicStatus('Không lưu được vì file hơi nặng cho bộ nhớ local. Thử file nhẹ hơn nhé.');
+        updateMusicStatus('Không lưu được file này vào bộ nhớ trình duyệt.');
       }
     }
 
-    function loadSavedMusicMedia() {
-      const raw = localStorage.getItem(MUSIC_MEDIA_STORAGE_KEY);
-      if (!raw) {
-        const video = getBgVideo();
-        if (video && video.getAttribute('src')) {
-          setMediaStageMode('video');
-          updateMusicFileMeta('Đang dùng video mặc định đã nhúng sẵn trong file HTML.');
-          updateAudioCover('WWeb TikTok mặc định', 'video');
+    async function loadSavedMusicMedia() {
+      try {
+        const saved = await idbLoadMusicMedia();
+        if (saved && saved.dataUrl) {
+          pendingMusicSave = saved;
+          applySourceToPlayers(saved.dataUrl, saved.mimeType || '', saved.name || 'file đã lưu');
+          updateMusicStatus(`Đã khôi phục file đã lưu: ${saved.name || 'file đã lưu'}`);
+          return;
         }
-        return;
+      } catch {}
+
+      const raw = localStorage.getItem(MUSIC_MEDIA_STORAGE_KEY);
+      if (raw) {
+        try {
+          const saved = JSON.parse(raw);
+          if (saved && saved.dataUrl) {
+            pendingMusicSave = saved;
+            applySourceToPlayers(saved.dataUrl, saved.mimeType || '', saved.name || 'file đã lưu');
+            try {
+              await idbSaveMusicMedia(saved);
+              localStorage.setItem(MUSIC_MEDIA_STORAGE_KEY, JSON.stringify({
+                name: saved.name || 'file đã lưu',
+                mimeType: saved.mimeType || '',
+                savedAt: saved.savedAt || new Date().toISOString(),
+                migrated: true
+              }));
+            } catch {}
+            updateMusicStatus(`Đã khôi phục file đã lưu: ${saved.name || 'file đã lưu'}`);
+            return;
+          }
+        } catch {}
       }
 
-      try {
-        const saved = JSON.parse(raw);
-        if (!saved || !saved.dataUrl) throw new Error('bad data');
-        pendingMusicSave = saved;
-        applySourceToPlayers(saved.dataUrl, saved.mimeType || '', saved.name || 'file đã lưu');
-      } catch {
-        localStorage.removeItem(MUSIC_MEDIA_STORAGE_KEY);
-        const video = getBgVideo();
-        if (video && video.getAttribute('src')) {
-          setMediaStageMode('video');
-          updateMusicFileMeta('Đang dùng video mặc định đã nhúng sẵn trong file HTML.');
-          updateAudioCover('WWeb TikTok mặc định', 'video');
-        }
+      localStorage.removeItem(MUSIC_MEDIA_STORAGE_KEY);
+      const video = getBgVideo();
+      if (video && video.getAttribute('src')) {
+        setMediaStageMode('video');
+        updateMusicFileMeta('Đang dùng video mặc định đã nhúng sẵn trong file HTML.');
+        updateAudioCover('WWeb TikTok mặc định', 'video');
+        updateMusicStatus('Đang dùng video mặc định của web.');
       }
     }
 
     function loadDebtNote() {
+
       const raw = localStorage.getItem(DEBT_STORAGE_KEY);
       if (!raw) {
         return {
@@ -2476,7 +2589,7 @@
       }, 60000);
     }
 
-    function init() {
+    async function init() {
       const state = loadState();
       render(deriveView(state));
       updateCountdown();
@@ -2494,6 +2607,26 @@
       document.getElementById('addMusicFileBtn').addEventListener('click', () => document.getElementById('musicFileInput').click());
       document.getElementById('saveMusicFileBtn').addEventListener('click', saveMusicSelection);
       document.getElementById('musicFileInput').addEventListener('change', handleMusicFilePick);
+      document.getElementById('clearMusicFileBtn').addEventListener('click', async () => {
+        try { await idbClearMusicMedia(); } catch {}
+        localStorage.removeItem(MUSIC_MEDIA_STORAGE_KEY);
+        pendingMusicSave = null;
+        const audio = getBgAudio();
+        const video = getBgVideo();
+        if (audio) { audio.pause(); audio.removeAttribute('src'); audio.load(); }
+        if (video) {
+          const defaultSrc = video.dataset.defaultSrc || video.getAttribute('src') || '';
+          if (!video.dataset.defaultSrc) video.dataset.defaultSrc = defaultSrc;
+          if (defaultSrc) video.src = defaultSrc;
+        }
+        setMediaStageMode('video');
+        updateMusicFileMeta('Đã xoá file đã lưu. Đang quay về video mặc định của web.');
+        updateAudioCover('WWeb TikTok mặc định', 'video');
+        updateMusicStatus('Đã xoá file đã lưu.');
+        manualMusicStopped = false;
+        musicEnabled = true;
+        tryPlayBgMusic(true);
+      });
       document.getElementById('runCommandBtn').addEventListener('click', runCommand);
 
       const startDateInput = document.getElementById('startDateInput');
@@ -2522,7 +2655,7 @@
       });
 
       updateNotifyStatus();
-      loadSavedMusicMedia();
+      await loadSavedMusicMedia();
       updateMusicStatus();
       bindMusicWakeEvents();
       startMusicAutoRetry();
