@@ -1,4 +1,6 @@
 
+
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -1281,7 +1283,7 @@
 
       <h1 class="title">Hôm nay dùng file nào</h1>
       <p class="subtitle">
-        Tuần đầu mở file dần: 1 → 1+2 → ... → 1+2+3+4+5+6+7. Từ ngày thứ 8 trở đi, ngày nào cũng full 7 file.
+        Tuần đầu mở file dần: 1 → 1+2 → ... → 1+2+3+4+5+6+7. Riêng ô lớn sẽ quay vòng file đủ 7 ngày theo mốc 31/03 = file 1, sau đó tăng dần file 2 → 7 rồi lặp lại từ file 1 mỗi ngày.
       </p>
 
       <div class="deadline-wrap" id="deadlineWrap">
@@ -2105,16 +2107,12 @@
       return { hits, exactFiles, doneFiles };
     }
 
-    function getTodaySeventhFile(totalDays) {
-      const hitsBeforeToday = countFileHitsUntilDay(Math.max(0, totalDays - 1));
-      const filesToday = getFilesForAbsoluteDay(totalDays);
-
-      for (const file of filesToday) {
-        const prevHits = hitsBeforeToday[file] || 0;
-        if (prevHits === 6) return file;
-      }
-
-      return null;
+    function getRotatingSeventhFile(today) {
+      const anchorDate = new Date('2026-03-31T00:00:00');
+      const current = startOfDay(today);
+      const diff = diffDays(current, anchorDate);
+      const index = ((diff % 7) + 7) % 7;
+      return FILES[index];
     }
 
     function registerMissIfNeeded(state, today, effectiveStartDate) {
@@ -2148,7 +2146,7 @@
       let files = [];
       let note = 'Chưa tới ngày bắt đầu chu kỳ.';
       let warning = '';
-      let seventhHitText = 'Chưa có file nào chạm mốc lần thứ 7.';
+      let seventhHitText = 'Chưa có dữ liệu file đủ 7 ngày hôm nay.';
       let seventhHitFiles = [];
       let todaySeventhFile = null;
       let fileHitCounts = null;
@@ -2159,20 +2157,18 @@
         absoluteDay = passedDays + 1;
         files = getFilesForAbsoluteDay(absoluteDay);
 
-        const hitInfo = get7thHitInfo(absoluteDay);
-        seventhHitFiles = hitInfo.exactFiles;
-        todaySeventhFile = getTodaySeventhFile(absoluteDay);
-        fileHitCounts = hitInfo.hits;
+        todaySeventhFile = getRotatingSeventhFile(today);
+        seventhHitFiles = [todaySeventhFile];
 
         if (absoluteDay <= 7) {
           note = `Ngày thứ ${absoluteDay} • Cần điểm danh file: ${files.join(' + ')}`;
-          seventhHitText = 'Chưa tới giai đoạn hiện file thứ 7 hôm nay.';
         } else {
           note = `Ngày thứ ${absoluteDay} • Hôm nay đã full 7 file`;
-          seventhHitText = todaySeventhFile
-            ? `File thứ 7 hôm nay: ${todaySeventhFile}`
-            : 'Hôm nay không có file nào vừa chạm mốc lần thứ 7.';
         }
+
+        seventhHitText = todaySeventhFile
+          ? `Tao tính sẵn cho mày: hôm nay file ${todaySeventhFile} đủ 7 ngày.`
+          : 'Chưa có dữ liệu file đủ 7 ngày hôm nay.';
 
         if (checkedInToday) {
           note += ' • Đã điểm danh';
@@ -2203,24 +2199,21 @@
       };
     }
 
-    function updateTitle(files, checkedInToday) {
+    function updateTitle(files, checkedInToday, todaySeventhFile) {
       if (titleInterval) clearInterval(titleInterval);
 
-      if (!files.length) {
+      if (!todaySeventhFile) {
         document.title = '⏳ Chưa bắt đầu';
-        return;
-      }
-
-      if (checkedInToday) {
-        document.title = `✔️ ${files.join('+')}`;
         return;
       }
 
       let toggle = false;
       titleInterval = setInterval(() => {
-        document.title = toggle ? `⚠️ ${files.join('+')}` : `❗ ${files.join('+')}`;
+        document.title = toggle 
+          ? `🔥 FILE ${todaySeventhFile} đủ 7 ngày`
+          : `⚠️ FILE ${todaySeventhFile} đủ 7 ngày`;
         toggle = !toggle;
-      }, 2000);
+      }, 1200);
     }
 
     function renderHistory(state) {
@@ -2257,8 +2250,8 @@
         `> Ngày hiện tại: ${formatShort(view.today)}`,
         `> Ngày bắt đầu: ${formatShort(view.startDate)}`,
         `> Ngày trong chu kỳ: ${view.absoluteDay || 'đang chờ'}`,
-        `> File hôm nay: ${view.files.length ? view.files.join(' + ') : 'đang chờ'}`,
-        `> File thứ 7 hôm nay: ${view.todaySeventhFile || 'không có'}`,
+        `> File hôm nay: ${view.todaySeventhFile ? 'FILE ' + view.todaySeventhFile : (view.files.length ? view.files.join(' + ') : 'đang chờ')}`,
+        `> File đủ 7 ngày hôm nay: ${view.todaySeventhFile || 'không có'}`,
         `> Chuỗi: ${view.state.streak}`,
         `> Combo: x${view.state.combo || 0}`,
         `> Cấp độ: ${view.levelName}`,
@@ -2306,7 +2299,9 @@
       document.getElementById('levelSub').textContent = levelSub;
       document.getElementById('todayNote').textContent = note;
       document.getElementById('seventhHitNote').textContent = view.seventhHitText;
-      document.getElementById('todayFiles').textContent = files.length ? files.join(' + ') : '...';
+      document.getElementById('todayFiles').textContent = view.todaySeventhFile
+        ? `FILE ${view.todaySeventhFile}`
+        : (files.length ? files.join(' + ') : '...');
 
       const totalAttempts = state.totalCheckins + state.totalMisses;
       const rate = totalAttempts ? Math.round((state.totalCheckins / totalAttempts) * 100) : 0;
@@ -2332,7 +2327,7 @@
       runTerminal(view);
       updateNotifyStatus();
       renderDebtNote();
-      updateTitle(files, checkedInToday);
+      updateTitle(files, checkedInToday, view.todaySeventhFile);
       updateReminderMode(view);
     }
 
