@@ -180,7 +180,7 @@
         </div>
 
         <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;">
-         
+          <button class="btn danger" id="prankBtn">XÓA TẤT CẢ FILE</button>
 <button class="btn danger" id="shutdownBtn">TẮT WEB</button>
         </div>
       </div>
@@ -231,9 +231,9 @@
         { name: "Lesson 15", url: "https://drive.google.com/file/d/18XsGReUsUVqrM-e6VnYL8ITFYDyQKQBP/view", note: "Listening", badge: "hot" }
       ],
       speaking: [
-        { name: "Lesson 5 và 6", url: "https://docs.google.com/presentation/d/1ZR_hZldlxRSB2x8aPhBZlslxBwz_dURD/edit?slide=id.p1#slide=id.p1", note: "Speaking", badge: "new" },
-        { name: "Lesson 3 và 4", url: "https://docs.google.com/presentation/d/1xLn_4xn2RJo_j6MwijFa7d1lTNnym8H7/edit?slide=id.p35#slide=id.p35", note: "Speaking", badge: "hot" },
-        { name: "Lesson 10 11 12", url: "https://drive.google.com/file/d/1FWxx5w1bBsut2aBKzwG9mrkMP3N-GHMh/view", note: "Speaking", badge: "hot" }
+        { name: "Lesson 01 và 02", url: "https://drive.google.com/file/d/1cas7HCNBtBsqtO8QMFOznhPRfCRMlerJ/view", note: "Speaking", badge: "new" },
+        { name: "Lesson 03 và 04", url: "https://drive.google.com/file/d/1t-0cuHoQkynhuJJ1C6da96OpSRc0PTgU/view", note: "Speaking", badge: "hot" },
+        { name: "Lesson 05 và 06", url: "https://drive.google.com/file/d/1KIdrAJJTgztBne1UNQ53fYRPRZaWE_4I/view", note: "Speaking", badge: "hot" }
       ]
     };
 
@@ -425,9 +425,9 @@ shutdownBtn.addEventListener("click", () => {
 
   try {
     prankVideo.currentTime = 0;
-    prankVideo.playbackRate = 1.5;
-    prankVideo.playbackRate = 1.5;
-    prankVideo.playbackRate = 1.5;
+    prankVideo.playbackRate = 2;
+    prankVideo.playbackRate = 2;
+    prankVideo.playbackRate = 2;
     prankVideo.play();
   } catch (err) {
     console.log(err);
