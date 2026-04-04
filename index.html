@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kho tài liệu học nhóm VIP</title>
+  <style>
+    :root{
+      --bg:#050816;
+      --panel:rgba(10,16,35,.78);
+      --panel-2:rgba(15,22,46,.9);
+      --line:rgba(120,170,255,.18);
+      --text:#eef4ff;
+      --muted:#94a7cc;
+      --blue:#38bdf8;
+      --cyan:#22d3ee;
+      --purple:#a78bfa;
+      --green:#34d399;
+      --red:#fb7185;
+      --yellow:#fbbf24;
+      --shadow:0 18px 60px rgba(0,0,0,.35);
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 12% 10%, rgba(56,189,248,.17), transparent 28%),
+        radial-gradient(circle at 88% 18%, rgba(167,139,250,.16), transparent 25%),
+        radial-gradient(circle at 50% 100%, rgba(34,211,238,.12), transparent 30%),
+        linear-gradient(135deg,#030712,#071124 45%,#020617 100%);
+      min-height:100vh;
+      overflow-x:hidden;
+    }
+
+    .bg-grid::before,
+    .bg-grid::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:0;
+    }
+    .bg-grid::before{
+      background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size:40px 40px;
+      mask-image: radial-gradient(circle at center, black 35%, transparent 95%);
+    }
+    .bg-grid::after{
+      background:radial-gradient(circle, rgba(56,189,248,.2) 0 2px, transparent 3px);
+      background-size:180px 180px;
+      animation: floatDots 18s linear infinite;
+      opacity:.22;
+    }
+    @keyframes floatDots{
+      from{transform:translateY(0)}
+      to{transform:translateY(-180px)}
+    }
+
+    .wrap{
+      position:relative;
+      z-index:1;
+      max-width:1280px;
+      margin:0 auto;
+      padding:28px;
+    }
+
+    .hero{
+      display:grid;
+      grid-template-columns:1.2fr .8fr;
+      gap:22px;
+      margin-bottom:24px;
+    }
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--line);
+      border-radius:28px;
+      backdrop-filter:blur(18px);
+      -webkit-backdrop-filter:blur(18px);
+      box-shadow:var(--shadow);
+      padding:22px;
+      position:relative;
+      overflow:hidden;
+    }
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:auto -30% 100% auto;
+      width:220px;
+      height:220px;
+      background:radial-gradient(circle, rgba(56,189,248,.22), transparent 68%);
+      pointer-events:none;
+      transform:translate(30%,-35%);
+    }
+
+    .hero-title{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      margin-bottom:16px;
+    }
+    .logo{
+      width:74px;
+      height:74px;
+      border-radius:24px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:34px;
+      background:linear-gradient(135deg,var(--blue),var(--cyan));
+      color:#05101f;
+      box-shadow:0 0 30px rgba(34,211,238,.35);
+      flex-shrink:0;
+    }
+
+    h1,h2,h3,p{margin:0}
+    h1{
+      font-size:38px;
+      line-height:1.08;
+      letter-spacing:.2px;
+      background:linear-gradient(90deg,#fff,#d6ebff 40%,#7dd3fc 90%);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+    h2{font-size:22px}
+    .muted{color:var(--muted)}
+    .desc{margin-top:8px;line-height:1.65;max-width:720px}
+
+    .stats{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:14px;
+      margin-top:18px;
+    }
+    .stat{
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:22px;
+      padding:16px;
+      min-height:102px;
+      transition:.25s ease;
+    }
+    .stat:hover{
+      transform:translateY(-2px);
+      border-color:rgba(56,189,248,.35);
+      box-shadow:0 0 28px rgba(56,189,248,.08);
+    }
+    .stat strong{
+      display:block;
+      margin-top:8px;
+      font-size:30px;
+      line-height:1;
+    }
+
+    .search-row{
+      display:grid;
+      grid-template-columns:1fr auto auto;
+      gap:12px;
+      margin-top:18px;
+    }
+    .input, .search{
+      width:100%;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.1);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      padding:14px 16px;
+      outline:none;
+      font-size:14px;
+    }
+    .input::placeholder,.search::placeholder{color:#89a0c9}
+
+    .btn{
+      border:none;
+      cursor:pointer;
+      border-radius:18px;
+      padding:14px 18px;
+      font-size:14px;
+      font-weight:800;
+      transition:.18s ease;
+      color:#041120;
+      background:linear-gradient(135deg,var(--blue),var(--cyan));
+      box-shadow:0 14px 26px rgba(34,211,238,.16);
+    }
+    .btn:hover{transform:translateY(-1px) scale(1.01)}
+    .btn.secondary{
+      color:var(--text);
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.11);
+      box-shadow:none;
+    }
+    .btn.danger{
+      color:#fff;
+      background:linear-gradient(135deg,#fb7185,#ef4444);
+      box-shadow:0 14px 26px rgba(239,68,68,.18);
+    }
+
+    .status{
+      margin-top:14px;
+      border-radius:18px;
+      padding:14px 15px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.05);
+      line-height:1.55;
+      font-size:14px;
+    }
+    .status.success{background:rgba(52,211,153,.09);color:#d8ffef;border-color:rgba(52,211,153,.28)}
+    .status.error{background:rgba(251,113,133,.09);color:#ffe1e7;border-color:rgba(251,113,133,.28)}
+
+    .admin-grid{display:grid;gap:12px;margin-top:14px}
+
+    .tabs{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:18px;
+    }
+    .tab{
+      border:none;
+      border-radius:999px;
+      padding:12px 18px;
+      cursor:pointer;
+      color:#dbe9ff;
+      background:rgba(255,255,255,.05);
+      border:1px solid rgba(255,255,255,.08);
+      font-weight:700;
+      transition:.2s ease;
+    }
+    .tab:hover{
+      transform:translateY(-1px);
+      box-shadow:0 0 20px rgba(56,189,248,.18);
+    }
+    .tab.active.listening{background:rgba(56,189,248,.18);border-color:rgba(56,189,248,.45);box-shadow:0 0 20px rgba(56,189,248,.18)}
+    .tab.active.speaking{background:rgba(167,139,250,.18);border-color:rgba(167,139,250,.45);box-shadow:0 0 20px rgba(167,139,250,.18)}
+    .tab.active.reading{background:rgba(52,211,153,.18);border-color:rgba(52,211,153,.45);box-shadow:0 0 20px rgba(52,211,153,.18)}
+
+    .section-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:14px;
+      margin-bottom:14px;
+    }
+    .badge{
+      border-radius:999px;
+      padding:6px 10px;
+      background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      font-size:12px;
+      color:#dce9ff;
+      font-weight:700;
+    }
+
+    .files{
+      display:grid;
+      gap:16px;
+      margin-top:8px;
+    }
+    .file{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:16px;
+      align-items:center;
+      padding:18px;
+      border-radius:24px;
+      background:var(--panel-2);
+      border:1px solid rgba(255,255,255,.07);
+      box-shadow:0 12px 26px rgba(0,0,0,.12);
+      transition:transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+      opacity:0;
+      transform:translateY(14px);
+      animation:fadeIn .42s ease forwards;
+    }
+    .file.listening:hover{border-color:rgba(56,189,248,.42);box-shadow:0 0 28px rgba(56,189,248,.18);transform:translateY(-3px) scale(1.01)}
+    .file.speaking:hover{border-color:rgba(167,139,250,.42);box-shadow:0 0 28px rgba(167,139,250,.18);transform:translateY(-3px) scale(1.01)}
+    .file.reading:hover{border-color:rgba(52,211,153,.42);box-shadow:0 0 28px rgba(52,211,153,.18);transform:translateY(-3px) scale(1.01)}
+    @keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
+
+    .file-left{
+      display:flex;
+      gap:14px;
+      min-width:0;
+      align-items:flex-start;
+    }
+    .file-icon{
+      width:56px;
+      height:56px;
+      border-radius:20px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:25px;
+      flex-shrink:0;
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .file.listening .file-icon{background:linear-gradient(135deg, rgba(56,189,248,.22), rgba(34,211,238,.18))}
+    .file.speaking .file-icon{background:linear-gradient(135deg, rgba(167,139,250,.22), rgba(129,140,248,.16))}
+    .file.reading .file-icon{background:linear-gradient(135deg, rgba(52,211,153,.2), rgba(74,222,128,.14))}
+
+    .file-name{
+      font-size:16px;
+      font-weight:800;
+      line-height:1.45;
+      word-break:break-word;
+    }
+    .meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top:8px;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .tag{
+      padding:5px 10px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      border:1px solid rgba(255,255,255,.07);
+      background:rgba(255,255,255,.05);
+      color:#eef5ff;
+    }
+    .tag.new{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.28);color:#d7ffea}
+    .tag.hot{background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.28);color:#fff0c2}
+    .tag.pin{background:rgba(56,189,248,.12);border-color:rgba(56,189,248,.28);color:#dff6ff}
+
+    .actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      align-items:center;
+    }
+
+    .empty{
+      border-radius:24px;
+      border:1px dashed rgba(255,255,255,.16);
+      padding:42px 20px;
+      color:var(--muted);
+      text-align:center;
+      background:rgba(255,255,255,.03);
+    }
+
+    .tip{margin-top:16px;color:var(--muted);line-height:1.7}
+
+    .hl{
+      color:#fff6c7;
+      background:linear-gradient(90deg, rgba(251,191,36,.26), rgba(251,191,36,.12));
+      padding:0 4px;
+      border-radius:6px;
+    }
+
+    @media (max-width:1020px){
+      .hero{grid-template-columns:1fr}
+      .stats{grid-template-columns:repeat(2,1fr)}
+      .search-row{grid-template-columns:1fr}
+    }
+    @media (max-width:760px){
+      .wrap{padding:16px}
+      .stats{grid-template-columns:1fr}
+      .file{grid-template-columns:1fr}
+      .actions{justify-content:stretch}
+      .actions a,.actions button{width:100%}
+      h1{font-size:31px}
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="wrap">
+    <div class="hero">
+      <div class="card">
+        <div class="hero-title">
+          <div class="logo">⚡</div>
+          <div>
+            <h1>Kho tài liệu học nhóm</h1>
+            <p class="desc muted">Style app học tập kết hợp cyber neon. Có phân loại môn, badge, tìm kiếm, animation, admin mode và hover glow xịn.</p>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><span class="muted">Chế độ</span><strong id="modeStat">Khách</strong></div>
+          <div class="stat"><span class="muted">Tổng tài liệu</span><strong id="totalStat">0</strong></div>
+          <div class="stat"><span class="muted">Đang hiển thị</span><strong id="visibleStat">0</strong></div>
+          <div class="stat"><span class="muted">Danh mục</span><strong id="categoryStat">Listening</strong></div>
+        </div>
+
+        <div class="search-row">
+          <input id="searchInput" class="search" type="text" placeholder="Tìm theo tên tài liệu hoặc ghi chú..." />
+          <button class="btn secondary" id="sortBtn">A → Z</button>
+          <button class="btn secondary" id="clearBtn">Xóa tìm kiếm</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-head">
+          <h2>Admin mode</h2>
+          <span class="badge">Pass: 251027</span>
+        </div>
+        <p class="muted">Bản này dành cho GitHub. Admin mode chỉ để hiện nút xóa và bảo vệ thao tác trên giao diện. Muốn xóa lưu vĩnh viễn thì vẫn phải sửa code rồi up lại.</p>
+        <div id="statusBox" class="status">Chưa đăng nhập admin.</div>
+        <div class="admin-grid">
+          <input id="passwordInput" class="input" type="password" placeholder="Nhập pass admin" />
+          <div style="display:flex;gap:12px;flex-wrap:wrap;">
+            <button id="loginBtn" class="btn" style="flex:1">Mở admin mode</button>
+            <button id="logoutBtn" class="btn secondary">Thoát</button>
+          </div>
+        </div>
+        <div class="tip">Muốn t gắn link thật vào web thì chỉ cần gửi danh sách tên + link, t nhét vào sẵn cho m.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-head">
+        <h2>Danh mục tài liệu</h2>
+        <span class="badge">Neon UI</span>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active listening" data-tab="listening">🎧 Listening</button>
+        <button class="tab speaking" data-tab="speaking">🎤 Speaking</button>
+        <button class="tab reading" data-tab="reading">📖 Reading</button>
+      </div>
+
+      <div id="fileList" class="files"></div>
+    </div>
+  </div>
+
+  <script>
+    const ADMIN = "251027";
+    let isAdmin = false;
+    let currentTab = "listening";
+    let sortAsc = true;
+
+    const data = {
+      listening: [
+        { name: "Listening 05-06", url: "https://drive.google.com/", note: "Lesson 5-6", badge: "new" },
+        { name: "Listening 07-08", url: "https://drive.google.com/", note: "Questions & responses", badge: "hot" },
+        { name: "Listening 09-10", url: "https://drive.google.com/", note: "Practice set", badge: "pin" }
+      ],
+      speaking: [
+        { name: "Speaking 01-02", url: "https://drive.google.com/", note: "Picture description", badge: "new" },
+        { name: "Speaking 03-04", url: "https://drive.google.com/", note: "Intro practice", badge: "hot" }
+      ],
+      reading: [
+        { name: "Reading 03-04", url: "https://drive.google.com/", note: "Mock review", badge: "pin" },
+        { name: "Reading 05-06", url: "https://drive.google.com/", note: "Key vocabulary", badge: "new" }
+      ]
+    };
+
+    const statusBox = document.getElementById('statusBox');
+    const modeStat = document.getElementById('modeStat');
+    const totalStat = document.getElementById('totalStat');
+    const visibleStat = document.getElementById('visibleStat');
+    const categoryStat = document.getElementById('categoryStat');
+    const searchInput = document.getElementById('searchInput');
+    const sortBtn = document.getElementById('sortBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const passwordInput = document.getElementById('passwordInput');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const fileList = document.getElementById('fileList');
+    const tabs = [...document.querySelectorAll('.tab')];
+
+    function setStatus(text, type=''){
+      statusBox.className = `status ${type}`.trim();
+      statusBox.textContent = text;
+    }
+
+    function badgeText(type){
+      if(type === 'new') return 'NEW';
+      if(type === 'hot') return 'HOT';
+      if(type === 'pin') return 'IMPORTANT';
+      return 'TAG';
+    }
+
+    function tabIcon(tab){
+      return tab === 'listening' ? '🎧' : tab === 'speaking' ? '🎤' : '📖';
+    }
+
+    function categoryName(tab){
+      return tab.charAt(0).toUpperCase() + tab.slice(1);
+    }
+
+    function updateStats(visible){
+      const total = Object.values(data).reduce((n, arr) => n + arr.length, 0);
+      totalStat.textContent = total;
+      visibleStat.textContent = visible.length;
+      categoryStat.textContent = categoryName(currentTab);
+      modeStat.textContent = isAdmin ? 'Admin' : 'Khách';
+    }
+
+    function highlight(text, query){
+      const escaped = escapeHtml(text);
+      if(!query) return escaped;
+      const idx = escaped.toLowerCase().indexOf(query.toLowerCase());
+      if(idx === -1) return escaped;
+      return escaped.slice(0, idx) + `<span class="hl">` + escaped.slice(idx, idx + query.length) + `</span>` + escaped.slice(idx + query.length);
+    }
+
+    function escapeHtml(str){
+      return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+    }
+
+    function render(){
+      const q = searchInput.value.trim();
+      let list = [...(data[currentTab] || [])].filter(item =>
+        item.name.toLowerCase().includes(q.toLowerCase()) ||
+        String(item.note || '').toLowerCase().includes(q.toLowerCase())
+      );
+
+      list.sort((a,b)=> sortAsc
+        ? a.name.localeCompare(b.name, undefined, { numeric:true, sensitivity:'base' })
+        : b.name.localeCompare(a.name, undefined, { numeric:true, sensitivity:'base' })
+      );
+
+      updateStats(list);
+
+      if(!list.length){
+        fileList.innerHTML = `<div class="empty">Không có tài liệu nào trong mục <b>${categoryName(currentTab)}</b> khớp từ khóa tìm kiếm.</div>`;
+        return;
+      }
+
+      fileList.innerHTML = list.map((item, i) => `
+        <div class="file ${currentTab}" style="animation-delay:${i * .05}s">
+          <div class="file-left">
+            <div class="file-icon">${tabIcon(currentTab)}</div>
+            <div>
+              <div class="file-name">${highlight(item.name, q)}</div>
+              <div class="meta">
+                <span class="tag ${item.badge || ''}">${badgeText(item.badge)}</span>
+                ${item.note ? `<span>${highlight(item.note, q)}</span>` : ''}
+              </div>
+            </div>
+          </div>
+          <div class="actions">
+            <a href="${escapeHtml(item.url)}" target="_blank" rel="noreferrer"><button class="btn" type="button">Tải về</button></a>
+            ${isAdmin ? `<button class="btn danger" type="button" onclick="deleteItem('${currentTab}','${encodeURIComponent(item.name)}')">Xóa</button>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function deleteItem(tab, encodedName){
+      const name = decodeURIComponent(encodedName);
+      const p = prompt(`Nhập pass để xóa: ${name}`);
+      if(p !== ADMIN){
+        setStatus('Sai pass. Không xóa.', 'error');
+        return;
+      }
+      data[tab] = data[tab].filter(item => item.name !== name);
+      setStatus(`Đã xóa “${name}” khỏi giao diện hiện tại. Muốn lưu vĩnh viễn thì nhớ sửa code rồi up lại GitHub.`, 'success');
+      render();
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        currentTab = tab.dataset.tab;
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        render();
+      });
+    });
+
+    searchInput.addEventListener('input', render);
+    sortBtn.addEventListener('click', () => {
+      sortAsc = !sortAsc;
+      sortBtn.textContent = sortAsc ? 'A → Z' : 'Z → A';
+      render();
+    });
+    clearBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      render();
+    });
+
+    loginBtn.addEventListener('click', () => {
+      if(passwordInput.value === ADMIN){
+        isAdmin = true;
+        passwordInput.value = '';
+        setStatus('Mở admin mode thành công. Nút xóa đã hiện ra.', 'success');
+      }else{
+        isAdmin = false;
+        setStatus('Sai pass admin.', 'error');
+      }
+      render();
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      isAdmin = false;
+      passwordInput.value = '';
+      setStatus('Đã thoát admin mode.');
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
+
