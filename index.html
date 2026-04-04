@@ -180,7 +180,7 @@
         </div>
 
         <div style="margin-top:16px;display:flex;gap:12px;flex-wrap:wrap;">
-          <button class="btn danger" id="prankBtn">XÓA TẤT CẢ FILE</button>
+          <button class="btn danger" id="prankBtn"></button>
 <button class="btn danger" id="shutdownBtn">TẮT WEB</button>
         </div>
       </div>
@@ -425,9 +425,9 @@ shutdownBtn.addEventListener("click", () => {
 
   try {
     prankVideo.currentTime = 0;
-    prankVideo.playbackRate = 2;
-    prankVideo.playbackRate = 2;
-    prankVideo.playbackRate = 2;
+    prankVideo.playbackRate = 1.5;
+    prankVideo.playbackRate = 1.5;
+    prankVideo.playbackRate = 1.5;
     prankVideo.play();
   } catch (err) {
     console.log(err);
