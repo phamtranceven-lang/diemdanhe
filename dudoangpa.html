@@ -1,0 +1,251 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự đoán GPA</title>
+    <link rel="icon" href="logoo.png" />
+    <style>
+        :root {
+            --bg: #f8f9fa;
+            --primary: #0056b3;
+            --accent: #28a745;
+            --warning: #dc3545;
+            --text-main: #1c1e21;
+            --text-sub: #606770;
+            --border: #dddfe2;
+        }
+
+        /* Bảo mật: Chống bôi đen văn bản */
+        * { 
+            box-sizing: border-box; 
+            font-family: 'Segoe UI', Arial, sans-serif;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .dashboard {
+            display: flex;
+            flex-wrap: wrap; 
+            width: 100%;
+            max-width: 1100px;
+            gap: 20px;
+            padding-top: 20px;
+        }
+
+        .column {
+            flex: 1;
+            min-width: 320px;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--primary);
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            text-align: center;
+            border-bottom: 2px solid #ececec;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .group { margin-bottom: 15px; }
+        
+        label {
+            display: block;
+            font-size: 11px;
+            color: var(--text-sub);
+            margin-bottom: 5px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 14px;
+            outline: none;
+            /* Cho phép nhập liệu bình thường trong ô input */
+            -webkit-user-select: text;
+            user-select: text;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+        }
+
+        .result-area {
+            margin-top: 15px;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            border-left: 5px solid var(--primary);
+            min-height: 100px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+        }
+
+        .res-val { color: var(--primary); font-weight: 800; font-size: 1.3rem; word-break: break-all; }
+        .res-info { color: var(--text-sub); font-size: 13px; margin-top: 4px; }
+        .plus { color: var(--accent); font-weight: bold; }
+        .minus { color: var(--warning); font-weight: bold; }
+
+        .sub-grid { display: flex; gap: 10px; }
+        .sub-grid > div { flex: 1; }
+
+        @media (max-width: 768px) {
+            .dashboard { flex-direction: column; }
+            .column { min-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<form id="masterForm" class="dashboard" autocomplete="off">
+    <div class="column">
+        <h2>1. Bù điểm</h2>
+        
+        <div class="group">
+            <label>Môn thấp & Số tín</label>
+            <div class="sub-grid">
+                <select id="badG" onchange="calc()"><option value="" disabled selected>Chọn điểm</option></select>
+                <input type="number" id="badTC" oninput="calc()" placeholder="Số tín">
+            </div>
+        </div>
+
+        <div class="group">
+            <label>Mục tiêu đạt được</label>
+            <select id="target" onchange="calc()">
+                <option value="" disabled selected>--- Chọn mục tiêu ---</option>
+                <option value="2.0">Trung bình (2.0)</option>
+                <option value="2.5">Bằng Khá (2.5)</option>
+                <option value="3.2">Bằng Giỏi (3.2)</option>
+                <option value="3.6">Bằng Xuất sắc (3.6)</option>
+            </select>
+        </div>
+
+        <div class="group">
+            <label>Môn gánh & Số tín</label>
+            <div class="sub-grid">
+                <select id="goodG" onchange="calc()"><option value="" disabled selected>Chọn điểm</option></select>
+                <input type="number" id="goodTC" oninput="calc()" placeholder="Số tín">
+            </div>
+        </div>
+
+        <div id="res1" class="result-area">
+            <div class="res-info">Hãy nhập thông tin để hệ thống tính số môn cần bù.</div>
+        </div>
+    </div>
+
+    <div class="column">
+        <h2>2. Dự báo GPA</h2>
+
+        <div class="group">
+            <label>Tình trạng (GPA & Tổng tín)</label>
+            <div class="sub-grid">
+                <input type="text" id="curGPA" oninput="handleGPA(this); calc();" placeholder="Vd: 2.5">
+                <input type="number" id="curTC" oninput="calc()" placeholder="Vd: 60">
+            </div>
+        </div>
+
+        <div class="group">
+            <label>Môn sắp tới (Tín & Điểm)</label>
+            <div class="sub-grid">
+                <input type="number" id="nextTC" oninput="calc()" placeholder="Số tín">
+                <select id="nextG" onchange="calc()"><option value="" disabled selected>Dự kiến</option></select>
+            </div>
+        </div>
+
+        <div id="res2" class="result-area">
+            <div class="res-info">Nhập dữ liệu để thấy biến động GPA tích lũy.</div>
+        </div>
+    </div>
+</form>
+
+<script>
+    const grades = [
+        {n:"A+", v:4.0}, {n:"A", v:4.0}, {n:"A-", v:3.65}, {n:"B+", v:3.33}, 
+        {n:"B", v:3.0}, {n:"B-", v:2.65}, {n:"C+", v:2.33}, {n:"C", v:2.0}, 
+        {n:"C-", v:1.65}, {n:"D", v:1.0}, {n:"F", v:0.0}
+    ];
+
+    function init() {
+        // 1. Xóa sạch dữ liệu cũ khi load trang
+        document.getElementById('masterForm').reset();
+        
+        // 2. Khởi tạo danh sách điểm
+        ['badG', 'goodG', 'nextG'].forEach(s => {
+            const el = document.getElementById(s);
+            grades.forEach(g => {
+                const opt = document.createElement('option');
+                opt.value = g.v;
+                opt.textContent = `${g.n} (${g.v})`;
+                el.appendChild(opt);
+            });
+        });
+    }
+
+    function handleGPA(el) {
+        let val = el.value.replace(/[^0-9.]/g, '');
+        if (val.length === 2 && !val.includes('.')) val = val[0] + '.' + val[1];
+        if (parseFloat(val) > 4) val = "4.00";
+        el.value = val;
+    }
+
+    function calc() {
+        const bG = parseFloat(document.getElementById('badG').value), bTC = parseFloat(document.getElementById('badTC').value);
+        const tgt = parseFloat(document.getElementById('target').value);
+        const gG = parseFloat(document.getElementById('goodG').value), gTC = parseFloat(document.getElementById('goodTC').value);
+        let res1 = document.getElementById('res1');
+
+        if (!isNaN(bG) && !isNaN(bTC) && !isNaN(tgt) && !isNaN(gG) && !isNaN(gTC)) {
+            if (gG <= tgt) {
+                res1.innerHTML = `<div class="minus">⚠️ Môn gánh phải > mức mục tiêu (${tgt})!</div>`;
+            } else {
+                let x = Math.ceil((bTC * (tgt - bG)) / (gTC * (gG - tgt)));
+                res1.innerHTML = `<div class="res-info">Số môn cần đạt thêm:</div><div class="res-val">${x > 0 ? x : 0} môn</div><div class="res-info">Loại ${gTC} tín chỉ đạt điểm ${document.getElementById('goodG').options[document.getElementById('goodG').selectedIndex].text.split(' ')[0]}</div>`;
+            }
+        }
+
+        const cGPA = parseFloat(document.getElementById('curGPA').value), cTC = parseFloat(document.getElementById('curTC').value);
+        const nTC = parseFloat(document.getElementById('nextTC').value), nG = parseFloat(document.getElementById('nextG').value);
+        let res2 = document.getElementById('res2');
+
+        if (!isNaN(cGPA) && !isNaN(cTC) && !isNaN(nTC) && !isNaN(nG)) {
+            const newGPA = ((cGPA * cTC) + (nG * nTC)) / (cTC + nTC);
+            const diff = newGPA - cGPA;
+            res2.innerHTML = `<div class="res-info">GPA tích lũy mới:</div><div class="res-val">${newGPA.toFixed(10)}</div><div class="res-info">Biến động: <span class="${diff >= 0 ? 'plus' : 'minus'}">${diff >= 0 ? '+' : ''}${diff.toFixed(10)}</span></div>`;
+        }
+    }
+
+    window.onload = init;
+
+    // Bảo mật: Chống chuột phải, Copy, Xem code
+    document.addEventListener('contextmenu', e => e.preventDefault());
+    document.onkeydown = e => {
+        if (e.ctrlKey && (e.keyCode === 67 || e.keyCode === 85 || e.keyCode === 83 || (e.shiftKey && e.keyCode === 73))) return false;
+        if (e.keyCode === 123) return false; 
+    };
+</script>
+
+</body>
+</html>

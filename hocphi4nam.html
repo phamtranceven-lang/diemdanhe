@@ -1,0 +1,460 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <script src="guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Học phí</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #b71c1c;
+            --std-color: #1565c0;
+            --intl-color: #2e7d32;
+            --bg: #f4f7f6;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            background: #fff;
+            padding: 10px 20px;
+            border-bottom: 4px solid var(--primary);
+            flex-shrink: 0;
+            z-index: 100;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-grid {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 5px 0;
+        }
+
+        .stat-item {
+            padding: 0 10px;
+            border-right: 2px solid #eee;
+        }
+
+        .stat-label {
+            font-size: 9px;
+            text-transform: uppercase;
+            color: #666;
+            font-weight: 800;
+            display: block;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .fee-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin: 5px 0;
+        }
+
+        #feeDisp {
+            width: 300px;
+            height: 45px;
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--primary);
+            outline: none;
+        }
+
+        .unit-price-box {
+            padding: 5px 15px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+
+        .unit-label {
+            font-size: 9px;
+            font-weight: 800;
+            color: #888;
+            display: block;
+        }
+
+        .unit-value {
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        #moneyText {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--primary);
+            font-style: italic;
+            margin-top: 2px;
+        }
+
+        #dashboardArea {
+            flex: 1;
+            padding: 15px 25px;
+            overflow-y: auto;
+            scroll-behavior: smooth;
+        }
+
+        .grid-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            /* Luôn 2 thẻ mỗi hàng */
+            gap: 25px;
+            padding-bottom: 40px;
+        }
+
+        /* Cấu trúc thẻ to y chang khung xanh yêu cầu */
+        .table-wrapper {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border: 2px solid #eee;
+            min-height: 480px;
+            /* Độ cao đảm bảo hiển thị đủ 3 kỳ và tổng */
+            display: flex;
+            flex-direction: column;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            flex: 1;
+        }
+
+        th,
+        td {
+            border: 1px solid #f0f0f0;
+            padding: 6px 5px;
+            text-align: center;
+        }
+
+        th {
+            background: #f8f9fa;
+            font-size: 11px;
+            color: #7f8c8d;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        td {
+            font-size: 18px;
+            font-weight: 800;
+            height: 65px;
+        }
+
+        .year-title-row {
+            background: #fff5f5;
+            color: var(--primary);
+        }
+
+        .year-title-row td {
+            padding: 12px 18px;
+            font-size: 20px;
+            font-weight: 900;
+            border: none;
+            text-align: left;
+        }
+
+        .sum-row {
+            background: #f0f4f8;
+            color: #2c3e50;
+            font-weight: 900;
+        }
+
+        .sum-row td {
+            height: 55px;
+            font-size: 17px;
+        }
+
+        .input-tin {
+            width: 75px;
+            padding: 6px;
+            border: 3px solid #ddd;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 900;
+            font-size: 22px;
+        }
+
+        footer {
+            padding: 10px;
+            background: #fff;
+            border-top: 2px solid #eee;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-shrink: 0;
+        }
+
+        .btn {
+            padding: 10px 30px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 14px;
+        }
+
+        .btn-add {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .btn-cap {
+            background: var(--primary);
+            color: white;
+        }
+
+        #customToast {
+            position: fixed;
+            top: 20px;
+            right: -400px;
+            background: #2ecc71;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 800;
+            z-index: 9999;
+            transition: right 0.5s;
+        }
+
+        #customToast.show {
+            right: 20px;
+        }
+
+        .sys-btn {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 800;
+            background: #e0e0e0;
+            margin: 0 6px;
+            font-size: 12px;
+        }
+
+        .sys-btn.active {
+            color: white;
+        }
+
+        #btnStd.active {
+            background: var(--std-color);
+        }
+
+        #btnIntl.active {
+            background: var(--intl-color);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="customToast">✅ Đã chụp và sao chép ảnh hoàn thiện!</div>
+    <header>
+        <div style="margin-bottom: 5px;">
+            <button class="sys-btn active" id="btnStd" onclick="switchSystem('std')">HỆ THƯỜNG</button>
+            <button class="sys-btn" id="btnIntl" onclick="switchSystem('intl')">HỆ QUỐC TẾ</button>
+        </div>
+        <div class="stat-grid">
+            <div class="stat-item"><span class="stat-label">Tổng tín</span><span class="stat-value" id="allTC">0</span>
+            </div>
+            <div class="stat-item"><span class="stat-label">Tín lời</span><span class="stat-value" id="allProfitTerm"
+                    style="color:var(--intl-color)">0</span></div>
+            <div class="stat-item"><span class="stat-label">Niêm yết</span><span class="stat-value" id="allTM">0</span>
+            </div>
+            <div class="stat-item"><span class="stat-label" style="color:var(--intl-color)">Tiết kiệm</span><span
+                    class="stat-value" id="allP">0</span></div>
+            <div class="stat-item" style="border:none"><span class="stat-label" style="color:var(--primary)">THỰC
+                    ĐÓNG</span><span class="stat-value" id="allF"
+                    style="color:var(--primary); font-size: 22px;">0</span></div>
+        </div>
+        <div class="fee-row">
+            <input type="text" id="feeDisp" placeholder="Học phí kỳ 1 năm 1" oninput="updateFee(this)"
+                autocomplete="off">
+            <div class="unit-price-box">
+                <span class="unit-label">ĐƠN GIÁ 1 TÍN CHỈ</span>
+                <span class="unit-value" id="unitPrice">0</span>
+            </div>
+        </div>
+        <div id="moneyText">Thực đóng bằng chữ: (Trống)</div>
+    </header>
+    <div id="dashboardArea">
+        <div class="grid-container" id="gridContent"></div>
+    </div>
+    <footer>
+        <button class="btn btn-add" onclick="addNewYear()">➕ Thêm năm học</button>
+        <button class="btn btn-cap" onclick="captureGrid()">📸 Chụp ảnh</button>
+    </footer>
+    <div id="captureWrapper"
+        style="position: absolute; left: -9999px; background: #f4f7f6; padding: 30px; width: 1600px;"></div>
+    <script>
+        let currentSystem = 'std';
+        let yearsCount = 0;
+        function showToast(msg) {
+            const toast = document.getElementById('customToast');
+            toast.innerText = "✅ " + msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+        function docSoThanhChu(so) {
+            if (!so || so <= 0) return "";
+            const chuSo = [" không", " một", " hai", " ba", " bốn", " năm", " sáu", " bảy", " tám", " chín"];
+            const lop = ["", " nghìn", " triệu", " tỷ"];
+            function doc3So(n) {
+                let h = Math.floor(n / 100), t = Math.floor((n % 100) / 10), u = n % 10;
+                let res = chuSo[h] + " trăm";
+                if (t == 0 && u != 0) res += " linh" + chuSo[u];
+                else if (t != 0 && t != 1) { res += chuSo[t] + " mươi"; if (u == 1) res += " mốt"; }
+                else if (t == 1) { res += " mười"; if (u == 1) res += " một"; }
+                if (u == 5 && t != 0) res += " lăm"; else if (u != 0 && (t != 0 || u != 1)) res += chuSo[u];
+                return res;
+            }
+            let s = Math.round(so).toString(), j = 0, res = "", v = [];
+            let i = s.length; while (i > 0) { v[j++] = parseInt(s.substring(i - 3, i)); i -= 3; }
+            for (i = j - 1; i >= 0; i--) if (v[i] != 0) res += doc3So(v[i]) + lop[i];
+            return res.trim().charAt(0).toUpperCase() + res.trim().slice(1) + " đồng.";
+        }
+        function updateFee(el) {
+            let val = el.value.replace(/\D/g, "");
+            el.dataset.raw = val || 0;
+            el.value = val ? new Intl.NumberFormat('vi-VN').format(val) : "";
+            const unit = (parseFloat(val) || 0) / 16;
+            document.getElementById('unitPrice').innerText = new Intl.NumberFormat('vi-VN').format(Math.round(unit));
+            calculate();
+        }
+        function addNewYear() {
+            yearsCount++;
+            const container = document.getElementById('gridContent');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'table-wrapper';
+            const yNum = yearsCount;
+            wrapper.innerHTML = `
+                <table>
+                    <thead>
+                        <tr class="year-title-row"><td colspan="4">NĂM THỨ ${yNum}</td></tr>
+                        <tr><th style="width:20%">Kỳ học</th><th style="width:20%">Tín</th><th style="width:40%">Số tiền</th><th style="width:20%">Lời</th></tr>
+                    </thead>
+                    <tbody id="body-year-${yNum}">
+                        ${['Kỳ 1', 'Kỳ 2', 'Hè'].map((s, idx) => `
+                        <tr class="data-row" data-year="${yNum}" data-term="${idx}">
+                            <td style="text-align:left; padding-left:18px; color:#555">${s}</td>
+                            <td><input type="number" class="input-tin" value="0" min="0" oninput="validateAndCalc(this)"></td>
+                            <td style="text-align:right; padding-right:18px">0</td>
+                            <td style="color:var(--intl-color)">0</td>
+                        </tr>`).join('')}
+                    </tbody>
+                    <tfoot>
+                        <tr class="sum-row">
+                            <td colspan="2">TỔNG CỘNG NĂM ${yNum}</td>
+                            <td id="sum-money-${yNum}" style="text-align:right; padding-right:18px">0</td>
+                            <td id="sum-profit-${yNum}">0</td>
+                        </tr>
+                    </tfoot>
+                </table>`;
+            container.appendChild(wrapper);
+            calculate();
+        }
+        function validateAndCalc(el) {
+            const term = parseInt(el.closest('.data-row').dataset.term);
+            const max = (term === 2) ? 12 : (currentSystem === 'std' ? 19 : 21);
+            if (parseInt(el.value) > max) { el.value = 0; }
+            calculate();
+        }
+        function calculate() {
+            const base = parseFloat(document.getElementById('feeDisp').dataset.raw) || 0;
+            const unit = base / 16;
+            const maxN = currentSystem === 'std' ? 19 : 21;
+            let totalC = 0, totalM = 0, totalP = 0;
+            for (let y = 1; y <= yearsCount; y++) {
+                let yM = 0, yP = 0, yTC = 0;
+                document.querySelectorAll(`.data-row[data-year="${y}"]`).forEach(r => {
+                    const term = parseInt(r.dataset.term);
+                    const c = parseInt(r.querySelector('.input-tin').value) || 0;
+                    let fee = 0, profit = 0;
+                    if (y === 1 && term === 0) { fee = base; profit = 0; }
+                    else if (c > 0) {
+                        fee = (c >= 14 && c <= maxN && term !== 2) ? base : (c < 14 ? c * unit : base + (c - (term === 2 ? 0 : maxN)) * unit);
+                        if (term !== 2) profit = (c >= 14) ? (Math.min(c, maxN) - 16) : 0;
+                    }
+                    r.cells[2].innerText = fee > 0 ? new Intl.NumberFormat('vi-VN').format(Math.round(fee)) : "0";
+                    r.cells[3].innerText = profit > 0 ? profit : "0";
+                    yM += fee; yP += profit; yTC += c;
+                });
+                const sm = document.getElementById(`sum-money-${y}`);
+                const sp = document.getElementById(`sum-profit-${y}`);
+                if (sm) sm.innerText = new Intl.NumberFormat('vi-VN').format(Math.round(yM));
+                if (sp) sp.innerText = yP;
+                totalM += yM; totalP += yP; totalC += yTC;
+            }
+            const finalF = totalM - (totalP * unit);
+            document.getElementById('allTC').innerText = totalC;
+            document.getElementById('allProfitTerm').innerText = totalP;
+            document.getElementById('allTM').innerText = new Intl.NumberFormat('vi-VN').format(Math.round(totalM));
+            document.getElementById('allP').innerText = new Intl.NumberFormat('vi-VN').format(Math.round(totalP * unit));
+            document.getElementById('allF').innerText = new Intl.NumberFormat('vi-VN').format(Math.round(finalF));
+            document.getElementById('moneyText').innerText = "Thực đóng bằng chữ: " + docSoThanhChu(finalF);
+        }
+        function switchSystem(sys) {
+            currentSystem = sys;
+            document.getElementById('btnStd').classList.toggle('active', sys === 'std');
+            document.getElementById('btnIntl').classList.toggle('active', sys === 'intl');
+            calculate();
+        }
+        async function captureGrid() {
+            const wrapper = document.getElementById('captureWrapper');
+            wrapper.innerHTML = "";
+            const hClone = document.querySelector('header').cloneNode(true);
+            const feeInput = hClone.querySelector('#feeDisp');
+            const staticFee = document.createElement('div');
+            staticFee.innerText = document.getElementById('feeDisp').value || "0";
+            staticFee.style.cssText = "width:300px; height:45px; border:3px solid #b71c1c; border-radius:10px; font-size:26px; font-weight:900; color:#b71c1c; display:flex; align-items:center; justify-content:center; background:#fff; margin:0 auto; padding-top:4px;";
+            feeInput.parentNode.replaceChild(staticFee, feeInput);
+            const gClone = document.getElementById('gridContent').cloneNode(true);
+            gClone.querySelectorAll('.input-tin').forEach((inp, i) => {
+                const val = document.querySelectorAll('.input-tin')[i].value;
+                const span = document.createElement('div');
+                span.innerText = val;
+                span.style.cssText = "width:75px; height:40px; border:3px solid #ddd; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:20px; font-weight:900; color:#000; margin:0 auto; padding-top:2px;";
+                inp.parentNode.replaceChild(span, inp);
+            });
+            wrapper.appendChild(hClone);
+            wrapper.appendChild(gClone);
+            const canvas = await html2canvas(wrapper, { scale: 2, backgroundColor: "#f4f7f6" });
+            canvas.toBlob(async b => {
+                await navigator.clipboard.write([new ClipboardItem({ "image/png": b })]);
+                showToast("Đã chụp và sao chép ảnh thành công!");
+            });
+        }
+        window.onload = () => { for (let i = 0; i < 4; i++) addNewYear(); };
+    </script>
+</body>
+
+</html>

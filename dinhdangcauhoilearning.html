@@ -1,0 +1,557 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <script src="guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Định dạng</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-color: #f3f4f6;
+            --panel-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            /* Bắt buộc để full màn hình */
+            overflow: hidden;
+            /* Cấm tuyệt đối thanh cuộn của trình duyệt */
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+        }
+
+        /* Container chính chiếm trọn màn hình */
+        .app-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        /* --- HEADER --- */
+        .header {
+            height: 50px;
+            padding: 0 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            flex-shrink: 0;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 18px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 800;
+        }
+
+        /* --- WORKSPACE --- */
+        .workspace {
+            flex: 1;
+            display: flex;
+            flex-direction: row;
+            /* PC: Ngang */
+            padding: 10px;
+            gap: 10px;
+            overflow: hidden;
+        }
+
+        /* --- PANEL --- */
+        .panel {
+            flex: 1;
+            background: var(--panel-bg);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            min-width: 0;
+            min-height: 0;
+        }
+
+        .panel-header {
+            padding: 8px 15px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8fafc;
+            border-radius: 12px 12px 0 0;
+            height: 40px;
+            flex-shrink: 0;
+        }
+
+        /* --- TEXTAREA --- */
+        textarea {
+            flex: 1;
+            width: 100%;
+            border: none;
+            padding: 15px;
+            resize: none;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #334155;
+            background: transparent;
+            outline: none;
+            overflow-y: auto;
+        }
+
+        /* Custom Scrollbar cho Textarea */
+        textarea::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        textarea::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        textarea::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* --- CONTROLS --- */
+        .controls {
+            display: flex;
+            gap: 5px;
+            align-items: center;
+        }
+
+        .count-badge {
+            background: #e2e8f0;
+            color: #475569;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            margin-left: 5px;
+            white-space: nowrap;
+        }
+
+        .count-badge.active {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .dup-warning {
+            display: none;
+            align-items: center;
+            background: #fff7ed;
+            color: #ea580c;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-right: 5px;
+            white-space: nowrap;
+        }
+
+        .btn-icon {
+            background: white;
+            border: 1px solid #e2e8f0;
+            color: #475569;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+        }
+
+        .btn-icon:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .btn-text {
+            display: inline;
+        }
+
+        /* --- MOBILE RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .header {
+                height: 45px;
+                padding: 0 10px;
+            }
+
+            h1 {
+                font-size: 16px;
+            }
+
+            .workspace {
+                flex-direction: column;
+                padding: 5px;
+                gap: 5px;
+            }
+
+            .panel {
+                flex: 1;
+            }
+
+            .btn-text {
+                display: none;
+            }
+
+            .btn-icon {
+                padding: 5px 8px;
+            }
+
+            textarea {
+                font-size: 13px;
+                padding: 10px;
+            }
+        }
+
+        /* --- MODAL --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal {
+            background: white;
+            width: 85%;
+            max-width: 320px;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            transform: scale(0.9);
+            transition: 0.3s;
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+
+        .modal-icon-wrapper {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px auto;
+            font-size: 24px;
+        }
+
+        .modal.type-success .modal-icon-wrapper {
+            background: #dcfce7;
+            color: #10b981;
+        }
+
+        .modal.type-warning .modal-icon-wrapper {
+            background: #fff7ed;
+            color: #f97316;
+        }
+
+        .modal.type-danger .modal-icon-wrapper {
+            background: #fef2f2;
+            color: #ef4444;
+        }
+
+        .modal h3 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+        }
+
+        .modal p {
+            font-size: 13px;
+            color: #64748b;
+            margin-bottom: 15px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .btn-modal {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .btn-cancel {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .btn-confirm {
+            background: #2563eb;
+            color: white;
+        }
+
+        .modal.type-warning .btn-confirm {
+            background: #f97316;
+        }
+
+        .modal.type-danger .btn-confirm {
+            background: #ef4444;
+        }
+
+        .modal.type-success .btn-confirm {
+            background: #10b981;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+        <div class="header">
+            <h1>✨ Định dạng tự động</h1>
+        </div>
+
+        <div class="workspace">
+            <div class="panel">
+                <div class="panel-header">
+                    <div style="display:flex; align-items:center; overflow: hidden;">
+                        Nhập
+                        <span id="inputCount" class="count-badge">0</span>
+                    </div>
+                    <div class="controls">
+                        <span id="dupWarning" class="dup-warning">⚠️ 0</span>
+                        <button class="btn-icon" onclick="pasteInput()" title="Dán">
+                            <span>📋</span> <span class="btn-text">Dán</span>
+                        </button>
+                        <button class="btn-icon" onclick="checkDuplicateManual()" title="Check trùng">
+                            <span>🔍</span> <span class="btn-text">Check</span>
+                        </button>
+                        <button class="btn-icon" onclick="requestClearInput()"
+                            style="color:#ef4444; border-color:#fecaca" title="Xóa">
+                            <span>🗑️</span> <span class="btn-text">Xóa</span>
+                        </button>
+                    </div>
+                </div>
+                <textarea id="inputText" placeholder="Dán nội dung vào đây..."></textarea>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <div style="display:flex; align-items:center;">
+                        Xuất
+                        <span id="outputCount" class="count-badge">0</span>
+                    </div>
+                    <button class="btn-icon" onclick="copyResult()" style="color:#10b981; border-color:#bbf7d0">
+                        <span>📋</span> <span class="btn-text">Sao chép</span>
+                    </button>
+                </div>
+                <textarea id="outputText" readonly placeholder="Kết quả..."></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div id="universalModal" class="modal-overlay">
+        <div id="modalContent" class="modal">
+            <div id="modalIcon" class="modal-icon-wrapper"></div>
+            <h3 id="modalTitle"></h3>
+            <p id="modalMsg"></p>
+            <div id="modalActions" class="modal-actions">
+                <button id="btnCancel" class="btn-modal btn-cancel" onclick="closeModal()">Hủy</button>
+                <button id="btnConfirm" class="btn-modal btn-confirm">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const inputArea = document.getElementById('inputText');
+        const outputArea = document.getElementById('outputText');
+        const inputCountBadge = document.getElementById('inputCount');
+        const outputCountBadge = document.getElementById('outputCount');
+        const dupWarning = document.getElementById('dupWarning');
+
+        const modalOverlay = document.getElementById('universalModal');
+        const modalContent = document.getElementById('modalContent');
+        const modalIcon = document.getElementById('modalIcon');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalMsg = document.getElementById('modalMsg');
+        const modalActions = document.getElementById('modalActions');
+        const btnConfirm = document.getElementById('btnConfirm');
+        const btnCancel = document.getElementById('btnCancel');
+
+        let parsedQuestions = [];
+
+        inputArea.addEventListener('input', () => { dupWarning.style.display = 'none'; processData(false); });
+        inputArea.addEventListener('paste', () => setTimeout(() => processData(true), 100));
+
+        function processData(checkDup = false) {
+            let text = inputArea.value;
+            let rawBlocks = text.split(/(?=Question\s+\d+)/i);
+            parsedQuestions = [];
+
+            rawBlocks.forEach(block => {
+                block = block.trim();
+                if (!block) return;
+                let matchHeader = block.match(/Question\s+(\d+)(.*)/is);
+                if (matchHeader) {
+                    let qNum = matchHeader[1];
+                    let lines = block.replace(/Question\s+\d+.*(\r?\n)?/, '').split(/\r?\n/);
+                    let qContent = [], qAnswers = [];
+                    lines.forEach(line => {
+                        line = line.trim();
+                        // --- LOGIC LỌC DÒNG RÁC ---
+                        if (!line ||
+                            line.includes("Points") ||
+                            line === "Reset Selection" ||
+                            line.includes("Maximum number") ||
+                            line.includes("Show Rich-Text Editor")) { // <--- ĐÃ THÊM DÒNG NÀY
+                            return;
+                        }
+                        // --------------------------
+                        if (line.match(/^[A-D]\./)) qAnswers.push(line);
+                        else qContent.push(line);
+                    });
+                    parsedQuestions.push({ content: qContent.join(" "), fullContentLines: qContent, answers: qAnswers, raw: block, isDuplicate: false });
+                }
+            });
+
+            inputCountBadge.innerText = parsedQuestions.length;
+            inputCountBadge.classList.toggle('active', parsedQuestions.length > 0);
+
+            if (checkDup && parsedQuestions.length > 0) {
+                let dupCount = countDuplicates(parsedQuestions);
+                if (dupCount > 0) { showModal('duplicate', dupCount); return; }
+            }
+            renderOutput(parsedQuestions);
+        }
+
+        function countDuplicates(questions) {
+            let uniqueSet = new Set(), dupCount = 0;
+            questions.forEach(q => {
+                let sig = (q.content + q.answers.join("")).toLowerCase().replace(/\s/g, '');
+                if (sig.length < 5) return;
+                if (uniqueSet.has(sig)) { dupCount++; q.isDuplicate = true; }
+                else { uniqueSet.add(sig); q.isDuplicate = false; }
+            });
+            return dupCount;
+        }
+
+        function renderOutput(questions) {
+            let resultText = [];
+            questions.forEach((q, i) => {
+                let contentStr = q.fullContentLines.length ? q.fullContentLines.join("\n") : "(Không nội dung)";
+                resultText.push(`Câu ${i + 1}: ${contentStr}`);
+                if (q.answers.length) q.answers.forEach(a => resultText.push(a));
+                else resultText.push("Trả lời");
+                if (i < questions.length - 1) resultText.push("");
+            });
+            outputArea.value = resultText.join("\n");
+            outputCountBadge.innerText = questions.length;
+            outputCountBadge.classList.toggle('active', questions.length > 0);
+        }
+
+        function checkDuplicateManual() {
+            if (!inputArea.value.trim()) return showModal('success', "Chưa có nội dung!");
+            processData(true);
+            if (countDuplicates(parsedQuestions) === 0) showModal('success', "Không có câu trùng!");
+        }
+
+        function showModal(type, extra) {
+            modalOverlay.classList.add('show');
+            modalContent.className = 'modal';
+            btnCancel.style.display = 'block';
+
+            if (type === 'duplicate') {
+                modalContent.classList.add('type-warning');
+                modalIcon.innerHTML = '⚠️'; modalTitle.innerText = 'Trùng lặp';
+                modalMsg.innerText = `Có ${extra} câu trùng. Xóa không?`;
+                btnConfirm.innerText = 'Xóa';
+                btnConfirm.onclick = () => {
+                    parsedQuestions = parsedQuestions.filter(q => !q.isDuplicate);
+                    inputArea.value = parsedQuestions.map(q => q.raw).join("\n\n");
+                    renderOutput(parsedQuestions); inputCountBadge.innerText = parsedQuestions.length;
+                    dupWarning.style.display = 'none'; closeModal();
+                };
+                btnCancel.innerText = 'Giữ';
+                btnCancel.onclick = () => {
+                    dupWarning.innerText = `⚠️ ${extra}`; dupWarning.style.display = 'inline-flex';
+                    renderOutput(parsedQuestions); closeModal();
+                };
+            } else if (type === 'delete') {
+                modalContent.classList.add('type-danger');
+                modalIcon.innerHTML = '🗑️'; modalTitle.innerText = 'Xóa tất cả?';
+                modalMsg.innerText = 'Dữ liệu sẽ mất hết.';
+                btnConfirm.innerText = 'Xóa';
+                btnConfirm.onclick = () => {
+                    inputArea.value = ""; outputArea.value = "";
+                    inputCountBadge.innerText = "0"; outputCountBadge.innerText = "0";
+                    parsedQuestions = []; dupWarning.style.display = 'none';
+                    closeModal(); inputArea.focus();
+                };
+            } else if (type === 'success') {
+                modalContent.classList.add('type-success');
+                modalIcon.innerHTML = '✅'; modalTitle.innerText = 'Thông báo';
+                modalMsg.innerText = extra;
+                btnCancel.style.display = 'none';
+                btnConfirm.innerText = 'OK';
+                btnConfirm.onclick = closeModal;
+            }
+        }
+        function closeModal() { modalOverlay.classList.remove('show'); }
+        function requestClearInput() { if (inputArea.value) showModal('delete'); }
+
+        async function pasteInput() {
+            try { inputArea.value = await navigator.clipboard.readText(); processData(true); }
+            catch { alert('Dán thủ công!'); }
+        }
+        function copyResult() {
+            if (!outputArea.value) return;
+            outputArea.select(); navigator.clipboard.writeText(outputArea.value);
+            showModal('success', 'Đã sao chép vào bộ nhớ đệm!');
+        }
+    </script>
+</body>
+
+</html>

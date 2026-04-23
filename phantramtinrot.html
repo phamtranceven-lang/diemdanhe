@@ -1,0 +1,242 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <script src="guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tín Chỉ Rớt</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            /* Ưu tiên canh trên để cuộn trên mobile */
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .dashboard {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            flex-direction: column;
+            /* Mobile mặc định là dọc */
+            gap: 15px;
+        }
+
+        /* Sidebar: Nhập liệu */
+        .sidebar {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #334155;
+        }
+
+        h2 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            color: var(--secondary);
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Grid cho các mức % */
+        .grid-container {
+            display: grid;
+            /* Tự động tính toán số cột dựa trên độ rộng màn hình (tối thiểu 100px mỗi ô) */
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+        }
+
+        .result-item {
+            background: var(--card-bg);
+            padding: 15px 10px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid #334155;
+        }
+
+        .result-item .percent {
+            font-size: 0.75rem;
+            color: #94a3b8;
+        }
+
+        .result-item .value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .result-item .unit {
+            font-size: 0.65rem;
+            color: var(--secondary);
+        }
+
+        /* Ô đặc biệt cho % tùy chỉnh */
+        .custom-result {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .custom-result .big-val {
+            font-size: 2rem;
+            font-weight: 900;
+        }
+
+        /* --- RESPONSIVE CHO MÀN HÌNH LỚN (Desktop) --- */
+        @media (min-width: 768px) {
+            body {
+                align-items: center;
+                /* Canh giữa màn hình khi dùng máy tính */
+            }
+
+            .dashboard {
+                display: grid;
+                grid-template-columns: 320px 1fr;
+                /* Chia cột trái-phải */
+                height: auto;
+            }
+
+            .grid-container {
+                grid-template-columns: repeat(5, 1fr);
+                /* 5 cột đều nhau */
+            }
+        }
+
+        /* --- CỰC NHỎ (Dưới 320px) --- */
+        @media (max-width: 350px) {
+            .grid-container {
+                grid-template-columns: repeat(2, 1fr);
+                /* Chỉ 2 cột để không bị quá bé */
+            }
+
+            .custom-result {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .big-val {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+
+<body>
+
+    <div class="dashboard">
+        <div class="sidebar">
+            <h2>CÀI ĐẶT</h2>
+            <div class="input-group">
+                <label>TỔNG SỐ TÍN CHỈ</label>
+                <input type="number" id="total" placeholder="VD: 120" oninput="calculate()">
+            </div>
+            <div class="input-group">
+                <label>MỨC % TỰ CHỌN</label>
+                <input type="number" id="customP" placeholder="VD: 15" oninput="calculate()">
+            </div>
+            <p style="font-size: 0.75rem; color: #64748b; line-height: 1.4;">
+                * Hệ thống tự động lấy số nguyên thấp nhất (làm tròn xuống) để đảm bảo an toàn học vụ.
+            </p>
+        </div>
+
+        <div class="main-content">
+            <div class="grid-container" id="gridDisplay">
+            </div>
+
+            <div class="custom-result" id="customBox">
+                <div class="info-box">
+                    <div style="font-size: 0.9rem; opacity: 0.8;">MỨC TÙY CHỈNH</div>
+                    <div id="labelCustom" style="font-weight: bold;">0%</div>
+                </div>
+                <div class="big-val"><span id="valCustom">0</span> <small style="font-size: 1rem;">TÍN CHỈ</small></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculate() {
+            const total = parseFloat(document.getElementById('total').value) || 0;
+            const customP = parseFloat(document.getElementById('customP').value) || 0;
+            const grid = document.getElementById('gridDisplay');
+
+            // Render 10 mức cố định
+            let html = '';
+            for (let i = 1; i <= 10; i++) {
+                let val = Math.floor((total * i) / 100);
+                html += `
+                <div class="result-item">
+                    <div class="percent">Mức ${i}%</div>
+                    <div class="value">${val}</div>
+                    <div class="unit">Tín chỉ</div>
+                </div>
+            `;
+            }
+            grid.innerHTML = html;
+
+            // Cập nhật ô tùy chỉnh
+            document.getElementById('labelCustom').innerText = customP + "%";
+            document.getElementById('valCustom').innerText = Math.floor((total * customP) / 100);
+        }
+
+        // Chạy mặc định khi load
+        calculate();
+    </script>
+
+</body>
+
+</html>

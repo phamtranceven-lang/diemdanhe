@@ -1,0 +1,302 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dự Báo Điểm Tích Lũy</title>
+    <link rel="icon" href="logoo.png" />
+<style>
+    :root { --dtu-red: #d9534f; --dtu-blue: #3498db; --bg: #f4f7f6; }
+    
+    /* Cấu trúc hiển thị 1 màn hình */
+    body { 
+        font-family: 'Roboto', sans-serif; background: var(--bg); margin: 0; 
+        padding: 10px; color: #333; height: 100vh; overflow: hidden;
+        display: flex; align-items: center; justify-content: center;
+    }
+
+    .wrapper { 
+        width: 100%; max-width: 1400px; height: 95vh; 
+        display: grid; grid-template-columns: 350px 1fr; gap: 15px; 
+    }
+
+    /* Tối ưu 1 cột trên điện thoại */
+    @media (max-width: 850px) {
+        body { height: auto; overflow: auto; display: block; }
+        .wrapper { display: flex; flex-direction: column; height: auto; gap: 15px; }
+        .card { height: auto !important; }
+        #output-list { display: flex; flex-direction: column; overflow: visible; }
+        .btn-copy { width: 100%; padding: 12px; }
+    }
+
+    .card { 
+        background: white; padding: 15px; border-radius: 12px; 
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08); display: flex; flex-direction: column; overflow-x: hidden;
+    }
+    
+    .header-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+    h2 { margin: 0; color: var(--dtu-red); font-size: 1.1rem; }
+    
+    .btn-copy { 
+        background: var(--dtu-blue); color: white; border: none; padding: 5px 12px; 
+        border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: 0.2s;
+    }
+
+    #toast {
+        position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+        background: #333; color: white; padding: 10px 20px; border-radius: 20px;
+        font-size: 0.85rem; z-index: 1000; opacity: 0; transition: 0.3s; pointer-events: none;
+    }
+
+    .input-group { margin-bottom: 8px; }
+    label { display: block; font-weight: 600; font-size: 0.8rem; margin-bottom: 2px; color: #555; }
+    input, select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem; box-sizing: border-box; }
+    
+    .slider-box { background: #f8fafc; padding: 8px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 6px; }
+    .slider-header { display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: bold; color: var(--dtu-blue); }
+    input[type=range] { width: 100%; margin-top: 5px; cursor: pointer; }
+
+    /* Khu vực lộ trình có thanh cuộn */
+    #output-list { 
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); 
+        gap: 10px; overflow-y: auto; flex-grow: 1; padding-right: 5px;
+    }
+    .result-item { 
+        background: #fff; border: 1px solid #edf2f7; border-top: 4px solid var(--dtu-blue); 
+        padding: 10px; border-radius: 8px; height: fit-content;
+    }
+    .term-title { font-weight: bold; font-size: 0.85rem; color: #2d3748; display: flex; justify-content: space-between; }
+    
+    .info-box { background: #fffaf0; border: 1px solid #feebc8; padding: 8px; border-radius: 8px; margin-bottom: 10px; font-size: 0.8rem; color: #7b341e; }
+    .target-box { background: #ebf8ff; padding: 10px; border-radius: 10px; border: 1px solid #bee3f8; margin-top: 10px; }
+    .fee { color: #dd6b20; font-size: 0.85rem; font-weight: bold; margin-top: 5px; }
+    
+    .checkbox-group { display: flex; align-items: center; gap: 8px; margin: 5px 0 10px 0; font-size: 0.8rem; color: #d9534f; font-weight: bold; }
+    .checkbox-group input { width: 16px; height: 16px; cursor: pointer; }
+
+    #output-list::-webkit-scrollbar, .card form::-webkit-scrollbar { width: 5px; }
+    #output-list::-webkit-scrollbar-thumb, .card form::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 10px; }
+</style>
+</head>
+<body>
+
+<div id="toast"></div>
+
+<div class="wrapper">
+    <div class="card">
+      <h2>Thiết Lập</h2>
+      <div class="info-box" id="thesis-info">Mốc Khóa luận (5%): Đang tính...</div>
+      
+      <form autocomplete="off" style="flex-grow: 1; overflow-y: auto; padding-right: 5px;">
+          <div class="input-group"><label>Tổng tín chỉ khóa học</label><input type="number" id="totalTC" placeholder="Ví dụ: 128" oninput="calculateAll()"></div>
+          <div class="input-group"><label>Tín chỉ đã tích lũy</label><input type="number" id="doneTC" placeholder="Ví dụ: 100" oninput="calculateAll()"></div>
+          <div class="input-group">
+            <label>Điểm tích lũy hiện tại (hệ 4.0)</label>
+            <input type="number" id="currGPA" placeholder="Gõ 205 cho 2.05" oninput="handleGPAInput(this)">
+          </div>
+
+          <div class="checkbox-group">
+              <input type="checkbox" id="milStatus" onchange="calculateAll()">
+              <span>Đã hoàn thành Giáo dục Quốc phòng</span>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+              <div class="input-group">
+                <label>Năm bắt đầu</label>
+                <select id="y" onchange="checkOtherYear()">
+                    <option value="" disabled selected>Chọn năm</option>
+                    <option value="1">Năm 1</option><option value="2">Năm 2</option><option value="3">Năm 3</option><option value="4">Năm 4</option>
+                    <option value="other">Khác...</option>
+                </select>
+                <input type="number" id="otherY" placeholder="Nhập năm..." style="display:none; margin-top:5px;" oninput="calculateAll()">
+              </div>
+              <div class="input-group"><label>Kỳ bắt đầu</label>
+                <select id="t" onchange="calculateAll()">
+                    <option value="" disabled selected>Chọn kỳ</option>
+                    <option value="1">Kỳ 1</option><option value="2">Kỳ 2</option><option value="3">Hè</option>
+                </select>
+              </div>
+          </div>
+
+          <div class="slider-box">
+            <div class="slider-header"><span>Học kỳ chính tối đa:</span><span id="v1">19 Tín chỉ</span></div>
+            <input type="range" id="m1" min="1" max="25" value="19" oninput="updateVal(1, this.value)">
+          </div>
+          <div class="slider-box">
+            <div class="slider-header"><span>Học kỳ Hè tối đa:</span><span id="v3">8 Tín chỉ</span></div>
+            <input type="range" id="m3" min="0" max="12" value="8" oninput="updateVal(3, this.value)">
+          </div>
+          <div class="input-group"><label>Học phí Học kỳ chính (VNĐ)</label><input type="text" id="fee1" placeholder="Nhập để tính học phí" oninput="formatMoney(this)"></div>
+      </form>
+    </div>
+
+    <div class="card">
+        <div class="header-box">
+            <h2>Lộ Trình & Dự Báo Kết Quả</h2>
+            <button class="btn-copy" onclick="copyResult()">Sao chép kết quả</button>
+        </div>
+        <div id="output-list"><p style="color: #999; font-style: italic; font-size: 0.85rem;">Vui lòng nhập đầy đủ thông tin thiết lập bên trái...</p></div>
+        <div id="target-summary" class="target-box" style="display: none;"></div>
+    </div>
+</div>
+
+<script>
+    let resultText = "";
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.innerText = msg; t.style.opacity = "1";
+        setTimeout(() => { t.style.opacity = "0"; }, 2500);
+    }
+
+    function checkOtherYear() {
+        const ySelect = document.getElementById('y');
+        const otherInput = document.getElementById('otherY');
+        otherInput.style.display = (ySelect.value === 'other') ? 'block' : 'none';
+        calculateAll();
+    }
+
+    function updateVal(id, val) {
+        document.getElementById('v' + id).innerText = val + ' Tín chỉ';
+        calculateAll();
+    }
+
+    function formatMoney(el) {
+        let v = el.value.replace(/\D/g, "");
+        el.value = v.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        calculateAll();
+    }
+
+    function handleGPAInput(el) {
+        let v = el.value.replace(/[^0-9]/g, '');
+        if (v.length > 0) {
+            let num = (parseInt(v) / 100).toFixed(2);
+            if (num > 4.00) num = "4.00";
+            el.value = num;
+        }
+        calculateAll();
+    }
+
+    function calculateAll() {
+        const total = parseInt(document.getElementById('totalTC').value);
+        const done = parseInt(document.getElementById('doneTC').value);
+        const gpa = parseFloat(document.getElementById('currGPA').value);
+        const milDone = document.getElementById('milStatus').checked;
+        const feeInput = document.getElementById('fee1').value.replace(/\./g, "");
+        const fee1 = parseFloat(feeInput) || 0;
+        const yBase = document.getElementById('y').value;
+        const y = yBase === 'other' ? parseInt(document.getElementById('otherY').value) : parseInt(yBase);
+        const t = parseInt(document.getElementById('t').value);
+        const m1 = parseInt(document.getElementById('m1').value);
+        const m3 = parseInt(document.getElementById('m3').value);
+        
+        const outList = document.getElementById('output-list');
+        const outTarget = document.getElementById('target-summary');
+
+        if (isNaN(total) || isNaN(done)) return;
+        if (done > total) {
+            outList.innerHTML = `<p style="color: #e74c3c; font-weight: bold; font-size: 0.85rem;">⚠️ Lỗi: Tín chỉ tích lũy không thể lớn hơn tổng khóa học!</p>`;
+            outTarget.style.display = "none";
+            return;
+        }
+
+        if (isNaN(gpa) || isNaN(y) || isNaN(t)) return;
+
+        const thesisLimit = Math.ceil(total * 0.05); 
+        document.getElementById('thesis-info').innerHTML = `📌 Mốc Khóa luận (5%): <b>${thesisLimit} Tín chỉ</b><br><small>Học kỳ cuối ≤ ${thesisLimit} Tín chỉ sẽ làm khóa luận.</small>`;
+
+        let remTC = total - done;
+        let checkY = y, checkT = t;
+        let semesters = [];
+        const pricePerCredit = fee1 > 0 ? fee1 / 16 : 0;
+
+        while (remTC > 0 || (!milDone && checkY <= 3)) {
+            checkT++; if (checkT > 3) { checkT = 1; checkY++; }
+            let tc = 0;
+            let isMilitaryTerm = (!milDone && checkY === 3 && checkT === 3);
+
+            if (isMilitaryTerm) {
+                tc = 0; // Khóa kỳ hè năm 3 học Quân sự
+            } else if (remTC > 0) {
+                let max = (checkT === 3) ? m3 : m1;
+                // Logic dồn tối đa
+                if (remTC <= max) {
+                    tc = remTC; remTC = 0;
+                } else {
+                    tc = max;
+                    if ((remTC - max) < 1) tc = remTC - 1; 
+                    remTC -= tc;
+                }
+            } else if (milDone || checkY > 3) {
+                break;
+            }
+
+            semesters.push({ y: checkY, t: checkT, tc: tc, mil: isMilitaryTerm });
+            if (semesters.length > 20) break; 
+        }
+
+        let html = "";
+        let copyData = `📊 DỰ BÁO LỘ TRÌNH CHI TIẾT\n📍 Mốc Khóa luận (5%): ${thesisLimit} Tín chỉ\n\n`;
+
+        semesters.forEach(s => {
+            let label = s.t === 3 ? "Học kỳ Hè" : `Học kỳ ${s.t}`;
+            let isFinal = (s === semesters[semesters.length - 1]);
+            let note = s.mil ? " 🎖️ (Học Giáo dục Quốc phòng)" : (isFinal && s.tc <= thesisLimit && s.tc > 0 ? " 🎓 (Làm Khóa luận và Thực tập)" : "");
+            
+            let feeNote = "";
+            if (pricePerCredit > 0 && s.tc > 0) {
+                let multiplier = (s.t !== 3 && s.tc >= 14 && s.tc <= 19) ? 16 : s.tc;
+                feeNote = `<div class="fee">💰 Dự kiến: ${(multiplier * pricePerCredit).toLocaleString()} VNĐ</div>`;
+            }
+
+            html += `<div class="result-item">
+                <div class="term-title"><span>Năm ${s.y} - ${label}</span></div>
+                <div style="font-size:0.85rem">Học: <b>${s.tc} Tín chỉ</b>${note}</div>
+                ${feeNote}
+            </div>`;
+            copyData += `🔹 Năm ${s.y} - ${label}: Học ${s.tc} Tín chỉ${note}\n`;
+        });
+
+        outList.innerHTML = html;
+        outTarget.style.display = "block";
+        let remTargetTC = total - done;
+        let targetHTML = `<div style="font-weight:bold; color:#2b6cb0; margin-bottom:5px; font-size:0.9rem;">🎯 Mục tiêu cho ${remTargetTC} Tín chỉ còn lại:</div>`;
+
+        [{n:"Xuất sắc",v:3.6},{n:"Giỏi",v:3.2},{n:"Khá",v:2.5},{n:"Trung bình",v:2.0}].forEach(l => {
+            let need = (l.v * total - gpa * done) / (remTargetTC || 1);
+            let str = need > 4.0 ? "❌ Không thể đạt được" : (need <= 0 ? "✅ Đã đạt chỉ tiêu" : `${Math.max(2.0, need).toFixed(2)} điểm / học kỳ`);
+            targetHTML += `<div style="font-size:0.85rem;">• <b>Bằng ${l.n}:</b> ${str}</div>`;
+        });
+        
+        // Thêm xếp loại hiện tại
+        let currentRank = gpa >= 3.6 ? "Xuất sắc" : (gpa >= 3.2 ? "Giỏi" : (gpa >= 2.5 ? "Khá" : (gpa >= 2.0 ? "Trung bình" : "Yếu")));
+        targetHTML += `<div style="margin-top:8px; padding-top:8px; border-top:1px dashed #ccc; font-size:0.85rem; font-weight:bold;">🏆 Xếp loại hiện tại: ${currentRank}</div>`;
+
+        outTarget.innerHTML = targetHTML;
+        resultText = copyData + `\n🎯 MỤC TIÊU ĐIỂM SỐ:\n` + outTarget.innerText;
+    }
+
+    function copyResult() {
+        if (!resultText) return showToast("Vui lòng nhập đầy đủ thông tin!");
+        
+        const finalCopyText = resultText + 
+            `\n\n🔗 Cộng đồng Official: https://t.me/Dai_Hoc_Duy_Tan` +
+            `\n🔗 Nhóm trao đổi: https://t.me/chatsinhvienDTU`;
+
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(finalCopyText).then(() => showToast("Đã sao chép kết quả!"));
+        } else {
+            const textArea = document.createElement("textarea");
+            textArea.value = finalCopyText;
+            textArea.style.position = "fixed"; textArea.style.left = "-9999px"; textArea.style.top = "0";
+            document.body.appendChild(textArea);
+            textArea.focus(); textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showToast("Đã sao chép kết quả (Dự phòng)!");
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cấu hình nguồn lịch thi</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="exam-source.js"></script>
+
+<style>
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #0f172a;
+        color: #fff;
+        min-height: 100vh;
+        padding: 24px;
+    }
+
+    .wrap {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .card {
+        background: #111827;
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 18px;
+        padding: 20px;
+        margin-bottom: 18px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+        margin-top: 0;
+        color: #f43f5e;
+        font-size: 30px;
+    }
+
+    h2 {
+        margin-top: 0;
+        font-size: 20px;
+    }
+
+    .muted {
+        color: #9ca3af;
+        font-size: 14px;
+    }
+
+    .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+    }
+
+    input[type="text"], input[type="file"] {
+        flex: 1;
+        min-width: 240px;
+        padding: 14px;
+        border-radius: 12px;
+        border: 1px solid #374151;
+        background: #1f2937;
+        color: #fff;
+        font-size: 15px;
+    }
+
+    button {
+        padding: 14px 16px;
+        border: none;
+        border-radius: 12px;
+        font-weight: 700;
+        cursor: pointer;
+        color: #fff;
+    }
+
+    .blue { background: #2563eb; }
+    .green { background: #059669; }
+    .red { background: #dc2626; }
+    .violet { background: #7c3aed; }
+
+    .status {
+        margin-top: 14px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: #1f2937;
+        border: 1px solid #374151;
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .ok {
+        color: #86efac;
+    }
+
+    .warn {
+        color: #fcd34d;
+    }
+
+    .file-name {
+        margin-top: 10px;
+        font-size: 14px;
+        color: #cbd5e1;
+        word-break: break-word;
+    }
+
+    @media (max-width: 640px) {
+        body {
+            padding: 14px;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+
+        .row {
+            flex-direction: column;
+        }
+
+        button {
+            width: 100%;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="wrap">
+    <div class="card">
+        <h1>Thiết lập nguồn lịch thi</h1>
+        <p class="muted">Chọn 1 trong 2 cách: dán link Excel cố định hoặc tải file Excel lên rồi lưu. Sau đó <b>lichthi.html</b> sẽ tự dùng nguồn này.</p>
+    </div>
+
+    <div class="card">
+        <h2>1. Dùng link Excel cố định</h2>
+        <div class="row">
+            <input type="text" id="excelUrlInput" placeholder="Dán link file Excel trực tiếp ở đây">
+            <button class="blue" onclick="saveUrlMode()">Lưu link</button>
+        </div>
+        <p class="muted">Link phải mở được file Excel thật. Nên dùng link raw/direct.</p>
+    </div>
+
+    <div class="card">
+        <h2>2. Dùng file Excel tải lên</h2>
+        <div class="row">
+            <input type="file" id="excelFileInput" accept=".xlsx,.xls">
+            <button class="green" onclick="saveUploadMode()">Lưu file</button>
+        </div>
+        <div class="file-name" id="selectedFileName">Chưa chọn file.</div>
+    </div>
+
+    <div class="card">
+        <h2>Quản lý nguồn hiện tại</h2>
+        <div class="row">
+            <button class="violet" onclick="refreshStatus()">Xem trạng thái</button>
+            <button class="red" onclick="clearSourceAll()">Xóa nguồn đã lưu</button>
+        </div>
+        <div class="status" id="sourceStatus">Chưa có dữ liệu.</div>
+    </div>
+</div>
+
+<script>
+    const fileInput = document.getElementById("excelFileInput");
+    const fileNameBox = document.getElementById("selectedFileName");
+    const statusBox = document.getElementById("sourceStatus");
+
+    fileInput.addEventListener("change", () => {
+        const file = fileInput.files[0];
+        fileNameBox.textContent = file ? `Đã chọn: ${file.name}` : "Chưa chọn file.";
+    });
+
+    function saveUrlMode() {
+        const url = document.getElementById("excelUrlInput").value.trim();
+        if (!url) {
+            alert("Chưa nhập link");
+            return;
+        }
+
+        saveExamSourceUrl(url);
+        refreshStatus();
+        alert("Đã lưu link nguồn");
+    }
+
+    function saveUploadMode() {
+        const file = fileInput.files[0];
+        if (!file) {
+            alert("Chưa chọn file Excel");
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const payload = normalizeExcelRowsToSourcePayload(e.target.result);
+                saveExamSourceData(payload, file.name);
+                refreshStatus();
+                alert("Đã lưu file nguồn");
+            } catch (err) {
+                console.error(err);
+                alert("Không đọc được file Excel");
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    function clearSourceAll() {
+        if (!confirm("Xóa toàn bộ nguồn đã lưu?")) return;
+        clearExamSource();
+        refreshStatus();
+        alert("Đã xóa nguồn");
+    }
+
+    function refreshStatus() {
+        const mode = getExamSourceMode();
+        const url = getExamSourceUrl();
+        const name = getExamSourceName();
+        const updatedAt = getExamSourceUpdatedAt();
+        const data = getExamSourceData();
+
+        if (!mode) {
+            statusBox.innerHTML = `<span class="warn">Chưa có nguồn nào được lưu.</span>`;
+            return;
+        }
+
+        if (mode === "url") {
+            statusBox.innerHTML = `
+                <div><b>Mode:</b> <span class="ok">URL cố định</span></div>
+                <div><b>Link:</b> ${url || "(trống)"}</div>
+                <div><b>Cập nhật:</b> ${updatedAt || "(không rõ)"}</div>
+            `;
+            return;
+        }
+
+        if (mode === "upload") {
+            statusBox.innerHTML = `
+                <div><b>Mode:</b> <span class="ok">File đã lưu</span></div>
+                <div><b>Tên file:</b> ${name || "(không rõ)"}</div>
+                <div><b>Số dòng dữ liệu:</b> ${data && data.data ? data.data.length : 0}</div>
+                <div><b>Cập nhật:</b> ${updatedAt || "(không rõ)"}</div>
+            `;
+        }
+    }
+
+    refreshStatus();
+</script>
+</body>
+</html>

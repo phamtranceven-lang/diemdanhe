@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Phần Trăm</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #090a0f url('https://images.unsplash.com/photo-1599672124570-558e80556e43?q=80&w=2560') no-repeat center center/cover;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.5); /* Lớp phủ làm tối */
+            backdrop-filter: blur(5px); /* Làm mờ background */
+            z-index: 1;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            width: 380px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            z-index: 2; /* Nổi lên trên lớp phủ */
+            color: white;
+            text-align: center;
+        }
+
+        h2 { margin-top: 0; font-weight: 300; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 30px;}
+
+        .input-group { margin-bottom: 20px; text-align: left;}
+
+        label { display: block; margin-bottom: 8px; font-weight: 300; opacity: 0.8;}
+
+        input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            font-size: 18px;
+            color: white;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus { border-color: #00bcd4; background: rgba(255, 255, 255, 0.1);}
+
+        .result-area {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 188, 212, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(0, 188, 212, 0.3);
+        }
+
+        .result-label { font-size: 14px; opacity: 0.7; margin-bottom: 10px;}
+
+        #result { font-size: 36px; font-weight: 700; color: #00bcd4;}
+        .currency { color: #00bcd4; font-size: 20px;}
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Tính Phần Trăm</h2>
+    
+    <div class="input-group">
+        <label>Số tiền (VND)</label>
+        <input type="text" id="amount" autocomplete="off">
+    </div>
+
+    <div class="input-group">
+        <label>Phần trăm (%)</label>
+        <input type="number" id="percentage" autocomplete="off">
+    </div>
+
+    <div class="result-area">
+        <div class="result-label">Kết quả</div>
+        <span id="result">0</span> <span class="currency">VND</span>
+    </div>
+</div>
+
+<script>
+    const amountInput = document.getElementById('amount');
+    const percentInput = document.getElementById('percentage');
+    const resultDisplay = document.getElementById('result');
+
+    function formatCurrency(value) {
+        let val = value.replace(/\D/g, "");
+        return val.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
+
+    function updateCalculation() {
+        const rawAmount = amountInput.value.replace(/\./g, '');
+        const percent = percentInput.value;
+
+        if (rawAmount && percent) {
+            const total = (parseFloat(rawAmount) * parseFloat(percent)) / 100;
+            resultDisplay.innerText = new Intl.NumberFormat('de-DE').format(total);
+        } else {
+            resultDisplay.innerText = "0";
+        }
+    }
+
+    amountInput.addEventListener('input', function(e) {
+        let cursorPosition = e.target.selectionStart;
+        let prevLength = e.target.value.length;
+        e.target.value = formatCurrency(e.target.value);
+        let newLength = e.target.value.length;
+        cursorPosition = cursorPosition + (newLength - prevLength);
+        e.target.setSelectionRange(cursorPosition, cursorPosition);
+        updateCalculation();
+    });
+
+    percentInput.addEventListener('input', updateCalculation);
+
+    window.onload = function() {
+        amountInput.value = "";
+        percentInput.value = "";
+    };
+</script>
+
+</body>
+</html>

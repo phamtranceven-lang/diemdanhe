@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="stylesheet" href="vip-theme.css">
+<title>ALO</title>
+
+<style>
+* { box-sizing: border-box; }
+
+:root {
+    --bg-main: #030712;
+    --bg-panel: rgba(8, 15, 30, 0.88);
+    --bg-panel-2: rgba(12, 22, 42, 0.96);
+    --text-main: #e8f3ff;
+    --text-soft: #9cc7ff;
+    --border-soft: rgba(255,255,255,0.08);
+    --hover: rgba(0, 212, 255, 0.14);
+    --submenu: rgba(18, 33, 61, 0.96);
+    --submenu-hover: rgba(0, 195, 255, 0.16);
+    --shadow: 0 20px 60px rgba(0,0,0,0.45);
+}
+
+html, body {
+    margin: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    color: var(--text-main);
+    background:
+        radial-gradient(circle at top left, rgba(0,255,200,0.10), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(0,140,255,0.13), transparent 32%),
+        radial-gradient(circle at center top, rgba(128,0,255,0.10), transparent 25%),
+        var(--bg-main);
+}
+
+body {
+    overflow: hidden;
+}
+
+body.menu-open {
+    overflow: hidden;
+    touch-action: none;
+}
+
+/* APP WRAP */
+.app {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+    overflow: hidden;
+    position: relative;
+    background: rgba(255,255,255,0.03);
+    box-shadow: var(--shadow);
+    isolation: isolate;
+}
+
+.app::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    background: linear-gradient(
+        130deg,
+        #ff004c,
+        #ff7a00,
+        #ffe600,
+        #00ff85,
+        #00d5ff,
+        #2962ff,
+        #b300ff,
+        #ff004c
+    );
+    background-size: 300% 300%;
+    animation: borderRun 6s linear infinite;
+    -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    pointer-events: none;
+    z-index: 3;
+}
+
+.app::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    box-shadow:
+        inset 0 0 40px rgba(0, 200, 255, 0.05),
+        inset 0 0 90px rgba(128, 0, 255, 0.04);
+    z-index: 1;
+}
+
+@keyframes borderRun {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+}
+
+/* TOPBAR MOBILE */
+.mobile-topbar {
+    display: none;
+    height: 56px;
+    background: linear-gradient(90deg, rgba(8,18,38,0.96), rgba(15,32,60,0.96));
+    color: #fff;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    font-weight: bold;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1400;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    backdrop-filter: blur(10px);
+}
+
+.mobile-topbar span {
+    letter-spacing: 1px;
+    color: #dff6ff;
+}
+
+.menu-toggle,
+.menu-close {
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+}
+
+.menu-close {
+    display: none;
+}
+
+/* SIDEBAR DESKTOP */
+.sidebar {
+    width: 300px;
+    background: linear-gradient(180deg, rgba(7,17,31,0.96), rgba(10,25,48,0.98));
+    color: #fff;
+    overflow-y: auto;
+    flex-shrink: 0;
+    border-right: 1px solid rgba(255,255,255,0.06);
+    position: relative;
+    z-index: 2;
+    backdrop-filter: blur(14px);
+    padding-bottom: 20px;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: rgba(0, 195, 255, 0.35);
+    border-radius: 999px;
+}
+
+.menu-item {
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.menu-parent {
+    padding: 16px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    color: #eaf6ff;
+    letter-spacing: 0.2px;
+    background: rgba(0, 180, 255, 0.08);
+    box-shadow: inset 4px 0 0 #00d4ff;
+}
+
+.menu-parent span {
+    opacity: 0.9;
+    font-size: 13px;
+}
+
+.submenu {
+    display: block;
+    background: var(--submenu);
+}
+
+.submenu a {
+    display: block;
+    padding: 12px 20px 12px 28px;
+    color: #dff0ff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.22s ease;
+    border-left: 2px solid transparent;
+}
+
+.submenu a:hover {
+    background: var(--submenu-hover);
+    color: #7ee7ff;
+    border-left-color: #00d4ff;
+}
+
+.submenu a.active-link {
+    background: rgba(0, 212, 255, 0.18);
+    color: #7ee7ff;
+    border-left-color: #00d4ff;
+}
+
+/* CONTENT */
+.content {
+    flex: 1;
+    height: 100vh;
+    background:
+        radial-gradient(circle at top right, rgba(0,255,204,0.07), transparent 20%),
+        radial-gradient(circle at bottom left, rgba(0,140,255,0.08), transparent 25%),
+        #050b17;
+    position: relative;
+    z-index: 2;
+}
+
+.content::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.06);
+    pointer-events: none;
+    box-shadow:
+        inset 0 0 25px rgba(0, 212, 255, 0.03),
+        0 0 30px rgba(0, 0, 0, 0.18);
+    z-index: 1;
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+    background: #0a0f18;
+    position: relative;
+    z-index: 2;
+}
+
+/* OVERLAY MOBILE */
+.overlay {
+    display: none;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+    .mobile-topbar {
+        display: flex;
+    }
+
+    .app {
+        display: block;
+        height: 100vh;
+        width: 100%;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 56px;
+        left: 0;
+        bottom: 0;
+        width: 84%;
+        max-width: 320px;
+        z-index: 1300;
+        transform: translateX(-105%);
+        transition: transform 0.28s ease;
+        box-shadow: 0 0 28px rgba(0,0,0,0.55);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
+        border-right: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .sidebar.show {
+        transform: translateX(0);
+    }
+
+    .content {
+        width: 100%;
+        height: 100vh;
+        padding-top: 56px;
+    }
+
+    .content::before {
+        inset: 6px;
+        top: 62px;
+        border-radius: 14px;
+    }
+
+    iframe {
+        width: 100%;
+        height: calc(100vh - 56px);
+    }
+
+    .overlay {
+        position: fixed;
+        inset: 56px 0 0 0;
+        z-index: 1250;
+        background: rgba(0,0,0,0.55);
+        backdrop-filter: blur(3px);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.22s ease, visibility 0.22s ease;
+        display: block;
+        pointer-events: none;
+    }
+
+    .overlay.show {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="mobile-topbar">
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <span id="pageTitle">ALO</span>
+    <button class="menu-close" id="menuClose">✕</button>
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="app">
+    <div class="sidebar" id="sidebar">
+
+        <div class="menu-item">
+            <div class="menu-parent">Thông Tin <span>●</span></div>
+            <div class="submenu">
+                <a href="giaodien.html" target="frame">Trang chính</a>
+                <a href="anhsinhvien.html" target="frame">Ảnh sinh viên</a>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="menu-parent">Tính Điểm <span>●</span></div>
+            <div class="submenu">
+                <a href="tinhdiemhocphan.html" target="frame">Tính điểm học phần</a>
+                <a href="tinhdiemtichluy.html" target="frame">Tính điểm tích lũy</a>
+                <a href="dudoangpa.html" target="frame">Dự đoán GPA</a>
+                <a href="tinhdiemgpadukien.html" target="frame">GPA dự kiến</a>
+                <a href="tinhdiemGDTC.html" target="frame">GDTC</a>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="menu-parent">Thi KTHP <span>●</span></div>
+            <div class="submenu">
+                <a href="lichthi.html" target="frame">Lịch thi</a>
+                <a href="phongthi.html" target="frame">Phòng thi</a>
+                <a href="danhsachthi12345.html" target="frame">Danh sách thi</a>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="menu-parent">Kiểm tra <span>●</span></div>
+            <div class="submenu">
+                <a href="dinhdangcauhoilearning.html" target="frame">Định dạng câu hỏi</a>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="menu-parent">Đăng ký tín chỉ <span>●</span></div>
+            <div class="submenu">
+                <a href="thoikhoabieu1.html" target="frame">Sắp TKB nhanh</a>
+                <a href="thoikhoabieu2.html" target="frame">Sắp TKB</a>
+                <a href="tongtinchi.html" target="frame">Tổng tín chỉ</a>
+            </div>
+        </div>
+
+        <div class="menu-item">
+            <div class="menu-parent">Tiện ích <span>●</span></div>
+            <div class="submenu">
+                <a href="danhsachmonhoc.html" target="frame">Môn học</a>
+                <a href="doitenfilenhanh.html" target="frame">Đổi tên file</a>
+                <a href="hocphi4nam.html" target="frame">Học phí 4 năm</a>
+                <a href="huongdanhocphi.html" target="frame">Hướng dẫn học phí</a>
+                <a href="phantramtinrot.html" target="frame">Tín rớt</a>
+                <a href="tinhhocphidtu.html" target="frame">Tính học phí</a>
+                <a href="tinhphantramtien.html" target="frame">% tiền</a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="content">
+        <iframe name="frame" src="giaodien.html"></iframe>
+    </div>
+</div>
+
+<script>
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+const menuToggle = document.getElementById("menuToggle");
+const menuClose = document.getElementById("menuClose");
+const pageTitle = document.getElementById("pageTitle");
+const body = document.body;
+
+function openMenu() {
+    sidebar.classList.add("show");
+    overlay.classList.add("show");
+    body.classList.add("menu-open");
+    menuToggle.style.visibility = "hidden";
+    menuClose.style.display = "inline-block";
+}
+
+function closeMenu() {
+    sidebar.classList.remove("show");
+    overlay.classList.remove("show");
+    body.classList.remove("menu-open");
+    menuToggle.style.visibility = "visible";
+    menuClose.style.display = "none";
+}
+
+menuToggle.addEventListener("click", openMenu);
+menuClose.addEventListener("click", closeMenu);
+overlay.addEventListener("click", closeMenu);
+
+document.querySelectorAll(".submenu a").forEach(link => {
+    link.addEventListener("click", () => {
+        document.querySelectorAll(".submenu a").forEach(a => a.classList.remove("active-link"));
+        link.classList.add("active-link");
+        pageTitle.innerText = link.innerText || "ALO";
+
+        if (window.innerWidth <= 768) {
+            closeMenu();
+        }
+    });
+});
+
+window.addEventListener("resize", () => {
+    if (window.innerWidth > 768) {
+        closeMenu();
+    }
+});
+</script>
+ <script src="vien-7mau-tuyet.js"></script>
+</body>
+</html>

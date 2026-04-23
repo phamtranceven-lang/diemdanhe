@@ -1,0 +1,425 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <script src="guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HỌC PHÍ</title>
+    <style>
+        :root {
+            --primary: #d32f2f;
+            --bg: #f4f4f9;
+            --border: #e0e0e0;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+            background: var(--bg);
+            overflow: hidden;
+            color: #2c3e50;
+        }
+
+        @media (max-width: 1200px) {
+            body {
+                overflow: auto;
+            }
+        }
+
+        .container {
+            max-width: 100vw;
+            height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary);
+            margin: 0 0 20px 0;
+            font-size: 24px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr 1.1fr;
+            gap: 15px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        @media (max-width: 1200px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .container {
+                height: auto;
+            }
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border);
+        }
+
+        .card h3 {
+            border-left: 5px solid var(--primary);
+            padding-left: 12px;
+            margin: 0 0 15px 0;
+            color: var(--primary);
+            font-size: 18px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th,
+        td {
+            border-bottom: 1px solid #f2f2f2;
+            padding: 12px 8px;
+            text-align: left;
+        }
+
+        th {
+            color: #7f8c8d;
+            font-size: 11px;
+            text-transform: uppercase;
+        }
+
+        .stk-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #fffde7;
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #ffeb3b;
+        }
+
+        .stk-num {
+            font-family: 'Consolas', monospace;
+            font-weight: bold;
+            color: #000;
+            font-size: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #dcdde1;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .result-box {
+            background: #e8f4fd;
+            border: 2px dashed #3498db;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #2980b9;
+            text-align: center;
+            margin: 10px 0;
+            -webkit-user-select: text;
+            user-select: text;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1.4;
+        }
+
+        .example-box {
+            background: #f0f9eb;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 11.5px;
+            line-height: 1.6;
+            border: 1px solid #c2e7b0;
+            color: #3d8b37;
+        }
+
+        .notices {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #2f3640;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        .warning-strip {
+            background: #fff5f5;
+            color: #c0392b;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 12.5px;
+            border: 1px solid #feb2b2;
+            text-align: center;
+        }
+
+        .btn-copy {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .btn-big {
+            width: 100%;
+            padding: 14px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 50px;
+            padding: 14px;
+            position: fixed;
+            z-index: 1000;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 13px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        #toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        @keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body oncontextmenu="return false" onkeydown="return disableInspect(event)">
+
+    <div id="toast">Đã sao chép thành công!</div>
+
+    <div class="container">
+        <h1>HƯỚNG DẪN NỘP HỌC PHÍ</h1>
+        <div class="main-layout">
+            <div class="card">
+                <h3>Tài khoản chính thức</h3>
+                <div class="warning-strip">TUYỆT ĐỐI KHÔNG chuyển khoản vào tài khoản cá nhân.</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nội dung</th>
+                            <th>Ngân hàng</th>
+                            <th>Số tài khoản</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Học phí, lệ phí</td>
+                            <td>VietinBank</td>
+                            <td>
+                                <div class="stk-row"><span class="stk-num" id="s1">118000181119</span><button
+                                        class="btn-copy" onclick="copy('s1')">Copy</button></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Học phí, lệ phí</td>
+                            <td>Vietcombank</td>
+                            <td>
+                                <div class="stk-row"><span class="stk-num" id="s2">6811111994</span><button
+                                        class="btn-copy" onclick="copy('s2')">Copy</button></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Bảo hiểm y tế</td>
+                            <td>VietinBank</td>
+                            <td>
+                                <div class="stk-row"><span class="stk-num" id="s3">114615167979</span><button
+                                        class="btn-copy" onclick="copy('s3')">Copy</button></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>TT Tin học</td>
+                            <td>VietinBank</td>
+                            <td>
+                                <div class="stk-row"><span class="stk-num" id="s4">117699499999</span><button
+                                        class="btn-copy" onclick="copy('s4')">Copy</button></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>TT LTC</td>
+                            <td>VietinBank</td>
+                            <td>
+                                <div class="stk-row"><span class="stk-num" id="s5">119644775555</span><button
+                                        class="btn-copy" onclick="copy('s5')">Copy</button></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3>Tạo nội dung nộp tiền</h3>
+                <label>Mã số sinh viên (MSSV)</label>
+                <input type="text" id="m" placeholder="Nhập MSSV..." oninput="run()" autocomplete="off">
+                <label>Họ và tên</label>
+                <input type="text" id="n" placeholder="Ví dụ: NGUYEN VAN A" oninput="run()" autocomplete="off">
+                <label>Học kỳ</label>
+                <select id="h" onchange="run()">
+                    <option value="HK 1">Học kỳ 1</option>
+                    <option value="HK 2">Học kỳ 2</option>
+                    <option value="HK he">Học kỳ he</option>
+                </select>
+                <div class="result-box" id="res">Vui lòng nhập thông tin...</div>
+                <button class="btn-copy btn-big" onclick="copy('res')">SAO CHÉP NỘI DUNG</button>
+                <div class="example-box">
+                    <b>Mẫu ví dụ chuẩn:</b><br>
+                    23211203870 NGUYEN VAN A nộp học phí HK I năm học 2025-2026<br>
+                    - Đơn vị thụ hưởng: ĐẠI HỌC DUY TÂN<br>
+                    - STK 1: 118000181119 (Vietinbank)<br>
+                    - STK 2: 6811111994 (Vietcombank)
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Lưu ý & Hướng dẫn</h3>
+                <div class="notices">
+                    <p><b>Lưu ý quan trọng:</b></p>
+                    <p>- Dòng "<b>NỘI DUNG</b>" phải ghi đúng theo hướng dẫn. Trường hợp không ghi hoặc ghi sai
+                        <b>MÃ SỐ SINH VIÊN</b> thì việc cập nhật học phí sẽ không thành công.
+                    </p>
+                    <p>- <b>Không</b> nộp học phí tại máy ATM vì các giao dịch này không có dòng ghi nội dung.</p>
+                    <p>- Phải nộp vào <b>ĐÚNG SỐ TÀI KHOẢN</b> do Nhà Trường <b>thông báo.</b></p>
+                    <p><b>Cập nhật:</b> Sau 02 ngày làm việc, kiểm tra tại MyDTU. Nếu sai sót liên hệ Ban KHTC.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Hàm chuyển đổi tiếng Việt có dấu thành không dấu (Tiếng Anh)
+        function removeVietnameseTones(str) {
+            str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+            str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+            str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+            str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+            str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+            str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+            str = str.replace(/đ/g, "d");
+            str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+            str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+            str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+            str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+            str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+            str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+            str = str.replace(/Đ/g, "D");
+            return str;
+        }
+
+        window.onload = function () {
+            document.getElementById('m').value = "";
+            document.getElementById('n').value = "";
+        };
+
+        function run() {
+            const m = document.getElementById('m').value.toUpperCase().trim();
+            let nameInput = document.getElementById('n').value;
+
+            // Tự động định dạng: Chuyển không dấu + Viết hoa
+            const cleanName = removeVietnameseTones(nameInput).toUpperCase();
+            document.getElementById('n').value = cleanName;
+
+            const h = document.getElementById('h').value;
+            const y = new Date().getFullYear();
+            const sy = y + "-" + (y + 1);
+            const r = document.getElementById('res');
+
+            if (m && cleanName) {
+                r.innerText = m + " " + cleanName + " nop hoc phi " + h + " nam hoc " + sy;
+            } else {
+                r.innerText = "Vui lòng nhập thông tin...";
+            }
+        }
+
+        function copy(id) {
+            const t = document.getElementById(id).innerText;
+            if (t.includes("Vui lòng")) return;
+            navigator.clipboard.writeText(t).then(() => {
+                const toast = document.getElementById("toast");
+                toast.className = "show";
+                setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 2500);
+            });
+        }
+
+        function disableInspect(e) {
+            if (e.keyCode == 123 || (e.ctrlKey && e.shiftKey && (e.keyCode == 73 || e.keyCode == 74)) || (e.ctrlKey && e.keyCode == 85)) return false;
+        }
+    </script>
+</body>
+
+</html>

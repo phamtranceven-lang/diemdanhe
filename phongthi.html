@@ -1,0 +1,523 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <script src="guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TRA PHÒNG THI DTU</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --dtu-red: #d32f2f;
+            --dtu-green: #2e7d32;
+            --bg: #f4f6f8;
+            --card-width: 380px;
+            --shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            height: 100vh;
+        }
+
+        .sidebar {
+            background: white;
+            padding: 20px;
+            border-right: 1px solid #ddd;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+
+        .main-content {
+            padding: 30px;
+            overflow-x: auto;
+            display: flex;
+            align-items: flex-start;
+            gap: 25px;
+            height: 100vh;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        h2 {
+            color: var(--dtu-red);
+            text-align: center;
+            font-size: 1.2rem;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            font-weight: 900;
+            margin-top: 0;
+        }
+
+        .label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #555;
+            text-transform: uppercase;
+            margin: 15px 0 5px;
+            display: block;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1.5px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        textarea {
+            flex: 1;
+            resize: none;
+            font-family: monospace;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: var(--dtu-red);
+            background: #fffcfc;
+        }
+
+        .btn-main {
+            background: var(--dtu-red);
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: 0.2s ease;
+        }
+
+        .btn-save-batch {
+            background: var(--dtu-green);
+            color: white;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            display: none;
+            text-transform: uppercase;
+        }
+
+        .card-container {
+            flex-shrink: 0;
+            perspective: 1000px;
+        }
+
+        .card {
+            width: var(--card-width);
+            background: white;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            border: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            animation: popIn 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .c-header {
+            background: var(--dtu-red);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 900;
+            font-size: 18px;
+        }
+
+        .subject-line {
+            background: #fff5f5;
+            color: var(--dtu-red);
+            padding: 10px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 14px;
+            border-bottom: 1px dashed #ffcdd2;
+            text-transform: uppercase;
+        }
+
+        .c-body {
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .room-big {
+            font-size: 25px;
+            font-weight: 900;
+            color: var(--dtu-red);
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 2px solid #333;
+            margin: 15px 0;
+        }
+
+        .info-table th,
+        .info-table td {
+            border: 1px solid #333;
+            padding: 8px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 12px;
+        }
+
+        .warning-hp {
+            background: #fff0f0;
+            border: 2px solid var(--dtu-red);
+            color: var(--dtu-red);
+            padding: 10px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 900;
+            margin-bottom: 15px;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        .capture-footer {
+            display: none;
+            text-align: center;
+            padding: 10px;
+            background: #fffdeb;
+            font-size: 10px;
+            color: #856404;
+            border-top: 1px dashed #ccc;
+        }
+
+        @media (max-width: 850px) {
+            .app-container {
+                grid-template-columns: 1fr;
+                overflow-y: auto;
+            }
+
+            .sidebar {
+                height: auto;
+                border-right: none;
+                border-bottom: 5px solid #eee;
+            }
+
+            .main-content {
+                flex-direction: column;
+                height: auto;
+                overflow: visible;
+                align-items: center;
+            }
+
+            .card-container {
+                width: 100%;
+                display: flex;
+                justify-content: center;
+            }
+
+            .card {
+                width: 100%;
+                max-width: var(--card-width);
+            }
+        }
+
+        #toast-box {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+        }
+
+        .toast {
+            padding: 12px 20px;
+            background: #333;
+            color: #fff;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            font-size: 13px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="toast-box"></div>
+    <div class="app-container">
+        <div class="sidebar">
+            <h2>Lịch thi DTU</h2>
+            <label class="label">1. Link Online</label>
+            <div style="display:flex; gap:5px;">
+                <input type="text" id="urlIn" placeholder="Dán link PDF/Excel...">
+                <button onclick="pasteAndLoad()" style="padding:0 15px; cursor:pointer;">Dán</button>
+            </div>
+            <label class="label">2. Hoặc File Offline</label>
+            <div onclick="document.getElementById('fileIn').click()"
+                style="border:2px dashed #ccc; padding:15px; text-align:center; border-radius:8px; cursor:pointer; color:#777; font-size:12px; background:#fafafa;">
+                Chọn .pdf / .xls / .xlsx
+                <input type="file" id="fileIn" hidden accept=".pdf,.xls,.xlsx">
+            </div>
+            <hr style="width:100%; border:0; border-top:1px solid #eee; margin:20px 0;">
+            <label class="label" style="color:var(--dtu-red)">3. Nhập MSSV / Họ Tên</label>
+            <textarea id="mssvIn" placeholder="Dán danh sách MSSV vào đây..." disabled></textarea>
+            <button id="btnSaveBatch" class="btn-save-batch" onclick="saveAllImages()">💾 TẢI TẤT CẢ ẢNH</button>
+            <button onclick="location.reload()"
+                style="margin-top:auto; padding:10px; background:none; border:1px solid #d02f2f; border-radius:6px; cursor:pointer; color:#f80505; font-weight:bold;">LÀM
+                MỚI</button>
+        </div>
+        <div class="main-content" id="resultArea">
+            <div id="welcomeArea" style="width:100%; text-align:center; color:#999; margin-top:100px;">
+                <b>Vui lòng nạp dữ liệu từ Link hoặc File.</b>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let db = [];
+        const toast = (m) => {
+            const b = document.getElementById('toast-box'), d = document.createElement('div');
+            d.className = 'toast'; d.innerText = m; b.appendChild(d);
+            setTimeout(() => d.remove(), 2500);
+        };
+
+        async function pasteAndLoad() {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (!text.startsWith('http')) return toast("Link không hợp lệ!");
+                document.getElementById('urlIn').value = text;
+                toast("⌛ Đang tải...");
+                const proxy = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(text)}`;
+                const res = await fetch(proxy); const blob = await res.blob();
+                await processData(blob, text.toLowerCase().includes('.pdf'));
+            } catch (e) { toast("Lỗi nạp link!"); }
+        }
+
+        document.getElementById('fileIn').onchange = async (e) => {
+            const f = e.target.files[0]; if (!f) return;
+            toast("⌛ Đang xử lý file...");
+            await processData(f, f.name.toLowerCase().endsWith('.pdf'));
+        };
+
+        async function processData(blob, isPdf) {
+            if (isPdf) await parsePDF(blob); else await parseExcel(blob);
+            document.getElementById('mssvIn').disabled = false;
+            document.getElementById('welcomeArea').innerHTML = "<b>✅ Đã sẵn sàng.</b>";
+            toast("✅ Nạp xong");
+        }
+
+        async function parseExcel(blob) {
+            const data = await blob.arrayBuffer(); const wb = XLSX.read(data, { type: 'array' }); db = [];
+            wb.SheetNames.forEach(name => {
+                const json = XLSX.utils.sheet_to_json(wb.Sheets[name], { header: 1, defval: "" });
+                json.forEach((row, i) => { row._sheet = name; row._row = i + 1; db.push(row); });
+            });
+        }
+
+        async function parsePDF(blob) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+            const data = await blob.arrayBuffer(); const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(data) }).promise; db = [];
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i); const content = await page.getTextContent();
+                const lines = {};
+                content.items.forEach(it => { const y = Math.round(it.transform[5]); if (!lines[y]) lines[y] = []; lines[y].push(it); });
+                Object.keys(lines).sort((a, b) => b - a).forEach((y, idx) => {
+                    let row = lines[y].sort((a, b) => a.transform[4] - b.transform[4]).map(x => x.str.trim()).filter(s => s !== "");
+                    row._sheet = `Trang ${i}`; row._row = idx + 1; db.push(row);
+                });
+            }
+        }
+
+        document.getElementById('mssvIn').oninput = (e) => {
+            const val = e.target.value.trim().toUpperCase();
+            const area = document.getElementById('resultArea');
+            const batchBtn = document.getElementById('btnSaveBatch');
+            area.innerHTML = "";
+            if (val.length < 3) { area.innerHTML = '<b>Nhập thông tin...</b>'; batchBtn.style.display = "none"; return; }
+            const terms = val.split(/[\n,]+/).map(t => t.trim()).filter(t => t.length >= 3);
+            let results = new Set();
+            db.forEach(row => {
+                const rowStr = row.join(" ").toUpperCase();
+                terms.forEach(term => {
+                    if (rowStr.includes(term)) {
+                        const d = getCardData(row);
+                        const key = `${d.msv}_${d.phong}_${d.ngay}_${d.mon}`;
+                        if (!results.has(key) && d.msv !== "---") { renderCard(d, row._row); results.add(key); }
+                    }
+                });
+            });
+            batchBtn.style.display = results.size >= 2 ? "block" : "none";
+        };
+
+        function getCardData(row) {
+            let dbIdx = db.indexOf(row);
+            let d = { ngay: "---", gio: "---", phong: "---", coso: "Chưa xác định", msv: "---", stt: "---", name: "---", lop: "---", mon: "CHƯA XÁC ĐỊNH", source: row._sheet };
+
+            for (let j = dbIdx; j >= Math.max(0, dbIdx - 100); j--) {
+                let s = db[j].join(" ").toUpperCase();
+
+                // 1. Tìm Ngày và Giờ
+                if (d.ngay === "---") { let m = s.match(/(\d{1,2}\/\d{1,2}\/\d{4})/); if (m) d.ngay = m[1]; }
+                if (d.gio === "---") { let m = s.match(/(\d{1,2}H\d{2})/); if (m) d.gio = m[1]; }
+
+                // 2. Tìm Tên Môn (Quét dòng có chữ MÔN:)
+                if (d.mon === "CHƯA XÁC ĐỊNH" && s.includes("MÔN:")) {
+                    let subjectPart = s.split(/MÔN:?/i)[1];
+                    if (subjectPart) d.mon = subjectPart.split(/MÃ MÔN|SỐ TÍN CHỈ|\*/i)[0].trim();
+                }
+
+                // 3. Tìm Phòng thi
+                if (d.phong === "---" && s.includes("PHÒNG:")) {
+                    let rawRoom = s.split(/PHÒNG:?/i)[1]?.split(/-|CƠ SỞ/)[0]?.trim();
+                    if (rawRoom) d.phong = rawRoom;
+                }
+
+                // 4. Tìm Cơ sở
+                if (d.coso === "Chưa xác định") {
+                    let baseLoc = "";
+                    if (s.includes("HÒA KHÁNH") || s.includes("3.5HA")) baseLoc = "3.5ha Hòa Khánh Nam";
+                    else if (s.includes("QUANG TRUNG")) baseLoc = "K7/25 Quang Trung";
+                    else if (s.includes("NGUYỄN VĂN LINH")) baseLoc = "254 Nguyễn Văn Linh";
+                    else if (s.includes("PHAN THANH")) baseLoc = "209 Phan Thanh";
+
+                    if (baseLoc) {
+                        let extraMatch = s.match(/(TÒA NHÀ\s+\w+|KHỐI\s+\w+|P\.\w+)/i);
+                        let extraInfo = extraMatch ? extraMatch[0] : "";
+                        if (extraInfo && !baseLoc.toUpperCase().includes(extraInfo.toUpperCase())) {
+                            d.coso = `${baseLoc} - ${extraInfo}`;
+                        } else {
+                            d.coso = baseLoc;
+                        }
+                    }
+                }
+            }
+            d.msv = row.find(c => /^\d{8,12}$/.test(String(c).trim())) || "---";
+            let mi = row.indexOf(d.msv);
+            d.stt = row[mi - 1] || "---";
+            d.name = (row[mi + 1] && isNaN(row[mi + 1])) ? (row[mi + 1] + " " + (row[mi + 2] || "")) : "---";
+            d.lop = row.find(c => /K\d{2}/.test(String(c))) || "---";
+            d.note = row.some(c => String(c).toUpperCase().includes("NỢ HP")) ? "NỢ HP" : "";
+            return d;
+        }
+
+        function renderCard(d, realRow) {
+            const container = document.createElement('div'); container.className = 'card-container';
+            container.innerHTML = `
+<div class="card" data-msv="${d.msv}">
+    <div class="c-header">THÔNG TIN DỰ THI</div>
+    <div class="subject-line">📚 ${d.mon}</div>
+    <div class="c-body">
+        <div style="font-size:10px; color:#999; margin-bottom:10px;">📁 NGUỒN: ${d.source}</div>
+        <div style="display:flex; gap:10px; margin-bottom:15px;">
+            <div style="flex:1; border:1.5px solid #007bff; border-radius:12px; padding:8px; text-align:center;"><b>${d.ngay}</b></div>
+            <div style="flex:1; border:1.5px solid #fd7e14; border-radius:12px; padding:8px; text-align:center;"><b>${d.gio}</b></div>
+        </div>
+        <div class="room-big">Phòng: ${d.phong}</div> 
+        <div style="text-align:center; font-weight:800; margin-bottom:15px;">📍 CƠ SỞ: <br><span style="color:var(--dtu-red); font-size: 14px;">${d.coso}</span></div>
+        ${d.note ? `<div class="warning-hp">⚠️ BẠN ĐANG NỢ HỌC PHÍ</div>` : ''}
+        <div style="background:var(--dtu-green); color:white; padding:12px; border-radius:10px; text-align:center; font-size:22px; font-weight:900; margin-bottom:15px;">${d.msv}</div>
+        <table class="info-table">
+            <tr><th>STT</th><th>HỌ VÀ TÊN</th><th>LỚP</th></tr>
+            <tr><td>${d.stt}</td><td>${d.name}</td><td>${d.lop}</td></tr>
+        </table>
+        <div style="background:#f3e5f5; padding:12px; border:1.5px dashed #6f42c1; border-radius:12px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:900; color:#6f42c1">VỊ TRÍ HÀNG</span>
+            <span style="font-size:32px; font-weight:900; color:#6f42c1">${realRow}</span>
+        </div>
+        <div class="capture-footer">⚠️ Sinh viên tự kiểm tra lại trên phòng đào tạo.<br><b>Miễn trừ trách nhiệm.</b><br>Hỗ trợ Telegram: @Dai_Hoc_Duy_Tan</b></div>
+    </div>
+</div>
+<button class="btn-main" onclick="capture(this.parentElement.querySelector('.card'))">📸 CHỤP & SAO CHÉP</button>
+            `;
+            document.getElementById('resultArea').appendChild(container);
+        }
+
+        async function capture(el, isDownload = false) {
+            const btn = el.parentElement.querySelector('.btn-main');
+            const footer = el.querySelector('.capture-footer');
+            const msv = el.getAttribute('data-msv');
+
+            btn.style.display = "none";
+            footer.style.display = "block";
+            const originalAnimation = el.style.animation;
+            el.style.animation = "none";
+
+            try {
+                const canvas = await html2canvas(el, { scale: 6, backgroundColor: "#ffffff", useCORS: true });
+                if (isDownload) {
+                    const link = document.createElement('a'); link.download = `${msv}.png`;
+                    link.href = canvas.toDataURL("image/png", 1.0); link.click();
+                } else {
+                    canvas.toBlob(blob => {
+                        navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]);
+                        toast("📸 Đã copy ảnh nét: " + msv);
+                    }, 'image/png', 1.0);
+                }
+            } catch (err) { toast("❌ Lỗi chụp!"); } finally {
+                btn.style.display = "block"; footer.style.display = "none";
+                el.style.animation = originalAnimation;
+            }
+        }
+
+        async function saveAllImages() {
+            const cards = document.querySelectorAll('.card');
+            toast(`⏳ Tải ${cards.length} ảnh...`);
+            for (let card of cards) { await capture(card, true); await new Promise(r => setTimeout(r, 800)); }
+            toast("✅ Xong!");
+        }
+    </script>
+     <script src="vien-7mau-tuyet.js"></script>
+</body>
+
+</html>

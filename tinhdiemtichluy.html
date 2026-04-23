@@ -1,0 +1,390 @@
+
+<!doctype html>
+<html lang="vi">
+
+<head>
+  <script src="guard.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tính Điểm Tích Lũy ĐH Duy Tân</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* --- TỐI ƯU TOÀN DIỆN DIỆN TÍCH --- */
+    :root { --main-red: #d9534f; --border-color: #dee2e6; --text-color: #333; }
+    body { 
+      font-family: "Roboto", sans-serif; 
+      margin: 0; 
+      padding: 10px; 
+      background-color: #f4f4f4; 
+      color: var(--text-color); 
+      overflow-x: hidden; /* Tránh cuộn ngang */
+    }
+
+    .page-title {
+      text-align: center;
+      color: var(--main-red);
+      font-weight: 700;
+      margin: 10px 0 20px 0;
+      text-transform: uppercase;
+      font-size: 1.5rem;
+    }
+
+    .container { 
+      width: 100%; /* Chiếm hết chiều rộng iframe */
+      max-width: 1400px; /* Nới lỏng giới hạn tối đa */
+      margin: 0 auto; 
+      padding: 20px; 
+      border-radius: 12px; 
+      background-color: white; 
+      box-sizing: border-box;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    /* --- BẢNG NHẬP LIỆU --- */
+    .table-container { max-height: 400px; overflow-y: auto; margin-bottom: 20px; border: 1px solid var(--border-color); border-radius: 8px; }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    table th, table td { padding: 12px; text-align: center; border-bottom: 1px solid var(--border-color); }
+    table thead th { background-color: #f7f7f7; font-weight: 700; position: sticky; top: 0; z-index: 5; }
+    
+    input[type="number"], input[type="text"] { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; text-align: center; font-size: 1rem; }
+    
+    .button-group { display: flex; justify-content: center; gap: 10px; margin-top: 15px; flex-wrap: wrap; }
+    .btn { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 500; text-transform: uppercase; transition: 0.2s; }
+    .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    
+    .calculate-btn { background-color: #2ecc71; color: white; }
+    .delete-btn { background-color: #e74c3c; color: white; }
+
+    /* --- LAYOUT 2 CỘT KẾT QUẢ (FIX BÉ) --- */
+    .result-grid { 
+      display: flex; 
+      flex-direction: row; 
+      gap: 25px; 
+      align-items: stretch; /* Để 2 bên cao bằng nhau */
+      margin-top: 15px;
+    }
+    .result-left { flex: 1; min-width: 300px; } 
+    .result-right { flex: 1.5; min-width: 400px; } /* Cột lộ trình rộng hơn để nhìn rõ */
+
+    .result-box { 
+      background: #fff; 
+      padding: 30px; 
+      border-radius: 12px; 
+      border: 1px solid #eee; 
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      height: 100%;
+      box-sizing: border-box;
+    }
+    .result-box h3 { font-size: 1.2rem; margin: 15px 0; color: #555; text-align: left; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px; }
+    .gpa-val { color: var(--main-red); font-size: 3.5rem; font-weight: 700; margin: 20px 0; display: block; }
+
+    .suggest-box { 
+      background-color: #fff4e5; 
+      border: 1px dashed #ffa726; 
+      padding: 20px; 
+      border-radius: 12px; 
+      height: 100%;
+      box-sizing: border-box;
+    }
+    
+    /* Tăng kích thước các item lộ trình */
+    .suggest-item { 
+      background: white; 
+      padding: 15px; 
+      border-radius: 8px; 
+      margin-bottom: 10px; 
+      border-left: 6px solid #2ecc71; 
+      font-size: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    /* Responsive cho di động */
+    @media (max-width: 900px) {
+      .result-grid { flex-direction: column; }
+      .result-right { min-width: 100%; }
+    }
+
+    .hidden { display: none !important; }
+    .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+    .modal-content { background: white; padding: 2rem; border-radius: 10px; text-align: center; max-width: 90%; }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+    <div class="page-title">Tính Điểm Tích Lũy</div>
+
+    <div class="button-group" style="margin-bottom: 25px;">
+      <button class="btn" style="background:#d8f5e2; border:1px solid #2ecc71;" onclick="showInputPage()">Nhập điểm & tải file</button>
+      <button class="btn" style="background:#d8f5e2; border:1px solid #2ecc71;" onclick="showFastInputPage()">Xếp Loại học lực</button>
+    </div>
+
+    <section id="input-page">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Mã Lớp</th>
+              <th>Số ĐVHT</th>
+              <th>Điểm gốc</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="subjects">
+            <tr>
+              <td><input type="text" placeholder="Mã lớp học" /></td>
+              <td><input type="number" step="1" min="1" placeholder="Số TC"></td>
+              <td><input type="number" step="0.1" min="0" max="10" placeholder="Trống = Tự tính"></td>
+              <td><button class="btn delete-btn" onclick="deleteRow(this)">Xóa</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="button-group">
+        <button class="btn" style="background:#c5c1fb;" onclick="addRow()">+ Thêm Môn</button>
+        <button class="btn" style="background:#f39c12; color:white;" onclick="clearAllRows()">Xóa Tất Cả</button>
+        <label class="btn" style="background:#3498db; color:white;">Upload Files <input type="file" id="fileInput" accept=".xls,.xlsx" class="hidden" /></label>
+        <button class="btn calculate-btn" onclick="calculate()">Xem Kết Quả</button>
+      </div>
+    </section>
+
+    <section id="result-page" class="hidden">
+      <div class="result-grid">
+        <div class="result-left">
+          <div class="result-box">
+            <h2 style="margin-top:0">KẾT QUẢ CHUNG</h2>
+            <h3 id="totalCredits"></h3>
+            <h3 id="avg10"></h3>
+            <span class="gpa-val" id="avg4"></span>
+            <div id="rank" style="font-size:1.5rem; font-weight:700; color:#2c3e50; margin-bottom:10px;"></div>
+            <h4 id="demotionReason" style="color:red; margin:10px 0;"></h4>
+            <button class="btn" style="background:#95a5a6; color:white; width:100%; margin-top:20px;" onclick="goBack()">Quay Lại</button>
+          </div>
+        </div>
+
+        <div class="result-right">
+          <div id="suggest-section" class="suggest-box">
+            <h4 style="text-align:center; color:#e67e22; margin-top:0; font-size:1.3rem;">🎯 Lộ trình điểm cho các môn còn lại</h4>
+            <div style="text-align:center; background:rgba(255,255,255,0.5); padding:15px; border-radius:10px; margin-bottom:20px;">
+              <span style="font-weight:500;">GPA Mục tiêu:</span>
+              <input type="number" id="targetGPA" style="width:80px; margin:0 10px; padding:8px;" step="0.1" min="0" max="4"> 
+              <button class="btn calculate-btn" style="padding:8px 20px;" onclick="runSuggestion()">TÍNH ĐIỂM</button>
+            </div>
+            <div id="suggest-detail">
+               <p style="text-align:center; color:#888;">Nhập GPA mục tiêu và nhấn "TÍNH ĐIỂM".</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="fast-input-page" class="hidden">
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr><th>Tổng ĐVHT</th><th>Điểm gốc (10)</th><th>GPA (4)</th><th>TC học lại</th><th>Kỷ luật?</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><input type="number" id="fastTotalCredits"></td>
+              <td><input type="number" id="fastAvg10" step="0.01"></td>
+              <td><input type="number" id="fastAvg4" step="0.01"></td>
+              <td><input type="number" id="fastRetakenCredits"></td>
+              <td><input type="checkbox" id="fastDisciplined" style="transform:scale(1.5);"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="button-group">
+        <button class="btn calculate-btn" onclick="fastCalculate()">Xem Kết Quả</button>
+        <button class="btn" style="background:#f39c12; color:white;" onclick="fastClear()">Xóa</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="custom-modal" class="modal">
+    <div class="modal-content">
+      <p id="modal-message" style="font-size:1.1rem;"></p>
+      <div class="button-group">
+        <button id="modal-cancel-btn" class="btn delete-btn">Hủy</button>
+        <button id="modal-confirm-btn" class="btn calculate-btn">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script>
+    let currentPage = 'input-page';
+    let calcData = { gradedTC: 0, gradedSum4: 0, missingTC: 0, missingSubjects: [], totalTC: 0 };
+
+    function showModal(msg, type = 'alert', onConfirm = null) {
+      const modal = document.getElementById('custom-modal');
+      document.getElementById('modal-message').innerText = msg;
+      const confirmBtn = document.getElementById('modal-confirm-btn');
+      const cancelBtn = document.getElementById('modal-cancel-btn');
+      cancelBtn.style.display = (type === 'confirm') ? 'inline-block' : 'none';
+      confirmBtn.onclick = () => { if(onConfirm) onConfirm(); modal.style.display='none'; };
+      cancelBtn.onclick = () => { modal.style.display='none'; };
+      modal.style.display = 'flex';
+    }
+
+    function addRow(subjectCode = '', credits = '', score10 = '') {
+      const tbody = document.getElementById("subjects");
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td><input type="text" placeholder="Mã lớp" value="${subjectCode}"></td>
+        <td><input type="number" value="${credits}"></td>
+        <td><input type="number" step="0.1" value="${score10}" placeholder="Trống = Tự tính"></td>
+        <td><button class="btn delete-btn" onclick="deleteRow(this)">Xóa</button></td>
+      `;
+      tbody.appendChild(row);
+    }
+
+    function deleteRow(btn) { 
+      if(document.querySelectorAll("#subjects tr").length > 1) btn.closest('tr').remove();
+      else showModal("Phải có ít nhất 1 môn!");
+    }
+
+    function clearAllRows() {
+      showModal("Xóa tất cả các môn đã nhập?", 'confirm', () => { document.getElementById("subjects").innerHTML = ""; addRow(); });
+    }
+
+    function convertTo4(s10) {
+      if (s10 >= 9.5) return 4.0; if (s10 >= 8.5) return 4.0;
+      if (s10 >= 8.0) return 3.65; if (s10 >= 7.5) return 3.33;
+      if (s10 >= 7.0) return 3.0; if (s10 >= 6.5) return 2.65;
+      if (s10 >= 6.0) return 2.33; if (s10 >= 5.5) return 2.0;
+      if (s10 >= 4.5) return 1.65; if (s10 >= 4.0) return 1.0;
+      return 0.0;
+    }
+
+    function getRank(avg4) {
+      if (avg4 >= 3.6) return "Xuất sắc"; if (avg4 >= 3.2) return "Giỏi";
+      if (avg4 >= 2.5) return "Khá"; if (avg4 >= 2.0) return "Trung bình";
+      return "Yếu/Kém";
+    }
+
+    function calculate() {
+      const rows = document.querySelectorAll("#subjects tr");
+      let totalTC = 0, sum10 = 0, sum4 = 0, gradedTC = 0, missingTC = 0;
+      let missingSubjects = [];
+
+      rows.forEach((r, idx) => {
+        const code = r.cells[0].querySelector('input').value || `Môn ${idx + 1}`;
+        const tc = parseFloat(r.cells[1].querySelector('input').value) || 0;
+        const s10Val = r.cells[2].querySelector('input').value;
+        if (tc > 0) {
+          totalTC += tc;
+          if (s10Val !== "") {
+            const s10 = parseFloat(s10Val);
+            sum10 += s10 * tc; sum4 += convertTo4(s10) * tc; gradedTC += tc;
+          } else {
+            missingTC += tc; missingSubjects.push({ code, tc });
+          }
+        }
+      });
+
+      if (totalTC === 0) return showModal("Vui lòng nhập ít nhất một môn học!");
+      calcData = { gradedTC, gradedSum4: sum4, missingTC, missingSubjects, totalTC };
+
+      document.getElementById("totalCredits").innerText = `📚 Tổng số ĐVHT: ${totalTC}`;
+      document.getElementById("avg10").innerText = `📘 Điểm gốc TB: ${(sum10/(gradedTC||1)).toFixed(2)}`;
+      document.getElementById("avg4").innerText = (sum4/(gradedTC||1)).toFixed(2);
+      document.getElementById("rank").innerText = `🏆 Xếp loại: ${getRank(sum4/(gradedTC||1))}`;
+      
+      document.getElementById("suggest-section").style.display = (missingTC === 0) ? 'none' : 'block';
+      document.getElementById("suggest-detail").innerHTML = missingTC === 0 ? "" : '<p style="text-align:center; color:#888;">Nhập GPA mục tiêu và nhấn "TÍNH ĐIỂM".</p>';
+
+      currentPage = 'input-page';
+      document.getElementById("input-page").classList.add("hidden");
+      document.getElementById("fast-input-page").classList.add("hidden");
+      document.getElementById("result-page").classList.remove("hidden");
+    }
+
+    function runSuggestion() {
+      const target = parseFloat(document.getElementById("targetGPA").value);
+      if(isNaN(target) || target < 0 || target > 4) return showModal("GPA mục tiêu không hợp lệ (0-4)");
+      
+      const pointsNeeded = (target * calcData.totalTC) - calcData.gradedSum4;
+      let html = "";
+      if (pointsNeeded / calcData.missingTC > 4.0) {
+        html += `<p style="color:red; text-align:center; font-weight:bold;">⚠️ Không thể đạt mục tiêu! (Điểm trung bình các môn còn lại cần > 4.0)</p>`;
+      } else {
+        let tempPoints = pointsNeeded; let tempTC = calcData.missingTC;
+        calcData.missingSubjects.forEach(sub => {
+          let avg = tempPoints / tempTC;
+          let grade = "A"; 
+          if (avg > 3.65) grade = "8.5-10 (A)"; 
+          else if (avg > 3.0) grade = "7.5-8.4 (B+)";
+          else if (avg > 2.0) grade = "6.0-7.4 (C+)";
+          else grade = "4.5-5.9 (D/C)";
+          html += `<div class="suggest-item"><span>📍 <b>${sub.code}</b> (${sub.tc} TC)</span> <span>Cần ~ <b>${grade}</b></span></div>`;
+          tempPoints -= (avg * sub.tc); tempTC -= sub.tc;
+        });
+      }
+      document.getElementById("suggest-detail").innerHTML = html;
+    }
+
+    function fastCalculate() {
+      const total = parseFloat(document.getElementById("fastTotalCredits").value) || 0;
+      const avg4 = parseFloat(document.getElementById("fastAvg4").value) || 0;
+      const retaken = parseFloat(document.getElementById("fastRetakenCredits").value) || 0;
+      const isDisc = document.getElementById("fastDisciplined").checked;
+      let rank = getRank(avg4);
+      let reason = "";
+      if (total > 0 && ((retaken/total)*100 > 5 || isDisc) && (rank === "Xuất sắc" || rank === "Giỏi")) {
+        rank = (rank === "Xuất sắc") ? "Giỏi" : "Khá";
+        reason = "Bị hạ một bậc do số TC học lại vượt 5% hoặc bị kỷ luật.";
+      }
+      document.getElementById("totalCredits").innerText = `📚 Tổng ĐVHT: ${total}`;
+      document.getElementById("avg10").innerText = `📘 Điểm gốc TB: ${parseFloat(document.getElementById("fastAvg10").value || 0).toFixed(2)}`;
+      document.getElementById("avg4").innerText = avg4.toFixed(2);
+      document.getElementById("rank").innerText = `🏆 Xếp loại cuối: ${rank}`;
+      document.getElementById("demotionReason").innerText = reason;
+      document.getElementById("suggest-section").style.display = 'none';
+      currentPage = 'fast-input-page';
+      document.getElementById("fast-input-page").classList.add("hidden");
+      document.getElementById("result-page").classList.remove("hidden");
+    }
+
+    function showInputPage() { 
+      document.getElementById("fast-input-page").classList.add("hidden"); 
+      document.getElementById("result-page").classList.add("hidden");
+      document.getElementById("input-page").classList.remove("hidden"); 
+    }
+    function showFastInputPage() { 
+      document.getElementById("input-page").classList.add("hidden"); 
+      document.getElementById("result-page").classList.add("hidden");
+      document.getElementById("fast-input-page").classList.remove("hidden"); 
+    }
+    function goBack() { 
+      document.getElementById("result-page").classList.add("hidden"); 
+      document.getElementById(currentPage).classList.remove("hidden"); 
+    }
+    function fastClear() { 
+      ["fastTotalCredits", "fastAvg10", "fastAvg4", "fastRetakenCredits"].forEach(id => document.getElementById(id).value = ""); 
+      document.getElementById("fastDisciplined").checked = false;
+    }
+
+    document.getElementById('fileInput').addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        try {
+          const workbook = XLSX.read(evt.target.result, {type: 'array'});
+          const sheet = workbook.Sheets[workbook.SheetNames[0]];
+          const json = XLSX.utils.sheet_to_json(sheet);
+          document.getElementById("subjects").innerHTML = "";
+          json.forEach(row => addRow(row['Mã Lớp'], row['Số ĐVHT'], row['Điểm gốc']));
+        } catch(err) { showModal("Lỗi đọc file Excel. Vui lòng kiểm tra định dạng."); }
+      };
+      reader.readAsArrayBuffer(file);
+      e.target.value = null;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,386 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <script src="guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm Kiếm Môn Học</title>
+    <style>
+        /* 1. Cố định Chiều Cao Toàn Trang và Khóa thao tác Chuột */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-color: #fef0f0;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+
+            /* 🎯 KHÓA BÔI ĐEN VÀ CHUỘT PHẢI */
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+        }
+
+        /* 2. Container chính */
+        .container {
+            max-width: 900px;
+            max-height: 95vh;
+            width: 90vw;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        /* 3. Tiêu đề và thông tin */
+        h3 {
+            color: #333;
+            text-align: center;
+            margin-top: 0;
+        }
+
+        #summary-info {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #555;
+            min-height: 20px;
+        }
+
+        #summary-info strong {
+            color: #28a745;
+        }
+
+        /* 4. Khu vực Tìm kiếm (Input và Button) */
+        #search-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #search-box {
+            flex-grow: 1;
+            /* Chiếm hết không gian còn lại */
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        #search-button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        #search-button:hover {
+            background-color: #1e7e34;
+        }
+
+        #search-button:disabled {
+            background-color: #999;
+            cursor: not-allowed;
+        }
+
+
+        /* 5. Khu vực Cuộn Dữ liệu */
+        #table-scroll-container {
+            width: 100%;
+            flex-grow: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            opacity: 1;
+            transition: opacity 0.3s ease-in-out;
+            padding: 1px;
+        }
+
+        /* Bảng */
+        #results-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            font-size: 15px;
+        }
+
+        #results-table th,
+        #results-table td {
+            padding: 10px 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+
+        /* Căn trái riêng cột Tên môn (cột thứ 3) */
+        #results-table th:nth-child(3),
+        #results-table td:nth-child(3) {
+            text-align: left;
+        }
+
+        /* Cố định chiều rộng cột */
+        #results-table th:nth-child(1),
+        #results-table td:nth-child(1) {
+            width: 10%;
+        }
+
+        #results-table th:nth-child(2),
+        #results-table td:nth-child(2) {
+            width: 18%;
+        }
+
+        #results-table th:nth-child(3),
+        #results-table td:nth-child(3) {
+            width: 37%;
+        }
+
+        #results-table th:nth-child(4),
+        #results-table td:nth-child(4) {
+            width: 35%;
+        }
+
+        #results-table th {
+            background-color: #28a745;
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        #results-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* Thông báo tải */
+        .loading {
+            text-align: center;
+            font-style: italic;
+            color: #666;
+            padding: 20px;
+            display: none;
+        }
+
+        .error {
+            color: #d9534f;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                width: 95vw;
+                max-height: 95vh;
+                padding: 10px;
+                margin: 10px auto;
+            }
+
+            #results-table {
+                font-size: 12px;
+            }
+
+            #results-table th,
+            #results-table td {
+                padding: 8px 4px;
+            }
+
+            #results-table th:nth-child(2),
+            #results-table td:nth-child(2) {
+                width: 20%;
+            }
+
+            #results-table th:nth-child(3),
+            #results-table td:nth-child(3) {
+                width: 40%;
+            }
+
+            #results-table th:nth-child(4),
+            #results-table td:nth-child(4) {
+                width: 30%;
+            }
+        }
+    </style>
+</head>
+
+<body oncontextmenu="return false;">
+    <div class="container">
+        <h3> Tìm Kiếm Môn Học</h3>
+        <div id="summary-info"></div>
+
+        <div id="search-area">
+            <input type="text" id="search-box" placeholder="Nhập Mã môn, Tên môn, hoặc Hình thức thi..."
+                onkeyup="debounceSearch()" autocomplete="off">
+            <button id="search-button" onclick="manualSearch()">Tìm</button>
+        </div>
+
+        <div id="table-scroll-container">
+            <p class="loading" id="loading-message">Đang tải dữ liệu từ Google Sheets...</p>
+
+            <table id="results-table">
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxojciDqHoXqIjf907zocX-L-9zFRnOZHlGmK7QWR_EHqNlJ8fiQkLYwHdUknot4FA8/exec';
+
+        let searchTimeout;
+        let currentController;
+
+        // Hàm gọi thủ công khi nhấn nút
+        function manualSearch() {
+            // Hủy debounce đang chờ nếu có
+            clearTimeout(searchTimeout);
+            const query = document.getElementById('search-box').value;
+            // Gọi tìm kiếm ngay lập tức
+            fetchData(query);
+        }
+
+        // Hàm Debounce: Chỉ gọi API sau khi người dùng ngừng gõ 1 giây
+        function debounceSearch() {
+            clearTimeout(searchTimeout);
+
+            // Cập nhật trạng thái loading trước khi debounce
+            updateLoadingState(true);
+
+            searchTimeout = setTimeout(() => {
+                const query = document.getElementById('search-box').value;
+                fetchData(query);
+            }, 1000); // 🎯 Đặt lại 1 giây (1000ms) để người dùng có thời gian nhập xong
+        }
+
+        // Hàm quản lý trạng thái hiển thị loading
+        function updateLoadingState(isLoading) {
+            const container = document.getElementById('table-scroll-container');
+            const loadingMessage = document.getElementById('loading-message');
+            const searchButton = document.getElementById('search-button');
+
+            if (isLoading) {
+                // Hủy bỏ yêu cầu cũ ngay lập tức trước khi thiết lập cái mới
+                if (currentController) {
+                    currentController.abort();
+                }
+                container.style.opacity = '0.5';
+                loadingMessage.style.display = 'block';
+                searchButton.disabled = true; // Khóa nút tìm kiếm
+            } else {
+                loadingMessage.style.display = 'none';
+                container.style.opacity = '1';
+                searchButton.disabled = false; // Mở khóa nút tìm kiếm
+            }
+        }
+
+
+        // Hàm gọi API từ Google Sheets
+        async function fetchData(query = '') {
+            const loadingMessage = document.getElementById('loading-message');
+            const resultsBody = document.querySelector('#results-table tbody');
+
+            // Khởi tạo AbortController mới cho yêu cầu này
+            currentController = new AbortController();
+            const signal = currentController.signal;
+
+            loadingMessage.textContent = query ? "Đang tìm kiếm..." : "Đang tải dữ liệu...";
+            resultsBody.innerHTML = '';
+
+            try {
+                const url = `${WEB_APP_URL}?q=${encodeURIComponent(query)}`;
+                const response = await fetch(url, { signal });
+
+                // Xóa controller sau khi fetch thành công
+                currentController = null;
+
+                if (!response.ok) {
+                    throw new Error(`Lỗi HTTP: ${response.status}. Kiểm tra lại URL và quyền truy cập API.`);
+                }
+
+                const result = await response.json();
+
+                if (result.error) {
+                    throw new Error(`Lỗi Sheets: ${result.error}. Kiểm tra lại tên sheet "Môn học".`);
+                }
+
+                // Cập nhật thông tin tóm tắt
+                const totalCount = result.totalCount || 'N/A';
+                const foundCount = result.data.length;
+
+                if (query === '' || !query) {
+                    document.getElementById('summary-info').innerHTML =
+                        `<p><strong>Tổng số môn:</strong> ${totalCount}</p>`;
+                } else {
+                    document.getElementById('summary-info').innerHTML =
+                        `<p><strong>Tổng số môn:</strong> ${totalCount} | <strong>Tìm thấy:</strong> ${foundCount}</p>`;
+                }
+
+                renderTable(result.headers, result.data);
+
+            } catch (error) {
+                if (error.name === 'AbortError') {
+                    console.log('Yêu cầu cũ đã bị hủy bỏ thành công.');
+                    return; // Thoát mà không hiển thị lỗi cho người dùng
+                }
+
+                console.error('Lỗi kết nối hoặc dữ liệu:', error);
+                loadingMessage.textContent = `❌ Lỗi: ${error.message || 'Lỗi không xác định.'}`;
+                loadingMessage.classList.add('error');
+                updateLoadingState(false);
+            }
+        }
+
+        // Hàm vẽ bảng kết quả lên HTML
+        function renderTable(headers, data) {
+            const resultsHead = document.querySelector('#results-table thead');
+            const resultsBody = document.querySelector('#results-table tbody');
+
+            resultsHead.innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>`;
+
+            if (data.length === 0) {
+                resultsBody.innerHTML = `<tr><td colspan="${headers.length}">Không tìm thấy môn học nào phù hợp.</td></tr>`;
+            } else {
+                resultsBody.innerHTML = data.map(row => {
+                    const values = headers.map(header => row[header]);
+                    return `<tr>${values.map(val => `<td>${val}</td>`).join('')}</tr>`;
+                }).join('');
+            }
+
+            // Kết thúc trạng thái loading
+            updateLoadingState(false);
+        }
+
+        // Tải dữ liệu lần đầu và Focus tự động
+        document.addEventListener('DOMContentLoaded', () => {
+            // 🎯 Tự động Focus vào ô nhập liệu
+            document.getElementById('search-box').focus();
+
+            if (WEB_APP_URL && WEB_APP_URL !== 'DÁN_URL_API_CỦA_BẠN_VÀO_ĐÂY') {
+                fetchData();
+            } else {
+                document.getElementById('loading-message').textContent = '⚠️ Vui lòng dán URL Apps Script vào code HTML.';
+                document.getElementById('loading-message').style.display = 'block';
+            }
+        });
+    </script>
+
+</body>
+
+</html>

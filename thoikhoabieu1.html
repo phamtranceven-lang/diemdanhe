@@ -1,0 +1,675 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <script src="guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sắp Xếp Lịch Tín Chỉ - Bản Full Option</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --primary: #be123c;
+            --text: #334155;
+            --card-bg: #ffffff;
+            --border-radius: 10px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg-body);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        header {
+            height: 50px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 1.1rem;
+            color: var(--primary);
+            margin: 0;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .app-container {
+            flex: 1;
+            padding: 15px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .toolbar {
+            background: white;
+            padding: 10px 15px;
+            border-radius: var(--border-radius);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+        .total-badge {
+            background: var(--primary);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .phase-stat {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: white;
+        }
+
+        .btn-tool {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            transition: 0.2s;
+        }
+
+        .btn-tool:hover {
+            transform: translateY(-1px);
+            filter: brightness(1.1);
+        }
+
+        .table-card {
+            background: white;
+            border-radius: var(--border-radius);
+            flex: 1;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow);
+            border: 1px solid #e2e8f0;
+        }
+
+        .table-scroll {
+            flex: 1;
+            overflow: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 12px 10px;
+            font-size: 0.75rem;
+            text-align: left;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            border-bottom: 2px solid #cbd5e1;
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 0.85rem;
+        }
+
+        .row-warning {
+            background-color: #fff1f2 !important;
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(2px);
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 12px;
+            width: 95%;
+            max-width: 1300px;
+            height: 85vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            flex: 1;
+            display: flex;
+            padding: 20px;
+            gap: 20px;
+            background: #f8fafc;
+            overflow: hidden;
+        }
+
+        .lookup-left {
+            width: 180px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .lookup-right {
+            flex: 1;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: auto;
+        }
+
+        .btn-giant {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 30px;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+
+        .btn-delete-all {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .tkb-container {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            height: 100%;
+            width: 100%;
+        }
+
+        .tkb-box {
+            flex: 1;
+            background: white;
+            border: 1px solid #cbd5e1;
+            display: flex;
+            flex-direction: column;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .tkb-head {
+            padding: 8px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .tkb-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            font-size: 0.7rem;
+        }
+
+        .tkb-table th,
+        .tkb-table td {
+            border: 1px solid #e2e8f0;
+            padding: 4px;
+            height: 85px;
+            vertical-align: top;
+        }
+
+        .tkb-table th {
+            height: 30px;
+            background: #f8fafc;
+        }
+
+        .tkb-card {
+            background: #ecfccb;
+            border-left: 3px solid #65a30d;
+            padding: 3px;
+            margin-bottom: 2px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Sắp Xếp Lịch Tín Chỉ</h1>
+    </header>
+
+    <div class="app-container">
+        <div class="toolbar">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="font-weight:700;">Tổng: <span class="total-badge" id="totalCredits">0</span> TC</div>
+                <div class="phase-stat" style="background: #f97316;">GD1: <span id="statGD1">0</span> buổi</div>
+                <div class="phase-stat" style="background: #3b82f6;">GD2: <span id="statGD2">0</span> buổi</div>
+            </div>
+            <div style="display:flex; gap:8px;">
+                <button class="btn-tool" style="background:#059669;" onclick="openLookupModal()"><i
+                        class="fas fa-search"></i> Chọn môn</button>
+                <button class="btn-tool" style="background:#f59e0b;" onclick="generateTKB()"><i
+                        class="far fa-calendar-alt"></i> TKB</button>
+                <button class="btn-tool" style="background:#ec4899;" onclick="snapTable()"><i class="fas fa-camera"></i>
+                    Chụp bảng</button>
+                <button class="btn-tool" style="background:#0891b2;" onclick="exportData()"><i class="fas fa-save"></i>
+                    Lưu</button>
+                <button class="btn-tool" style="background:#475569;"
+                    onclick="document.getElementById('fileInput').click()"><i class="fas fa-folder-open"></i>
+                    Mở</button>
+                <input type="file" id="fileInput" hidden accept=".json" onchange="importData(this)">
+                <button class="btn-tool" style="background:#dc2626;" onclick="clearAll()"><i class="fas fa-trash"></i>
+                    Xóa hết</button>
+            </div>
+        </div>
+
+        <div class="table-card" id="mainTableArea">
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th width="10%">Mã ĐK</th>
+                            <th width="12%">Mã Lớp</th>
+                            <th>Tên Môn</th>
+                            <th width="8%">Tuần</th>
+                            <th width="15%">Lịch Học</th>
+                            <th width="18%">Địa Điểm</th>
+                            <th width="15%">Giảng Viên</th>
+                            <th width="5%"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="mainTableBody">
+                        <tr>
+                            <td colspan="8" style="text-align:center; padding:50px; color:#94a3b8;">Trống. Hãy bấm "Chọn
+                                môn" và Dán dữ liệu.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="lookupModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 style="margin:0;"><i class="fas fa-search"></i> Tra cứu môn học</h3>
+                <button onclick="closeModal('lookupModal')"
+                    style="border:none; background:none; font-size:20px; cursor:pointer;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="lookup-left">
+                    <button class="btn-giant" onclick="handlePaste()"><i class="fas fa-clipboard"></i> DÁN</button>
+                    <button class="btn-delete-all"
+                        onclick="document.getElementById('lookupTableBody').innerHTML=''">XÓA</button>
+                </div>
+                <div class="lookup-right">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Mã ĐK</th>
+                                <th>Mã Lớp</th>
+                                <th>Tên Môn</th>
+                                <th>Chỗ</th>
+                                <th>Tuần</th>
+                                <th>Lịch học</th>
+                                <th>Giảng viên</th>
+                                <th>Chọn</th>
+                            </tr>
+                        </thead>
+                        <tbody id="lookupTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="creditModal" class="modal-overlay">
+        <div class="modal-box" style="max-width:350px; height:auto; padding:20px;">
+            <h3 style="margin-top:0;">Số tín chỉ</h3>
+            <p id="targetSub" style="font-weight:bold; color:#be123c;"></p>
+            <select id="creditInput" style="width:100%; padding:10px; border-radius:5px;">
+                <option value="3">3 Tín chỉ</option>
+                <option value="2" selected>2 Tín chỉ</option>
+                <option value="1">1 Tín chỉ</option>
+                <option value="4">4 Tín chỉ</option>
+            </select>
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button class="btn-tool" style="background:#059669; flex:1; justify-content:center;"
+                    onclick="addSubject()">Xác nhận</button>
+                <button class="btn-tool" style="background:#94a3b8; flex:1; justify-content:center;"
+                    onclick="closeModal('creditModal')">Hủy</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="tkbModal" class="modal-overlay">
+        <div class="modal-box" style="max-width:1400px; height:90vh;">
+            <div class="modal-header">
+                <h3>Thời khóa biểu dự kiến</h3>
+                <div style="display:flex; gap:10px;">
+                    <button class="btn-tool" style="background:#0ea5e9;" onclick="snapElement('tkbCaptureArea')">📸 Chụp
+                        ảnh</button>
+                    <button onclick="closeModal('tkbModal')"
+                        style="border:none; background:none; font-size:20px; cursor:pointer;">&times;</button>
+                </div>
+            </div>
+            <div id="tkbCaptureArea" style="background:#f8fafc; flex:1; overflow:auto;">
+                <div id="tkbContent" class="tkb-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let mySchedule = [];
+        let tempSubject = null;
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+
+        function openLookupModal() {
+            document.getElementById('lookupTableBody').innerHTML = '';
+            openModal('lookupModal');
+        }
+
+        function getCourseIdentity(classCode) {
+            const match = classCode.match(/^(.+?)\s([A-Z]+)(\d*)$/);
+            if (!match) return { base: classCode, type: 'LT' };
+            return {
+                base: match[1].trim(),
+                type: match[3] === "" ? "LT" : "TH"
+            };
+        }
+
+        function getPhase(weeksStr) {
+            const startWeek = parseInt(weeksStr.split('-')[0]);
+            return (startWeek <= 30) ? 1 : 2;
+        }
+
+        function countSessions() {
+            let gd1 = 0, gd2 = 0;
+            mySchedule.forEach(sub => {
+                const p = getPhase(sub.weeks);
+                if (p === 1) gd1 += sub.sessions.length;
+                else gd2 += sub.sessions.length;
+            });
+            return { gd1, gd2 };
+        }
+
+        async function handlePaste() {
+            try {
+                const text = await navigator.clipboard.readText();
+                if (!text) return alert("Clipboard trống!");
+                const parsed = parseData(text);
+                renderLookup(parsed);
+            } catch (e) { alert("Vui lòng cho phép quyền truy cập Clipboard!"); }
+        }
+
+        // --- GIỮ NGUYÊN PARSE DATA GỐC CỦA BẠN (CÓ CHỖ) ---
+        function parseData(raw) {
+            const results = [];
+            let subjectNameHeader = "Môn học";
+            let nameMatch = raw.match(/Môn học\s+([A-ZÀ-Ỹ\s]+)\n/i) || raw.match(/Thông tin môn học\s+([A-ZÀ-Ỹ\s]+)\n/i);
+            if (nameMatch) subjectNameHeader = nameMatch[1].replace(/[A-Z]{2,}\s\d{3,}/, "").replace(":", "").trim();
+
+            raw = raw.replace(/Tuần hủy:.*(\n|$)/g, " ").replace(/Hủy \d+.*(\n|$)/g, " ");
+            const classRegex = /([A-Z]{2,}-\d{3,}\s[A-Z0-9]+|[A-Z]{2,}\s\d{3,}\s[A-Z0-9]+)/g;
+            let matches = [...raw.matchAll(classRegex)];
+
+            const locMap = {
+                "Hòa Khánh": "120 Hoàng Minh Thảo", "Phan Thanh": "209 Phan Thanh",
+                "K7/25 Quang Trung": "K7/25 Quang Trung", "03 Quang Trung": "03 Quang Trung",
+                "Quang Trung": "K7/25 Quang Trung", "254 Nguyễn Văn Linh": "254 Nguyễn Văn Linh",
+                "137 Nguyễn Văn Linh": "137 Nguyễn Văn Linh", "Nguyễn Văn Linh": "254 Nguyễn Văn Linh",
+                "Phan Văn Trị": "78 Phan Văn Trị", "Online": "Online"
+            };
+
+            matches.forEach((m, i) => {
+                let block = raw.substring(m.index, matches[i + 1] ? matches[i + 1].index : raw.length);
+                let regCode = (block.match(/\b[A-Z0-9]{10,}\b/) || ["---"])[0];
+                let seat = (block.match(/(LEC|LAB|WOR|DEM)\s+(\d+)/) || [0, 0, 0])[2];
+                let weeks = (block.match(/(\d+)--(\d+)/) || [0, 33, 40]);
+
+                let teacher = "Chưa rõ";
+                let parts = block.split(/\n|\t|\s{3,}/).map(p => p.trim()).filter(p => p.length > 5);
+                const statusList = ["CÒN HẠN", "HẾT HẠN", "LỚP HỌC", "ĐÃ ĐĂNG KÝ"];
+
+                for (let p of parts) {
+                    if (p === p.toUpperCase() && !/\d/.test(p) && !p.includes("ĐỊA ĐIỂM") && !p.includes("LEC") && !p.includes("ONLINE") && !statusList.some(status => p.includes(status)) && p.split(' ').length >= 2) {
+                        teacher = p; break;
+                    }
+                }
+
+                const timeRegex = /(T\d|CN)[\s:]*(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})/g;
+                let sessions = [];
+                let tMatches = [...block.matchAll(timeRegex)];
+                let lastTimeIdx = tMatches.length > 0 ? tMatches[tMatches.length - 1].index : 0;
+                let foundLocs = [];
+                Object.keys(locMap).forEach(key => {
+                    let pos = -1;
+                    while ((pos = block.indexOf(key, pos + 1)) !== -1) {
+                        if (pos > lastTimeIdx) foundLocs.push({ pos, text: locMap[key] });
+                    }
+                });
+                foundLocs.sort((a, b) => a.pos - b.pos);
+                let finalLocs = foundLocs.slice(-tMatches.length);
+
+                tMatches.forEach((tm, idx) => {
+                    let loc = "Chưa rõ";
+                    if (finalLocs.length > 0) loc = finalLocs[idx] ? finalLocs[idx].text : finalLocs[finalLocs.length - 1].text;
+                    sessions.push({ day: tm[1], time: `${tm[2]}-${tm[3]}`, loc, start: tm[2] });
+                });
+
+                if (sessions.length > 0) {
+                    results.push({ regCode, classCode: m[0], name: subjectNameHeader, seat, weeks: `${weeks[1]}-${weeks[2]}`, teacher, sessions });
+                }
+            });
+            return results;
+        }
+
+        // --- CẬP NHẬT RENDER LOOKUP: ƯU TIÊN GĐ RẢNH + CHỖ ÍT ---
+        // --- CẬP NHẬT RENDER LOOKUP: ẨN MÔN HẾT CHỖ ---
+        function renderLookup(data) {
+            const stats = countSessions();
+            const existingIdents = mySchedule.map(s => {
+                const id = getCourseIdentity(s.classCode);
+                return `${id.base}|${id.type}`;
+            });
+
+            let filtered = data.filter(item => {
+                const id = getCourseIdentity(item.classCode);
+
+                // Điều kiện 1: Môn chưa được thêm vào lịch
+                const isNotAdded = !existingIdents.includes(`${id.base}|${id.type}`);
+
+                // Điều kiện 2: Số chỗ phải lớn hơn 0 (MỚI THÊM)
+                const hasSeats = parseInt(item.seat) > 0;
+
+                return isNotAdded && hasSeats;
+            });
+
+            if (data.length > filtered.length) {
+                // Thông báo số lượng bị ẩn (bao gồm cả môn đã chọn và môn hết chỗ)
+                console.log(`Đã ẩn ${data.length - filtered.length} lớp (Do trùng hoặc hết chỗ).`);
+            }
+
+            // Thuật toán sắp xếp đa tầng:
+            filtered.sort((a, b) => {
+                const pA = getPhase(a.weeks);
+                const pB = getPhase(b.weeks);
+                const loadA = (pA === 1) ? stats.gd1 : stats.gd2;
+                const loadB = (pB === 1) ? stats.gd1 : stats.gd2;
+
+                // Tầng 1: Ưu tiên Giai đoạn rảnh hơn
+                if (loadA !== loadB) {
+                    return loadA - loadB;
+                }
+
+                // Tầng 2: Nếu rảnh như nhau, ưu tiên môn có số chỗ ÍT hơn (Cần đăng ký ngay)
+                return parseInt(a.seat) - parseInt(b.seat);
+            });
+
+            const body = document.getElementById('lookupTableBody');
+
+            // Nếu lọc xong mà không còn môn nào
+            if (filtered.length === 0) {
+                body.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px;">Không tìm thấy lớp phù hợp hoặc tất cả đã hết chỗ.</td></tr>';
+                return;
+            }
+
+            body.innerHTML = filtered.map(item => {
+                const p = getPhase(item.weeks);
+                const load = (p === 1) ? stats.gd1 : stats.gd2;
+                const isHeavy = load >= 10;
+                const isUrgent = parseInt(item.seat) <= 5;
+
+                return `
+        <tr class="${isHeavy ? 'row-warning' : ''}">
+            <td>${item.regCode}</td>
+            <td style="color:#be123c; font-weight:bold;">${item.classCode}</td>
+            <td>${item.name} ${isHeavy ? '<br><small style="color:red; font-weight:bold;">⚠️ GD' + p + ' DÀY (' + load + ' buổi)</small>' : ''}</td>
+            <td style="${isUrgent ? 'color:red; font-weight:bold;' : ''}">
+                ${item.seat} 
+                ${isUrgent ? '<br><small>🔥 SẮP HẾT!</small>' : ''}
+            </td>
+            <td>${item.weeks}</td>
+            <td>${item.sessions.map(s => `<div>${s.day}: ${s.time} (${s.loc})</div>`).join('')}</td>
+            <td style="font-weight:500; color:#0369a1;">${item.teacher}</td>
+            <td><button class="btn-tool" style="background:#059669;" onclick="prepareAdd(${JSON.stringify(item).replace(/"/g, '&quot;')})">Chọn</button></td>
+        </tr>
+    `}).join('');
+        }
+
+        function prepareAdd(item) {
+            tempSubject = item;
+            document.getElementById('targetSub').innerText = item.classCode + " - " + item.name;
+            openModal('creditModal');
+        }
+
+        function addSubject() {
+            const tc = document.getElementById('creditInput').value;
+            const id = getCourseIdentity(tempSubject.classCode);
+            const key = `${id.base}|${id.type}`;
+
+            const isDuplicate = mySchedule.some(s => {
+                const sId = getCourseIdentity(s.classCode);
+                return `${sId.base}|${sId.type}` === key;
+            });
+
+            if (isDuplicate) {
+                alert(`LỖI: Môn ${id.base} (${id.type === 'LT' ? 'Lý thuyết' : 'Thực hành'}) này đã có trong TKB rồi!`);
+                closeModal('creditModal');
+                return;
+            }
+
+            mySchedule.push({ ...tempSubject, credits: parseInt(tc), id: Date.now() });
+            closeModal('creditModal'); closeModal('lookupModal');
+            renderMainTable();
+        }
+
+        function renderMainTable() {
+            const body = document.getElementById('mainTableBody');
+            const stats = countSessions();
+            document.getElementById('statGD1').innerText = stats.gd1;
+            document.getElementById('statGD2').innerText = stats.gd2;
+            document.getElementById('totalCredits').innerText = mySchedule.reduce((sum, i) => sum + i.credits, 0);
+
+            if (mySchedule.length === 0) {
+                body.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:50px; color:#94a3b8;">Trống.</td></tr>';
+                return;
+            }
+            body.innerHTML = mySchedule.map(item => `
+                <tr>
+                    <td style="font-family:monospace;">${item.regCode}</td>
+                    <td style="font-weight:bold; color:#be123c;">${item.classCode}</td>
+                    <td style="font-weight:600;">${item.name}<br><small>${item.credits} TC (GD${getPhase(item.weeks)})</small></td>
+                    <td>${item.weeks}</td>
+                    <td>${item.sessions.map(s => `<div>${s.day} ${s.time}</div>`).join('')}</td>
+                    <td>${item.sessions.map(s => `<div>📍 ${s.loc}</div>`).join('')}</td>
+                    <td style="font-weight:500; color:#0369a1;">${item.teacher}</td>
+                    <td><button style="border:none; color:#ef4444; background:none; cursor:pointer;" onclick="removeSub(${item.id})"><i class="fas fa-trash"></i></button></td>
+                </tr>
+            `).join('');
+        }
+
+        function removeSub(id) { mySchedule = mySchedule.filter(i => i.id !== id); renderMainTable(); }
+        function clearAll() { if (confirm("Xóa hết?")) { mySchedule = []; renderMainTable(); } }
+        function exportData() { if (mySchedule.length === 0) return alert("Trống!"); const blob = new Blob([JSON.stringify(mySchedule)], { type: "application/json" }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = "LichHoc.json"; a.click(); }
+        function importData(input) { const file = input.files[0]; if (file) { const reader = new FileReader(); reader.onload = (e) => { mySchedule = JSON.parse(e.target.result); renderMainTable(); }; reader.readAsText(file); } }
+        function generateTKB() { if (mySchedule.length === 0) return alert("Chưa có môn!"); const content = document.getElementById('tkbContent'); content.innerHTML = `${renderBox("GIAI ĐOẠN 1 (Tuần 21-30)", "#f97316", 21, 30)}${renderBox("GIAI ĐOẠN 2 (Tuần 31-40)", "#3b82f6", 31, 40)}`; openModal('tkbModal'); }
+
+        function renderBox(title, color, sW, eW) {
+            const days = ["Hai", "Ba", "Tư", "Năm", "Sáu", "Bảy", "CN"];
+            let html = `<div class="tkb-box"><div class="tkb-head" style="background:${color}">${title}</div><table class="tkb-table"><thead><tr><th width="35">Ca</th>${days.map(d => `<th>${d}</th>`).join('')}</tr></thead><tbody>`;
+            ["Sáng", "Chiều", "Tối"].forEach(ca => {
+                html += `<tr><td style="background:#f8fafc; text-align:center; font-weight:bold;">${ca}</td>`;
+                for (let d = 2; d <= 8; d++) {
+                    let dStr = d === 8 ? "CN" : "T" + d;
+                    let items = [];
+                    mySchedule.forEach(sub => {
+                        if ((getPhase(sub.weeks) === 1 && sW === 21) || (getPhase(sub.weeks) === 2 && sW === 31)) {
+                            sub.sessions.forEach(ss => {
+                                let hour = parseInt(ss.start.split(':')[0]);
+                                let isCa = (ca === "Sáng" && hour < 12) || (ca === "Chiều" && hour >= 12 && hour < 17) || (ca === "Tối" && hour >= 17);
+                                if (ss.day === dStr && isCa) items.push({ code: sub.classCode, time: ss.time, loc: ss.loc });
+                            });
+                        }
+                    });
+                    html += `<td>${items.map(i => `<div class="tkb-card"><b>${i.code}</b><br>${i.time}<br><small>📍 ${i.loc}</small></div>`).join('')}</td>`;
+                }
+                html += `</tr>`;
+            });
+            return html + `</tbody></table></div>`;
+        }
+
+        function snapTable() { snapElement('mainTableArea'); }
+        function snapElement(id) { html2canvas(document.getElementById(id)).then(canvas => { canvas.toBlob(blob => { navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]); alert("Đã copy ảnh!"); }); }); }
+    </script>
+</body>
+
+</html>

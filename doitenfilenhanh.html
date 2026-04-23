@@ -1,0 +1,394 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <script src="guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công cụ Đổi tên File Hàng loạt - DTU Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card: #1e293b;
+            --primary: #6366f1;
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 1400px;
+            height: 95vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-layout {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 20px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .config-panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn-select {
+            display: block;
+            border: 2px dashed var(--border);
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 8px;
+            color: var(--primary);
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .btn-select:hover {
+            background: rgba(99, 102, 241, 0.05);
+            border-color: var(--primary);
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            outline: none;
+            margin-bottom: 10px;
+            font-family: inherit;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: var(--primary);
+        }
+
+        label {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+            font-weight: 700;
+            margin-bottom: 5px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .preview-panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .table-header,
+        .file-row {
+            display: grid;
+            grid-template-columns: 50px 1fr 1fr;
+            padding: 12px 20px;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .table-header {
+            background: rgba(0, 0, 0, 0.2);
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .col-new {
+            color: #10b981;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        .btn-main {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: auto;
+            font-size: 1rem;
+        }
+
+        .btn-main:hover {
+            opacity: 0.9;
+        }
+
+        .btn-clear {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-top: 5px;
+        }
+
+        .btn-clear:hover {
+            background: rgba(244, 63, 94, 0.1);
+            color: #f43f5e;
+            border-color: rgba(244, 63, 94, 0.2);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <main class="main-layout">
+            <aside class="config-panel">
+                <label class="btn-select">+ CHỌN FILE HOẶC KÉO THẢ<input type="file" id="fileInput" multiple
+                        style="display:none"></label>
+
+                <div>
+                    <label>CHẾ ĐỘ ĐỔI TÊN</label>
+                    <select id="renameMode">
+                        <option value="prefix_only">Chỉ thêm vào đầu tên gốc</option>
+                        <option value="replace_all">Đổi mới hoàn toàn</option>
+                        <option value="list_only">Đổi theo danh sách nhập vào</option>
+                    </select>
+                </div>
+
+                <div id="group-common">
+                    <label id="label-prefix">Nội dung thêm vào đầu</label>
+                    <input type="text" id="prefixText" placeholder="Ví dụ: Anh_" autocomplete="off" spellcheck="false">
+                    
+                    <div class="grid-2">
+                        <div>
+                            <label>Xóa ký tự đầu</label>
+                            <input type="number" id="removeStart" placeholder="0" min="0">
+                        </div>
+                        <div>
+                            <label>Xóa ký tự cuối</label>
+                            <input type="number" id="removeEnd" placeholder="0" min="0">
+                        </div>
+                    </div>
+
+                    <label>Số thứ tự bắt đầu</label>
+                    <input type="number" id="startNum" placeholder="Ví dụ: 1" autocomplete="off">
+                </div>
+
+                <div id="group-list" class="hidden"
+                    style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                    <label>Danh sách tên mới (Mỗi dòng 1 tên)</label>
+                    <textarea id="nameList" style="flex: 1; resize: none;" placeholder="Tên file 1&#10;Tên file 2..."
+                        autocomplete="off" spellcheck="false"></textarea>
+                </div>
+
+                <p id="fileCount" style="text-align:center; font-size:0.75rem; color:var(--text-dim)">0 tệp đã chọn</p>
+                <button id="downloadBtn" class="btn-main">Tải về</button>
+                <button id="clearAllBtn" class="btn-clear">Xóa danh sách</button>
+            </aside>
+
+            <section class="preview-panel">
+                <div class="table-header">
+                    <div>STT</div>
+                    <div>Tên gốc</div>
+                    <div>Tên sẽ đổi thành</div>
+                </div>
+                <div id="previewBody" style="overflow-y: auto; flex: 1;">
+                    <p style="text-align:center; margin-top:100px; color:var(--text-dim)">Chưa có tệp tin nào được chọn.
+                    </p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const previewBody = document.getElementById('previewBody');
+        const renameMode = document.getElementById('renameMode');
+        const prefixText = document.getElementById('prefixText');
+        const startNumInput = document.getElementById('startNum');
+        const removeStartInput = document.getElementById('removeStart');
+        const removeEndInput = document.getElementById('removeEnd');
+        const nameList = document.getElementById('nameList');
+        const groupCommon = document.getElementById('group-common');
+        const groupList = document.getElementById('group-list');
+        const labelPrefix = document.getElementById('label-prefix');
+
+        let filesArray = [];
+
+        const formatNum = (num) => String(num).padStart(2, '0');
+
+        // Hàm xóa dấu đặc biệt và thay bằng 1 khoảng trắng
+        function cleanName(str) {
+            return str
+                .replace(/[-+/*_.,;|]/g, ' ') // Thay các ký tự đặc biệt thành dấu cách
+                .replace(/\s+/g, ' ')         // Gộp nhiều dấu cách thành 1
+                .trim();                      // Xóa khoảng trắng 2 đầu
+        }
+
+        function updateUI() {
+            const mode = renameMode.value;
+            if (mode === "list_only") {
+                groupCommon.classList.add('hidden');
+                groupList.classList.remove('hidden');
+            } else {
+                groupCommon.classList.remove('hidden');
+                groupList.classList.add('hidden');
+                labelPrefix.innerText = (mode === "prefix_only") ? "Nội dung thêm vào đầu" : "Tên chung cho tất cả";
+            }
+            render();
+        }
+
+        function render() {
+            if (filesArray.length === 0) {
+                previewBody.innerHTML = '<p style="text-align:center; margin-top:100px; color:var(--text-dim)">Chưa có tệp tin nào được chọn.</p>';
+                document.getElementById('fileCount').innerText = '0 tệp đã chọn';
+                return;
+            }
+            previewBody.innerHTML = '';
+
+            const mode = renameMode.value;
+            const text = prefixText.value.trim();
+            const startNumValue = parseInt(startNumInput.value);
+            const startNum = isNaN(startNumValue) ? 1 : startNumValue;
+            
+            const skipStart = parseInt(removeStartInput.value) || 0;
+            const skipEnd = parseInt(removeEndInput.value) || 0;
+            
+            const lines = nameList.value.split('\n');
+
+            filesArray.forEach((file, index) => {
+                const lastDot = file.name.lastIndexOf('.');
+                const ext = lastDot !== -1 ? file.name.slice(lastDot) : '';
+                let originalBase = lastDot !== -1 ? file.name.slice(0, lastDot) : file.name;
+
+                // Xử lý cắt ký tự
+                if (skipStart > 0) originalBase = originalBase.substring(skipStart);
+                if (skipEnd > 0) originalBase = originalBase.substring(0, Math.max(0, originalBase.length - skipEnd));
+
+                // Tự động xóa dấu và làm sạch tên gốc sau khi cắt
+                originalBase = cleanName(originalBase);
+
+                let newName = "";
+
+                if (mode === "prefix_only") {
+                    let numPart = startNumInput.value !== "" ? formatNum(startNum + index) + " " : "";
+                    let prefixPart = text ? text + " " : "";
+                    newName = `${prefixPart}${numPart}${originalBase}${ext}`;
+                }
+                else if (mode === "replace_all") {
+                    let base = text || "File";
+                    let numPart = formatNum(startNum + index);
+                    newName = `${base} ${numPart}${ext}`;
+                }
+                else if (mode === "list_only") {
+                    let customName = (lines[index] && lines[index].trim() !== "") ? lines[index].trim() : originalBase;
+                    // Làm sạch tên từ danh sách nhập vào luôn
+                    customName = cleanName(customName);
+                    newName = customName.toLowerCase().endsWith(ext.toLowerCase()) ? customName : customName + ext;
+                }
+
+                const row = document.createElement('div');
+                row.className = 'file-row';
+                row.innerHTML = `
+                    <div style="color:var(--text-dim)">${index + 1}</div>
+                    <div style="color:var(--text-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${file.name}">${file.name}</div>
+                    <div class="col-new" title="${newName}">${newName}</div>
+                `;
+                previewBody.appendChild(row);
+            });
+            document.getElementById('fileCount').innerText = `${filesArray.length} tệp đã chọn`;
+        }
+
+        renameMode.addEventListener('change', updateUI);
+        [prefixText, startNumInput, nameList, removeStartInput, removeEndInput].forEach(el => el.addEventListener('input', render));
+
+        fileInput.onchange = (e) => {
+            filesArray = [...filesArray, ...Array.from(e.target.files)];
+            render();
+            fileInput.value = ""; 
+        };
+
+        document.getElementById('clearAllBtn').onclick = () => {
+            filesArray = [];
+            prefixText.value = '';
+            startNumInput.value = '1';
+            removeStartInput.value = '';
+            removeEndInput.value = '';
+            nameList.value = '';
+            render();
+        };
+
+        document.getElementById('downloadBtn').onclick = async () => {
+            if (filesArray.length === 0) return alert("Vui lòng chọn file trước khi tải!");
+            const zip = new JSZip();
+            const rows = document.querySelectorAll('.file-row');
+
+            filesArray.forEach((file, i) => {
+                const name = rows[i].querySelector('.col-new').innerText;
+                zip.file(name, file);
+            });
+
+            const blob = await zip.generateAsync({ type: "blob" });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = "Files_Da_Doi_Ten.zip";
+            a.click();
+            URL.revokeObjectURL(a.href);
+        };
+    </script>
+</body>
+
+</html>

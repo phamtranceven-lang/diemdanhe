@@ -1,0 +1,547 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <script src="guard.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tổng tín chỉ và Môn học</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <style>
+        :root {
+            --bg-app: #f1f5f9;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #059669;
+            /* Màu xanh lá cho số môn */
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --border-color: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            outline: none;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            max-width: 1600px;
+            height: 95vh;
+        }
+
+        /* --- CỘT TRÁI (CONTROL) --- */
+        .control-panel {
+            width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        .app-title {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--primary);
+            text-transform: uppercase;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .btn-paste {
+            background: var(--primary);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-paste:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-cam {
+            background: #0f172a;
+            color: white;
+            flex: 1.5;
+        }
+
+        .btn-cam:hover {
+            background: #334155;
+        }
+
+        .btn-clear {
+            background: #e2e8f0;
+            color: #475569;
+            flex: 0.8;
+        }
+
+        .btn-clear:hover {
+            background: #cbd5e1;
+        }
+
+        textarea {
+            flex: 1;
+            width: 100%;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 15px;
+            font-family: monospace;
+            font-size: 12px;
+            resize: none;
+            color: #0f172a;
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            border-color: var(--primary);
+            background: #fff;
+        }
+
+        /* --- CỘT PHẢI (PREVIEW) --- */
+        .preview-panel {
+            flex: 1;
+            background: #cbd5e1;
+            border-radius: 16px;
+            border: 1px solid #94a3b8;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .scroll-container {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .scroll-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scroll-container::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+
+        /* --- CARD KẾT QUẢ --- */
+        .paper-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 900px;
+            box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.25);
+            border-radius: 8px;
+            padding: 40px;
+            display: none;
+            flex-direction: column;
+            color: #0f172a;
+            margin: auto;
+        }
+
+        /* SECTION HEADER MỚI: CHIA 2 CỘT */
+        .total-section {
+            display: flex;
+            justify-content: center;
+            gap: 60px;
+            /* Khoảng cách giữa 2 số */
+            margin-bottom: 30px;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 25px;
+        }
+
+        .stat-box {
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .score-huge {
+            font-size: 64px;
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -2px;
+        }
+
+        .score-credits {
+            color: var(--primary);
+        }
+
+        .score-subjects {
+            color: var(--secondary);
+        }
+
+        .score-label {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #64748b;
+            margin-top: 8px;
+        }
+
+        /* GRID */
+        .grid-years {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            width: 100%;
+        }
+
+        .year-box {
+            background: #fff;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+
+        .year-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .y-name {
+            font-size: 16px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: #0f172a;
+        }
+
+        .y-val {
+            background: #eff6ff;
+            color: var(--primary);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .sem-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+            font-weight: 500;
+            color: #475569;
+            border-bottom: 1px dashed #e2e8f0;
+            align-items: center;
+        }
+
+        .sem-item:last-child {
+            border-bottom: none;
+        }
+
+        .sem-score {
+            color: #0f172a;
+            font-weight: 700;
+            white-space: nowrap;
+            margin-left: 10px;
+        }
+
+        .empty-state {
+            margin: auto;
+            font-weight: 600;
+            color: #475569;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                height: auto;
+                overflow: auto;
+                display: block;
+                padding: 10px;
+            }
+
+            .app-container {
+                flex-direction: column;
+                height: auto;
+                gap: 15px;
+            }
+
+            .control-panel {
+                width: 100%;
+            }
+
+            textarea {
+                height: 150px;
+            }
+
+            .preview-panel {
+                min-height: 400px;
+                background: transparent;
+                border: none;
+                overflow: visible;
+            }
+
+            .scroll-container {
+                padding: 0;
+                overflow: visible;
+                display: block;
+            }
+
+            .paper-card {
+                width: 100%;
+                padding: 25px;
+                border: 1px solid #e2e8f0;
+                border-radius: 16px;
+                box-shadow: none;
+            }
+
+            .grid-years {
+                grid-template-columns: 1fr;
+            }
+
+            /* Responsive cho phần header mới */
+            .total-section {
+                gap: 30px;
+            }
+
+            .score-huge {
+                font-size: 48px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-container">
+        <div class="control-panel">
+            <div class="app-title">Tính Tín Chỉ</div>
+            <div class="toolbar">
+                <button class="btn btn-paste" onclick="pasteText()">📋 Dán</button>
+                <button id="btnCam" class="btn btn-cam" onclick="copySmartLayout()">📸 Chụp</button>
+                <button class="btn btn-clear" onclick="clearData()">🗑️ Xóa</button>
+            </div>
+            <textarea id="input" oninput="run()" placeholder="Dán bảng điểm vào đây..."></textarea>
+        </div>
+
+        <div class="preview-panel">
+            <div class="scroll-container">
+                <div id="empty" class="empty-state">Dán dữ liệu để xem kết quả...</div>
+
+                <div id="card" class="paper-card">
+                    <div class="total-section">
+                        <div class="stat-box">
+                            <div class="score-huge score-credits" id="grandTotal">0</div>
+                            <div class="score-label">Tổng Tín Chỉ</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="score-huge score-subjects" id="totalSubjects">0</div>
+                            <div class="score-label">Tổng Môn Học</div>
+                        </div>
+                    </div>
+
+                    <div class="grid-years" id="grid"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 1. DÁN
+        async function pasteText() {
+            try {
+                const text = await navigator.clipboard.readText();
+                document.getElementById('input').value = text;
+                run();
+            } catch (e) {
+                document.getElementById('input').focus();
+                alert("Vui lòng nhấn Ctrl+V!");
+            }
+        }
+
+        // 2. XÓA
+        function clearData() {
+            document.getElementById('input').value = '';
+            run();
+            document.getElementById('input').focus();
+        }
+
+        // 3. COPY THÔNG MINH
+        function copySmartLayout() {
+            const node = document.getElementById('card');
+            const btn = document.getElementById('btnCam');
+            const originalText = btn.innerHTML;
+
+            if (node.style.display === 'none') {
+                alert("Chưa có dữ liệu!"); return;
+            }
+
+            const yearsCount = node.querySelectorAll('.year-box').length;
+            let captureWidth = yearsCount > 6 ? 1800 : 1000;
+
+            btn.innerHTML = "⏳ Đang xử lý...";
+
+            html2canvas(node, {
+                backgroundColor: "#ffffff",
+                scale: 3,
+                useCORS: true,
+                logging: false,
+                width: captureWidth,
+                windowWidth: captureWidth,
+                onclone: (clonedDoc) => {
+                    const clonedCard = clonedDoc.getElementById('card');
+                    clonedCard.style.width = captureWidth + 'px';
+                    clonedCard.style.maxWidth = 'none';
+                    clonedCard.style.height = 'auto';
+                    clonedCard.style.margin = '0';
+                    clonedCard.style.boxShadow = 'none';
+                }
+            }).then(canvas => {
+                canvas.toBlob(blob => {
+                    try {
+                        const item = new ClipboardItem({ "image/png": blob });
+                        navigator.clipboard.write([item]);
+                        btn.innerHTML = "✅ Đã Copy!";
+                        setTimeout(() => btn.innerHTML = originalText, 2000);
+                    } catch (err) {
+                        alert("Lỗi Copy. Hãy lưu ảnh thủ công.");
+                        btn.innerHTML = originalText;
+                    }
+                });
+            });
+        }
+
+        // 4. LOGIC TÍNH TOÁN & ĐẾM MÔN
+        function run() {
+            let val = document.getElementById('input').value;
+            let card = document.getElementById('card');
+            let empty = document.getElementById('empty');
+
+            if (!val.trim()) {
+                card.style.display = 'none';
+                empty.style.display = 'block';
+                return;
+            }
+
+            val = val.replace(/<[^>]*>/gi, "").replace(/\t/g, " ");
+            let lines = val.split('\n');
+            let data = {};
+            let grand = 0;
+            let totalSub = 0; // Biến đếm tổng số môn
+            let curY = 0, curS = 0;
+
+            lines.forEach(l => {
+                l = l.trim();
+                if (!l) return;
+
+                // Regex tìm Năm/Kỳ
+                let m = l.match(/(?:Học Kỳ|HK)\s*(\d+).*?(?:Năm)\s*(\d+)/i);
+                if (m) {
+                    curS = parseInt(m[1]);
+                    curY = parseInt(m[2]);
+                    if (!data[curY]) data[curY] = { t: 0, s: {} };
+                    if (!data[curY].s[curS]) data[curY].s[curS] = 0;
+                    return;
+                }
+
+                // Regex tìm môn (Dựa vào số tín chỉ ở cuối dòng)
+                if (curY > 0 && !l.includes("Số ĐVHT") && !l.includes("Mã Môn")) {
+                    let cm = l.match(/(\d{1,2})\s*$/); // Tìm số cuối dòng (1-2 chữ số)
+                    if (cm) {
+                        let c = parseInt(cm[1]);
+                        if (c > 0 && c < 20) { // Giả sử tín chỉ môn học hợp lệ từ 1-19
+                            data[curY].s[curS] += c;
+                            data[curY].t += c;
+                            grand += c;
+                            totalSub++; // Tăng biến đếm môn
+                        }
+                    }
+                }
+            });
+
+            let keys = Object.keys(data).sort((a, b) => a - b);
+            if (keys.length === 0) return;
+
+            // Cập nhật UI
+            document.getElementById('grandTotal').innerText = grand;
+            document.getElementById('totalSubjects').innerText = totalSub; // Hiển thị tổng môn
+
+            let h = '';
+            keys.forEach(y => {
+                let sems = data[y].s;
+                let sKeys = Object.keys(sems).sort((a, b) => a - b);
+                let rows = '';
+                sKeys.forEach(s => {
+                    rows += `
+                    <div class="sem-item">
+                        <span class="sem-name">Học kỳ ${s}</span>
+                        <span class="sem-score">${sems[s]} tín chỉ</span>
+                    </div>`;
+                });
+
+                h += `
+                <div class="year-box">
+                    <div class="year-header">
+                        <span class="y-name">Năm ${y}</span>
+                        <span class="y-val">${data[y].t} tín chỉ</span>
+                    </div>
+                    ${rows}
+                </div>`;
+            });
+
+            document.getElementById('grid').innerHTML = h;
+            empty.style.display = 'none';
+            card.style.display = 'flex';
+        }
+    </script>
+</body>
+
+</html>

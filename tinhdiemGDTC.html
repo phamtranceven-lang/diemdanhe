@@ -1,0 +1,251 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Điểm GDTC</title>
+    <link rel="icon" href="logoo.png" />
+    <style>
+        :root { --primary: #2563eb; --bg: #f1f5f9; --border: #cbd5e1; --text: #1e293b; --success: #166534; --tg: #0088cc; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        
+        .container { 
+            background: white; width: 850px; display: grid; grid-template-columns: 1.2fr 1fr; 
+            border-radius: 16px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); 
+        }
+        
+        .input-side { padding: 40px; border-right: 1px solid #e2e8f0; display: flex; flex-direction: column; }
+        h2 { margin: 0 0 30px 0; font-size: 1.4rem; color: var(--text); text-transform: uppercase; letter-spacing: 1px; }
+        .row { margin-bottom: 20px; }
+        label { display: block; font-size: 0.75rem; font-weight: 700; color: #64748b; margin-bottom: 8px; text-transform: uppercase; }
+        .input-group { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        
+        input { 
+            padding: 14px; border: 2px solid #e2e8f0; border-radius: 10px; 
+            font-size: 1.1rem; width: 100%; box-sizing: border-box; outline: none; 
+            transition: all 0.2s; font-weight: 600; color: var(--text);
+        }
+        input:focus { border-color: var(--primary); background: #f8fafc; }
+        input.auto-filled { border-color: #f59e0b; background: #fffbeb; }
+
+        .btn-predict { 
+            width: 100%; margin-top: 15px; padding: 14px; background: var(--primary); color: white; border: none; 
+            border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; font-size: 1rem;
+        }
+        .btn-predict:hover { background: #1d4ed8; transform: translateY(-1px); }
+        .btn-predict:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+        .result-side { padding: 40px; background: #ffffff; display: flex; flex-direction: column; justify-content: center; text-align: center; }
+        .val-res { font-size: 4.5rem; font-weight: 900; color: var(--text); line-height: 1; margin-bottom: 15px; }
+        .status-badge { display: inline-block; padding: 10px 25px; border-radius: 8px; font-weight: 800; font-size: 1.2rem; margin-bottom: 30px; }
+        
+        .pass { background: #dcfce7; color: var(--success); }
+        .fail { background: #fee2e2; color: #991b1b; }
+        .calc { background: #f1f5f9; color: #475569; }
+        
+        .prediction { padding-top: 25px; border-top: 2px dashed #f1f5f9; color: #475569; line-height: 1.6; font-size: 0.95rem; }
+        b { color: var(--text); font-weight: 700; background: #fff7ed; padding: 2px 4px; }
+
+        .footer { margin-top: auto; padding-top: 30px; }
+        .footer-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .action-btn { cursor: pointer; color: #94a3b8; text-decoration: underline; background: none; border: none; font-size: 0.85rem; }
+        .action-btn:hover { color: var(--primary); }
+
+        .tg-links { display: flex; gap: 10px; flex-wrap: wrap; }
+        .tg-link { 
+            text-decoration: none; font-size: 0.75rem; color: white; background: var(--tg); 
+            padding: 5px 10px; border-radius: 5px; transition: 0.2s; display: flex; align-items: center; gap: 5px;
+        }
+        .tg-link:hover { opacity: 0.9; transform: scale(1.02); }
+        
+        #copyToast { 
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); 
+            background: #333; color: white; padding: 10px 20px; border-radius: 50px; 
+            font-size: 0.9rem; display: none; z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <form class="input-side" autocomplete="off" onsubmit="return false;">
+        <h2>Dự toán điểm GDTC</h2>
+        
+        <div class="row">
+            <label>Học phần 1</label>
+            <div class="input-group">
+                <input type="text" id="hp1_10" placeholder="Thang 10" oninput="smartInput(this, 1, 10)">
+                <input type="text" id="hp1_4" placeholder="Thang 4" oninput="smartInput(this, 1, 4)">
+            </div>
+        </div>
+
+        <div class="row">
+            <label>Học phần 2</label>
+            <div class="input-group">
+                <input type="text" id="hp2_10" placeholder="Thang 10" oninput="smartInput(this, 2, 10)">
+                <input type="text" id="hp2_4" placeholder="Thang 4" oninput="smartInput(this, 2, 4)">
+            </div>
+        </div>
+
+        <div class="row">
+            <label>Học phần 3</label>
+            <div class="input-group">
+                <input type="text" id="hp3_10" placeholder="Thang 10" oninput="smartInput(this, 3, 10)">
+                <input type="text" id="hp3_4" placeholder="Thang 4" oninput="smartInput(this, 3, 4)">
+            </div>
+        </div>
+
+        <button type="button" class="btn-predict" id="btnPredict" onclick="autoFillRemaining()">TỰ DỰ TÍNH ĐIỂM CÒN LẠI</button>
+        
+        <div class="footer">
+            <div class="footer-actions">
+                <div>
+                    <button type="button" class="action-btn" onclick="copyData()">Sao chép kết quả</button>
+                    <span style="color: #cbd5e1; margin: 0 5px;">|</span>
+                    <button type="button" class="action-btn" onclick="clearAll()">Xóa sạch</button>
+                </div>
+                <span style="color: #cbd5e1; font-size: 0.7rem;">Duy Tân University</span>
+            </div>
+            <div class="tg-links">
+                <a href="https://t.me/Dai_Hoc_Duy_Tan" target="_blank" class="tg-link">✈ Official Channel</a>
+                <a href="https://t.me/chatsinhvienDTU" target="_blank" class="tg-link">✈ Nhóm trao đổi</a>
+            </div>
+        </div>
+    </form>
+
+    <div class="result-side">
+        <div style="font-size: 0.95rem; color: #64748b; margin-bottom: 8px;">Trung bình tích lũy (Hệ 4)</div>
+        <div class="val-res" id="avgVal">0.00</div>
+        <div><span id="statusBox" class="status-badge calc">ĐANG CHỜ...</span></div>
+        <div id="predictBox" class="prediction">Nhập ít nhất 1 môn để dự tính.</div>
+    </div>
+</div>
+
+<div id="copyToast">Đã sao chép vào bộ nhớ tạm!</div>
+
+<script>
+    window.onload = () => { clearAll(); };
+
+    const mapping = [
+        { min: 8.5, max: 10, gpa: 4.0 }, { min: 8.0, max: 8.4, gpa: 3.65 },
+        { min: 7.5, max: 7.9, gpa: 3.33 }, { min: 7.0, max: 7.4, gpa: 3.0 },
+        { min: 6.5, max: 6.9, gpa: 2.65 }, { min: 6.0, max: 6.4, gpa: 2.33 },
+        { min: 5.5, max: 5.9, gpa: 2.0 }, { min: 4.5, max: 5.4, gpa: 1.65 },
+        { min: 4.0, max: 4.4, gpa: 1.0 }, { min: 0, max: 3.9, gpa: 0.0 }
+    ];
+
+    function smartInput(el, id, type) {
+        el.classList.remove('auto-filled');
+        let val = el.value.replace(/[^0-9.]/g, '');
+        if (!val.includes('.') && val.length === 2) {
+            val = (val === "10") ? "10.0" : val.slice(0, 1) + "." + val.slice(1);
+        }
+        let checkNum = parseFloat(val);
+        if (type === 10 && checkNum > 10) val = "10.0";
+        if (type === 4 && checkNum > 4) val = "4.0";
+        el.value = val;
+
+        if (type === 10 && val !== "") {
+            let match = mapping.find(m => parseFloat(val) >= m.min && parseFloat(val) <= m.max);
+            let target4 = document.getElementById(`hp${id}_4`);
+            target4.value = match ? match.gpa.toFixed(2) : "0.00";
+            target4.classList.remove('auto-filled');
+        }
+        calculate();
+    }
+
+    function autoFillRemaining() {
+        const ids = [1, 2, 3];
+        const scores4 = ids.map(id => parseFloat(document.getElementById(`hp${id}_4`).value));
+        const validScores = scores4.filter(s => !isNaN(s));
+        if (validScores.length === 0 || validScores.length === 3) return;
+
+        const currentSum = validScores.reduce((a, b) => a + b, 0);
+        const remainingSum = Math.max(0, 6.0 - currentSum);
+        const countLeft = 3 - validScores.length;
+        const perSub = (remainingSum / countLeft).toFixed(2);
+
+        ids.forEach(id => {
+            let el4 = document.getElementById(`hp${id}_4`);
+            let el10 = document.getElementById(`hp${id}_10`);
+            if (el4.value === "") {
+                el4.value = perSub;
+                el4.classList.add('auto-filled');
+                let match10 = mapping.slice().reverse().find(m => m.gpa >= parseFloat(perSub));
+                el10.value = match10 ? match10.min.toFixed(1) : "0.0";
+                el10.classList.add('auto-filled');
+            }
+        });
+        calculate();
+    }
+
+    function calculate() {
+        const scores = [1, 2, 3].map(id => parseFloat(document.getElementById(`hp${id}_4`).value)).filter(s => !isNaN(s));
+        const avgVal = document.getElementById('avgVal');
+        const statusBox = document.getElementById('statusBox');
+        const predictBox = document.getElementById('predictBox');
+
+        if (scores.length === 0) {
+            avgVal.innerText = "0.00";
+            statusBox.className = "status-badge calc";
+            statusBox.innerText = "ĐANG CHỜ...";
+            predictBox.innerHTML = "Nhập ít nhất 1 môn để dự tính.";
+            return;
+        }
+
+        const sum = scores.reduce((a, b) => a + b, 0);
+        const currentAvg = sum / scores.length;
+        avgVal.innerText = currentAvg.toFixed(2);
+
+        if (scores.length === 3) {
+            statusBox.innerText = currentAvg >= 2.0 ? "ĐẠT" : "CHƯA ĐẠT";
+            statusBox.className = "status-badge " + (currentAvg >= 2.0 ? "pass" : "fail");
+            predictBox.innerHTML = "Dự toán hoàn tất.";
+        } else {
+            statusBox.innerText = "ĐANG TÍNH...";
+            statusBox.className = "status-badge calc";
+            const target = (6.0 - sum) / (3 - scores.length);
+            predictBox.innerHTML = target > 4 ? "<b style='color:#e11d48'>Cảnh báo:</b> Không thể đạt 2.0." : `Các môn còn lại cần trung bình <b>${target.toFixed(2)}</b>.`;
+        }
+    }
+
+function copyData() {
+    const avg = document.getElementById('avgVal').innerText;
+    const status = document.getElementById('statusBox').innerText;
+    let text = `--- KẾT QUẢ DỰ TOÁN ĐIỂM GDTC ---\n`;
+    for(let i=1; i<=3; i++) {
+        let t10 = document.getElementById(`hp${i}_10`).value || "Chưa nhập";
+        let t4 = document.getElementById(`hp${i}_4`).value || "0.00";
+        text += `Học phần ${i}: ${t10} (Hệ 10) -> ${t4} (Hệ 4)\n`;
+    }
+    text += `------------------------------\n`;
+    text += `TRUNG BÌNH TỔNG: ${avg}\nKẾT QUẢ: ${status}`;
+    text += `\n\n🔗 Cộng đồng Official: https://t.me/Dai_Hoc_Duy_Tan`;
+    text += `\n🔗 Nhóm trao đổi: https://t.me/chatsinhvienDTU`;
+
+    // Cách copy chắc chắn nhất cho cả Mobile
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    document.body.appendChild(textArea);
+    textArea.select();
+    textArea.setSelectionRange(0, 99999); // Cho điện thoại
+
+    try {
+        document.execCommand('copy');
+        const toast = document.getElementById('copyToast');
+        toast.style.display = 'block';
+        setTimeout(() => { toast.style.display = 'none'; }, 2000);
+    } catch (err) {
+        alert('Không thể copy, hãy tự chọn văn bản để sao chép!');
+    }
+    document.body.removeChild(textArea);
+}
+
+    function clearAll() {
+        document.querySelectorAll('input').forEach(i => { i.value = ""; i.classList.remove('auto-filled'); });
+        calculate();
+    }
+</script>
+</body>
+</html>
