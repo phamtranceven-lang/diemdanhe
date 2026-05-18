@@ -386,8 +386,15 @@ function renderExamStatus(){
     chip.style.display='inline-flex'; updateTimer();
   } else if(state.exam?.finished){
     chip.style.display='none';
-    const ids=state.exam.ids; const good=ids.filter(id=>state.progress[id]?.status==='correct').length;
-    el.innerHTML=`<div class="examBox"><b>Kết quả mini exam: ${good}/${ids.length}</b><div>Bấm “Ôn câu sai” để luyện lại các câu sai.</div></div>`;
+    const ids=state.exam.ids;
+    const total=ids.length;
+    const good=ids.filter(id=>state.progress[id]?.status==='correct').length;
+    const wrongIds=ids.filter(id=>state.progress[id]?.status==='wrong');
+    const retryHtml = wrongIds.length
+      ? `<button class="mini warn" id="retryExamWrong" style="margin-top:10px">↻ Làm lại ${wrongIds.length} câu sai</button>`
+      : `<div style="margin-top:8px">Full đúng rồi, không còn câu sai để làm lại.</div>`;
+    el.innerHTML=`<div class="examBox"><b>Kết quả mini exam: ${good}/${total}</b><div>Đúng ${good}/${total} câu · Sai ${wrongIds.length} câu.</div>${retryHtml}</div>`;
+    const retry=byId('retryExamWrong'); if(retry) retry.onclick=retryExamWrong;
   } else {el.innerHTML=''; chip.style.display='none';}
 }
 function renderImages(q){
@@ -539,9 +546,35 @@ function renderCard(){
   const known=byId('knownBtn'); if(known) known.onclick=()=>{setP(q,{status:'correct'}); renderAll();};
   const notKnown=byId('notKnownBtn'); if(notKnown) notKnown.onclick=()=>{setP(q,{status:'wrong'}); renderAll();};
 }
+function advanceExamAfterAnswer(q){
+  const arr=list();
+  const cur=arr.findIndex(x=>x.id===q.id);
+  if(cur>=0){
+    let next=-1;
+    for(let i=cur+1;i<arr.length;i++){
+      if(!state.progress[arr[i].id]?.selected){next=i; break;}
+    }
+    if(next<0){
+      for(let i=0;i<arr.length;i++){
+        if(!state.progress[arr[i].id]?.selected){next=i; break;}
+      }
+    }
+    if(next>=0 && arr[next].id!==q.id){
+      state.index=next;
+    } else if(cur+1<arr.length){
+      state.index=cur+1;
+    }
+  }
+  clearDirectView();
+}
 function answerMCQ(q,label){
   if(state.noteMode) return;
-  if(state.exam?.active){setP(q,{selected:label});}
+  if(state.exam?.active){
+    setP(q,{selected:label});
+    advanceExamAfterAnswer(q);
+    renderAll();
+    return;
+  }
   else {setP(q,{selected:label,status:label===q.correct?'correct':'wrong'});}
   renderAll();
 }
@@ -577,6 +610,17 @@ function finishExam(){
     state.progress[id]={...(state.progress[id]||{}), status:selected===q.correct?'correct':'wrong'};
   }
   state.exam.active=false; state.exam.finished=true; saveProgress(); stopTimer(); renderAll();
+}
+function retryExamWrong(){
+  if(!state.exam?.finished) return;
+  const ids=state.exam.ids.filter(id=>state.progress[id]?.status==='wrong');
+  if(!ids.length) return;
+  ids.forEach(id=>{state.progress[id]={...(state.progress[id]||{}), selected:null, status:null};});
+  const mins=Math.max(1, state.exam.mins || 5);
+  state.exam={active:true, finished:false, ids, end:Date.now()+mins*60*1000, mins, retryWrong:true};
+  state.filter='mcq'; state.topic='all'; state.search=''; state.index=0; clearDirectView();
+  byId('filter').value='mcq'; byId('topic').value='all'; byId('search').value='';
+  saveProgress(); startTimer(); renderAll();
 }
 function startTimer(){stopTimer(); timer=setInterval(()=>{if(state.exam?.active && Date.now()>=state.exam.end){finishExam();} else updateTimer();},500);}
 function stopTimer(){if(timer){clearInterval(timer); timer=null;}}
