@@ -192,7 +192,7 @@ html, body{scroll-behavior:auto !important;}
     <div class="control"><label>Chủ đề thông minh</label><select id="topic"><option value="all">Tất cả chủ đề</option></select></div>
     <div class="control"><label>Tìm nhanh</label><input id="search" type="search" placeholder="moment, vector, support, centroid, FBD..."></div>
     <div class="quick"><button class="mini" id="wrongQuick">Ôn câu sai</button><button class="mini" id="starQuick">⭐ Câu sao</button><button class="mini" id="imgQuick">Câu hình</button></div>
-    <div class="footerNote">Phím tắt: <span class="kbd">A</span> <span class="kbd">B</span> <span class="kbd">C</span> <span class="kbd">D</span>, <span class="kbd">←</span> <span class="kbd">→</span>. Bấm ảnh để zoom. Nút xóa tiến độ chỉ xóa đúng/sai, vẫn giữ keyword/note. Câu đã gắn sao sẽ được né khi bấm Câu sau/Câu trước/Random.</div>
+    <div class="footerNote">Phím tắt: <span class="kbd">A</span> <span class="kbd">B</span> <span class="kbd">C</span> <span class="kbd">D</span>, <span class="kbd">←</span> <span class="kbd">→</span>. Bấm ảnh để zoom. Nút xóa tiến độ chỉ xóa đúng/sai, vẫn giữ keyword/note. Nút xóa câu sao chỉ bỏ toàn bộ dấu sao, không xóa đúng/sai/note. Câu đã gắn sao sẽ được né khi bấm Câu sau/Câu trước/Random.</div>
     <div class="stats">
       <div class="statsgrid">
         <div class="stat"><div class="num" id="score">0</div><div class="cap">Đúng</div></div>
@@ -216,7 +216,7 @@ html, body{scroll-behavior:auto !important;}
           <a class="sourceLink " href="nguon4.html">Nguồn 4</a>
         </div>
       </div>
-      <div class="topActions"><button class="btn" id="toggleSource">Hiện nguồn</button><button class="btn" id="shuffleBtn">Random câu</button><button class="btn" id="exportPdfBtn">Xuất PDF</button><button class="btn" id="exportWordBtn">Xuất Word</button><button class="btn danger" id="resetBtn">Xóa tiến độ</button></div>
+      <div class="topActions"><button class="btn" id="toggleSource">Hiện nguồn</button><button class="btn" id="shuffleBtn">Random câu</button><button class="btn" id="exportPdfBtn">Xuất PDF</button><button class="btn" id="exportWordBtn">Xuất Word</button><button class="btn danger" id="resetBtn">Xóa tiến độ</button><button class="btn danger" id="clearStarsBtn">Xóa câu sao</button></div>
     </div>
     <div id="examStatus"></div>
     <section id="quizCard" class="card"></section>
@@ -236,6 +236,7 @@ const ALIAS = {
   'quan tinh':'inertia','quán tính':'inertia','can bang':'equilibrium','cân bằng':'equilibrium',
   'vec to':'vector','véc tơ':'vector','vecto':'vector','luc':'force','lực':'force'
 };
+let includeStarredForMenu = false;
 let state = {
   index: 0,
   filter: 'all',
@@ -244,7 +245,9 @@ let state = {
   showSource: false,
   noteMode: false,
   progress: loadProgress(),
-  exam: null
+  exam: null,
+  directQuestionId: null,
+  directStarView: false
 };
 let timer = null;
 function loadProgress(){try{return JSON.parse(localStorage.getItem(STORE_KEY)||'{}')}catch(e){return {}}}
@@ -262,7 +265,7 @@ function baseList(ignoreExam=false){
   let arr = QUESTIONS.filter(q=>{
     const p=pOf(q);
     // Luật sao: ngoài bộ lọc 'Câu đã gắn sao', luôn ẩn câu đã sao.
-    if(state.filter!=='starred' && p.star) return false;
+    if(!includeStarredForMenu && state.filter!=='starred' && p.star) return false;
     if(state.filter==='image' && !hasImg(q)) return false;
     if(state.filter==='wrong' && p.status!=='wrong') return false;
     if(state.filter==='starred' && !p.star) return false;
@@ -278,7 +281,35 @@ function baseList(ignoreExam=false){
   return arr;
 }
 function list(){return baseList(false);}
-function current(){const arr=list(); if(state.index>=arr.length) state.index=Math.max(0, arr.length-1); return arr[state.index];}
+function menuList(){includeStarredForMenu=true; const arr=baseList(false); includeStarredForMenu=false; return arr;}
+function clearDirectView(){state.directQuestionId=null; state.directStarView=false;}
+function current(){
+  if(state.directQuestionId!=null){
+    const direct=QUESTIONS.find(q=>String(q.id)===String(state.directQuestionId));
+    if(direct) return direct;
+    state.directQuestionId=null;
+  }
+  const arr=list(); if(state.index>=arr.length) state.index=Math.max(0, arr.length-1); return arr[state.index];
+}
+function setIndexNearQuestion(q){
+  const arr=list();
+  const same=arr.findIndex(x=>x.id===q.id);
+  if(same>=0){state.index=same; return;}
+  const allIndex=QUESTIONS.findIndex(x=>x.id===q.id);
+  const next=arr.findIndex(x=>QUESTIONS.findIndex(y=>y.id===x.id)>allIndex);
+  state.index=next>=0?next:0;
+}
+function goMenuQuestion(q){
+  if(!q) return;
+  clearDirectView();
+  setIndexNearQuestion(q);
+  if(state.filter!=='starred' && pOf(q).star){
+    state.directQuestionId=q.id;
+    state.directStarView=true;
+  }
+  renderAll();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 function renderAll(){renderTopics(); renderExamButtons(); renderStats(); renderGrid(); renderExamStatus(); renderCard();}
 function renderTopics(){
   const old=byId('topic').value || state.topic;
@@ -304,13 +335,14 @@ function renderExamButtons(){
   const submit=byId('submitExam'); if(submit) submit.onclick=finishExam;
 }
 function renderGrid(){
-  const arr=list();
+  const arr=menuList();
+  const cur=current();
   byId('qgrid').innerHTML = arr.map((q,i)=>{
     const p=pOf(q);
-    const cls=['qbtn', i===state.index?'active':'', p.status==='correct'?'good':'', p.status==='wrong'?'bad':'', p.star?'star':''].join(' ');
+    const cls=['qbtn', (cur && q.id===cur.id)?'active':'', p.status==='correct'?'good':'', p.status==='wrong'?'bad':'', p.star?'star':''].join(' ');
     return `<button class="${cls}" data-go="${i}" title="Câu ${q.id}">${q.id}</button>`;
   }).join('');
-  document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{state.index=Number(b.dataset.go); renderAll(); window.scrollTo({top:0,behavior:'smooth'});});
+  document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>goMenuQuestion(arr[Number(b.dataset.go)]));
 }
 function renderExamStatus(){
   const el=byId('examStatus'); const chip=byId('timerChip');
@@ -440,7 +472,9 @@ function renderCard(){
   const q=current(); const box=byId('quizCard');
   if(!q){box.innerHTML='<div class="empty">Không có câu nào trong bộ lọc này. Đổi lọc hoặc xóa ô tìm kiếm nha.</div>'; return;}
   const arr=list(); const p=pOf(q); const inExam=!!state.exam?.active;
-  let html=`<div class="head"><div><div class="qid">Câu ${q.id} / ${QUESTIONS.length}</div><div class="muted">${state.index+1} trong bộ lọc hiện tại (${arr.length} câu)</div></div><div class="badges"><span class="tag">Trắc nghiệm</span><span class="tag">${esc(q.topic)}</span></div></div>`;
+  const pos=arr.findIndex(x=>x.id===q.id);
+  const posText=pos>=0 ? `${pos+1}` : 'xem từ menu';
+  let html=`<div class="head"><div><div class="qid">Câu ${q.id} / ${QUESTIONS.length}</div><div class="muted">${posText} trong bộ lọc hiện tại (${arr.length} câu)</div></div><div class="badges"><span class="tag">Trắc nghiệm</span><span class="tag">${esc(q.topic)}</span></div></div>`;
   html += renderQuestionText(q) + renderImages(q);
   html += '<div class="options">' + q.options.map(o=>optionText(q,o,p,inExam)).join('') + '</div>';
   if(p.selected && !inExam){
@@ -477,16 +511,18 @@ function toggleStar(q){
   if(!q) return;
   const wasStarred = !!pOf(q).star;
   setP(q,{star:!wasStarred});
+  clearDirectView();
+  if(wasStarred) setIndexNearQuestion(q);
   // Ngoài bộ lọc 'Câu đã gắn sao', câu vừa gắn sao tự bị ẩn khỏi danh sách,
   // nên chỉ render lại để đứng đúng ở câu chưa sao kế tiếp.
   renderAll();
 }
 function starNavAllowed(){return state.filter==='starred';}
 function isNavTarget(q){return starNavAllowed() || !pOf(q).star;}
-function moveQ(dir){
+function moveQ(dir, fromId=null){
   const arr=list(); if(!arr.length) return;
-  const cur=current();
-  let start=cur ? arr.findIndex(q=>q.id===cur.id) : state.index;
+  const curId=fromId ?? current()?.id;
+  let start=curId!=null ? arr.findIndex(q=>q.id===curId) : state.index;
   if(start<0) start=state.index;
   for(let step=1; step<=arr.length; step++){
     const idx=(start + dir*step + arr.length) % arr.length;
@@ -494,10 +530,11 @@ function moveQ(dir){
   }
   renderAll();
 }
-function nextQ(){moveQ(1);}
-function prevQ(){moveQ(-1);}
+function nextQ(){const from=current()?.id; clearDirectView(); moveQ(1, from);}
+function prevQ(){const from=current()?.id; clearDirectView(); moveQ(-1, from);}
 function shuffleCurrent(){
   const arr=list(); if(!arr.length) return;
+  clearDirectView();
   let pool=arr.map((q,i)=>({q,i})).filter(x=>isNavTarget(x.q));
   if(!pool.length) pool=arr.map((q,i)=>({q,i}));
   const pick=pool[Math.floor(Math.random()*pool.length)];
@@ -512,7 +549,7 @@ function startExam(mins){
   const ids=pool.slice(0,take).map(q=>q.id);
   ids.forEach(id=>{state.progress[id]={...(state.progress[id]||{}), selected:null, status:null};});
   state.exam={active:true, finished:false, ids, end:Date.now()+mins*60*1000, mins};
-  state.filter='all'; state.topic='all'; state.search=''; state.index=0;
+  state.filter='all'; state.topic='all'; state.search=''; state.index=0; clearDirectView();
   byId('filter').value='all'; byId('topic').value='all'; byId('search').value='';
   saveProgress(); startTimer(); renderAll();
 }
@@ -559,22 +596,44 @@ function resetProgress(){
   }
   state.progress = kept;
   state.exam = null;
+  clearDirectView();
   stopTimer();
   saveProgress();
   renderAll();
 }
-byId('filter').onchange=e=>{state.filter=e.target.value; state.index=0; renderAll();};
-byId('topic').onchange=e=>{state.topic=e.target.value; state.index=0; renderAll();};
-byId('search').oninput=e=>{state.search=e.target.value; state.index=0; renderAll();};
-byId('wrongQuick').onclick=()=>{state.filter='wrong'; byId('filter').value='wrong'; state.index=0; renderAll();};
-byId('starQuick').onclick=()=>{state.filter='starred'; byId('filter').value='starred'; state.index=0; renderAll();};
-byId('imgQuick').onclick=()=>{state.filter='image'; byId('filter').value='image'; state.index=0; renderAll();};
-const shortQuick=byId('shortQuick'); if(shortQuick) shortQuick.onclick=()=>{state.filter='short'; byId('filter').value='short'; state.index=0; renderAll();};
+function clearStarredQuestions(){
+  for (const [id, p] of Object.entries(state.progress || {})) {
+    if (p && p.star) {
+      const next = {...p};
+      delete next.star;
+      if (Object.keys(next).length) state.progress[id] = next;
+      else delete state.progress[id];
+    }
+  }
+  if (state.filter === 'starred') {
+    state.filter = 'all';
+    const filterEl = byId('filter');
+    if (filterEl) filterEl.value = 'all';
+  }
+  state.index = Math.max(0, state.index || 0);
+  clearDirectView();
+  saveProgress();
+  renderAll();
+}
+
+byId('filter').onchange=e=>{state.filter=e.target.value; state.index=0; clearDirectView(); renderAll();};
+byId('topic').onchange=e=>{state.topic=e.target.value; state.index=0; clearDirectView(); renderAll();};
+byId('search').oninput=e=>{state.search=e.target.value; state.index=0; clearDirectView(); renderAll();};
+byId('wrongQuick').onclick=()=>{state.filter='wrong'; byId('filter').value='wrong'; state.index=0; clearDirectView(); renderAll();};
+byId('starQuick').onclick=()=>{state.filter='starred'; byId('filter').value='starred'; state.index=0; clearDirectView(); renderAll();};
+byId('imgQuick').onclick=()=>{state.filter='image'; byId('filter').value='image'; state.index=0; clearDirectView(); renderAll();};
+const shortQuick=byId('shortQuick'); if(shortQuick) shortQuick.onclick=()=>{state.filter='short'; byId('filter').value='short'; state.index=0; clearDirectView(); renderAll();};
 byId('toggleSource').onclick=()=>{state.showSource=!state.showSource; byId('toggleSource').textContent=state.showSource?'Ẩn nguồn':'Hiện nguồn'; renderAll();};
 byId('shuffleBtn').onclick=shuffleCurrent;
 byId('exportPdfBtn').onclick=exportPDF;
 byId('exportWordBtn').onclick=exportWord;
 byId('resetBtn').onclick=resetProgress;
+byId('clearStarsBtn').onclick=clearStarredQuestions;
 window.addEventListener('keydown',e=>{
   if(['INPUT','SELECT','TEXTAREA'].includes(document.activeElement.tagName)) return;
   const q=current();
