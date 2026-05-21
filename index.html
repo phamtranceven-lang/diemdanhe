@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MEC201 Quiz - WEB CHÍNH FULL TRẮC NGHIỆM</title>
+<title>MEC201 - Trắc nghiệm ABCD</title>
 <style>
 
 :root{--bg:#f3f7fb;--panel:#fff;--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--blue:#2563eb;--green:#16a34a;--red:#ef4444;--yellow:#fef3c7;--soft:#f8fafc;--violet:#7c3aed;}
@@ -181,6 +181,24 @@ html, body{scroll-behavior:auto !important;}
 }
 /* ===== END COMPACT LAYOUT PATCH ===== */
 
+
+/* ===== PATCH NAV KET NOI CAC BAN ===== */
+.topActions a.btn.linkedNav,
+.linkedNavFloat a{
+  text-decoration:none !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  white-space:nowrap !important;
+}
+.topActions a.btn.linkedNav{background:#e0f2fe;color:#075985;border:1px solid #7dd3fc;box-shadow:none!important}
+.topActions a.btn.linkedNav.active{background:#0f172a;color:#fff;border-color:#0f172a}
+.linkedNavFloat{position:fixed;right:12px;bottom:12px;z-index:9999;display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;max-width:min(96vw,620px);background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border:1px solid #e2e8f0;border-radius:16px;padding:8px;box-shadow:0 12px 30px rgba(15,23,42,.16)}
+.linkedNavFloat a{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;font-weight:950;font-size:12px;border-radius:999px;padding:8px 10px;border:1px solid #bae6fd;background:#e0f2fe;color:#075985}
+.linkedNavFloat a.active{background:#0f172a;color:white;border-color:#0f172a}
+@media(max-width:760px){.linkedNavFloat{left:8px;right:8px;bottom:8px;justify-content:center}.linkedNavFloat a{font-size:11px;padding:7px 8px}}
+/* ===== END PATCH NAV KET NOI CAC BAN ===== */
+
 </style>
 </head>
 <body>
@@ -211,7 +229,7 @@ html, body{scroll-behavior:auto !important;}
         <div class="chips"><span class="chip">📘 Full trắc nghiệm</span><span class="chip">Nguồn 1 + 2 + 4</span><span class="chip" id="imageChip">Có hình: 0</span><span class="chip" id="shortChip">TN: 135</span><span class="chip" id="timerChip">⏱ 00:00</span></div>
         <div class="sourceNav" aria-label="Web chính"><span class="sourceLabel">Bộ đề:</span><span class="sourceLink active">Full TN 1+2+4</span></div>
       </div>
-      <div class="topActions"><button class="btn" id="toggleSource">Hiện nguồn</button><button class="btn" id="shuffleBtn">Random câu</button><button class="btn" id="exportPdfBtn">Xuất PDF</button><button class="btn" id="exportWordBtn">Xuất Word</button><button class="btn danger" id="resetBtn">Xóa tiến độ</button><button class="btn starClear" id="clearStarsBtn">⭐ Xóa câu sao</button></div>
+      <div class="topActions"><a class="btn linkedNav active" href="index.html">Trắc nghiệm ABCD</a><a class="btn linkedNav " href="tln_hinh.html">TLN hình</a><a class="btn linkedNav " href="tln_nguon1.html">TLN nguồn 1</a><a class="btn linkedNav " href="tln_nguon4.html">TLN nguồn 4</a><button class="btn" id="toggleSource">Hiện nguồn</button><button class="btn" id="shuffleBtn">Random câu</button><button class="btn" id="exportPdfBtn">Xuất PDF</button><button class="btn" id="exportWordBtn">Xuất Word</button><button class="btn danger" id="resetBtn">Xóa tiến độ</button><button class="btn starClear" id="clearStarsBtn">⭐ Xóa câu sao</button></div>
     </div>
     <div id="examStatus"></div>
     <section id="quizCard" class="card"></section>
@@ -628,7 +646,9 @@ function updateTimer(){
 function openZoom(src){byId('zoomImg').src=src; byId('imgModal').classList.add('show');}
 function closeZoom(){byId('imgModal').classList.remove('show'); byId('zoomImg').src='';}
 function printableHTML(items){
-  return `<!doctype html><html><head><meta charset="utf-8"><title>MEC201 export</title><style>body{font-family:Arial,sans-serif;line-height:1.45;padding:24px} .q{page-break-inside:avoid;border-bottom:1px solid #ddd;padding:16px 0}.en{font-weight:700}.vi{color:#444}.opt{margin:4px 0}.correct{font-weight:700;background:#fff2a8}.ex{color:#075985}.src{color:#aaa;font-size:12px}img{max-width:720px;display:block;margin:10px 0;border:1px solid #ddd}</style></head><body><h1>MEC201 Quiz - WEB CHÍNH FULL TRẮC NGHIỆM</h1>${items.map(q=>`<div class="q"><div class="en">Câu ${q.id}. ${esc(q.question)}</div><div class="vi">${esc(q.vi)}</div>${(q.images||[]).map(src=>`<img src="${src}">`).join('')}${q.type==='mcq'?q.options.map(o=>`<div class="opt ${o.label===q.correct?'correct':''}">${o.label}. ${esc(o.text)}</div>`).join(''):`<div><b>Answer:</b> ${esc(q.answer)}</div><div>${esc(q.answerVi)}</div>`}<div class="ex"><b>Giải thích:</b> ${esc(q.explanation)}</div><div class="src">Nguồn: ${esc(q.source)}</div></div>`).join('')}</body></html>`;
+  return `<!doctype html><html><head><meta charset="utf-8"><title>MEC201 export</title><style>body{font-family:Arial,sans-serif;line-height:1.45;padding:24px} .q{page-break-inside:avoid;border-bottom:1px solid #ddd;padding:16px 0}.en{font-weight:700}.vi{color:#444}.opt{margin:4px 0}.correct{font-weight:700;background:#fff2a8}.ex{color:#075985}.src{color:#aaa;font-size:12px}img{max-width:720px;display:block;margin:10px 0;border:1px solid #ddd}</style></head><body><h1>MEC201 Quiz - WEB CHÍNH FULL TRẮC NGHIỆM</h1>${items.map(q=>`<div class="q"><div class="en">Câu ${q.id}. ${esc(q.question)}</div><div class="vi">${esc(q.vi)}</div>${(q.images||[]).map(src=>`<img src="${src}">`).join('')}${q.type==='mcq'?q.options.map(o=>`<div class="opt ${o.label===q.correct?'correct':''}">${o.label}. ${esc(o.text)}</div>`).join(''):`<div><b>Answer:</b> ${esc(q.answer)}</div><div>${esc(q.answerVi)}</div>`}<div class="ex"><b>Giải thích:</b> ${esc(q.explanation)}</div><div class="src">Nguồn: ${esc(q.source)}</div></div>`).join('')}
+<div class="linkedNavFloat" aria-label="Chuyển bản web"><a class="active" href="index.html">Trắc nghiệm ABCD</a><a class="" href="tln_hinh.html">TLN hình</a><a class="" href="tln_nguon1.html">TLN nguồn 1</a><a class="" href="tln_nguon4.html">TLN nguồn 4</a></div>
+</body></html>`;
 }
 function exportPDF(){
   const items=list().length?list():QUESTIONS;
