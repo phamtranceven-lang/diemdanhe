@@ -1,0 +1,17 @@
+BẢN NÀY KHÔNG CẦN CÀI TIỆN ÍCH TRÌNH DUYỆT
+
+Cách dùng:
+1. Giải nén zip.
+2. Mở ALO-main/quocbao.html.
+3. Dùng menu trong web như bình thường.
+
+Đã sửa trực tiếp trong code:
+- quocbao.html không dùng click sidebar kiểu target=frame mặc định nữa.
+- Bấm lại đúng trang đang mở thì không reload iframe.
+- Trang con trong iframe bị chặn kéo reload nguyên quocbao.html.
+- danhsach.html lưu tên/MSV và bật check không render/load lại nguyên danh sách nữa.
+
+Lưu ý:
+- Không cần extension.
+- Không cần bật Developer mode.
+- Nếu bạn tự bấm nút Reload/F5 của trình duyệt thì browser vẫn reload, code web không thể chặn im lặng 100%.

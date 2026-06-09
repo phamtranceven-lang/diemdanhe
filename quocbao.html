@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="vi"><head>
+  <meta name="theme-color" content="#0a2e7a">
+  <link rel="icon" href="favicon-dtu.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+<title>ALO</title>
+
+<style>
+* { box-sizing: border-box; }
+
+:root {
+    --bg-main: #17070b;
+    --text-main: #fff5f6;
+    --dtu-red: #d32f2f;
+    --dtu-red-2: #ef4444;
+    --dtu-red-dark: #4a0710;
+    --dtu-panel: #21090e;
+    --dtu-panel-2: #120609;
+    --dtu-line: rgba(239, 68, 68, 0.22);
+}
+
+/* ❌ XOÁ hết gradient nặng */
+html, body {
+    margin: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+    color: var(--text-main);
+    background:
+        radial-gradient(circle at 50% -12%, rgba(239,68,68,.28), transparent 34%),
+        radial-gradient(circle at 8% 30%, rgba(211,47,47,.16), transparent 30%),
+        radial-gradient(circle at 96% 78%, rgba(239,68,68,.14), transparent 34%),
+        linear-gradient(180deg, #17070b 0%, #100609 48%, #0b0507 100%);
+}
+
+body {
+    overflow: hidden;
+}
+
+body.menu-open {
+    overflow: hidden;
+    touch-action: none;
+}
+
+/* APP */
+.app {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+/* ❌ XOÁ toàn bộ ::before animation */
+/* ❌ XOÁ toàn bộ ::after shadow */
+
+/* TOPBAR */
+.mobile-topbar {
+    display: none;
+    height: 56px;
+    background: linear-gradient(180deg, #4a0710, #21090e);
+    color: #fff;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    font-weight: bold;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1400;
+}
+
+.menu-toggle,
+.menu-close {
+    border: none;
+    background: transparent;
+    color: #fff;
+    font-size: 24px;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+}
+
+.menu-close {
+    display: none;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 300px;
+    background: linear-gradient(180deg, #4a0710, #21090e);
+    color: #fff;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.menu-item {
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.menu-parent {
+    padding: 14px;
+    font-weight: bold;
+    background: linear-gradient(90deg, rgba(239,68,68,.28), rgba(249,115,22,.10));
+}
+
+.submenu a {
+    display: block;
+    padding: 10px 20px;
+    color: #fff1f2;
+    text-decoration: none;
+}
+
+.submenu a:hover {
+    background: rgba(239, 68, 68, 0.18);
+}
+
+.submenu a.active-link {
+    background: linear-gradient(90deg, rgba(239,68,68,.38), rgba(249,115,22,.18));
+}
+
+/* CONTENT */
+.content {
+    flex: 1;
+    height: 100vh;
+    background: linear-gradient(180deg, #17070b, #0b0507);
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+/* MOBILE */
+.overlay {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .mobile-topbar {
+        display: flex;
+    }
+
+    .app {
+        display: block;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: 56px;
+        left: 0;
+        bottom: 0;
+        width: 84%;
+        max-width: 320px;
+        z-index: 1300;
+        transform: translateX(-105%);
+        transition: transform 0.25s ease;
+    }
+
+    .sidebar.show {
+        transform: translateX(0);
+    }
+
+    .content {
+        padding-top: 56px;
+    }
+
+    iframe {
+        height: calc(100vh - 56px);
+    }
+
+    .overlay {
+        position: fixed;
+        inset: 56px 0 0 0;
+        z-index: 1250;
+        background: rgba(0,0,0,0.5);
+        display: block;
+        opacity: 0;
+        visibility: hidden;
+        transition: 0.2s;
+    }
+
+    .overlay.show {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+/* ===== DTU RED SHELL PATCH START ===== */
+/* Đổi toàn bộ khung ngoài/sidebar/topbar từ xanh sang đỏ đen DTU */
+html, body{
+    background:
+        radial-gradient(circle at 50% -12%, rgba(239,68,68,.28), transparent 34%),
+        radial-gradient(circle at 8% 30%, rgba(211,47,47,.16), transparent 30%),
+        radial-gradient(circle at 96% 78%, rgba(239,68,68,.14), transparent 34%),
+        linear-gradient(180deg, #17070b 0%, #100609 48%, #0b0507 100%) !important;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+    background-image:
+        radial-gradient(rgba(255,255,255,.055) 1px, transparent 1.2px),
+        linear-gradient(120deg, rgba(239,68,68,.06), transparent 45%, rgba(255,255,255,.025));
+    background-size:26px 26px, 100% 100%;
+    opacity:.72;
+}
+
+.app,
+.mobile-topbar,
+.sidebar,
+.content,
+.overlay{
+    position:relative;
+}
+
+.app{
+    z-index:1;
+}
+
+.mobile-topbar{
+    background: linear-gradient(135deg, #4a0710, #21090e) !important;
+    border-bottom: 1px solid rgba(239,68,68,.28) !important;
+    box-shadow: 0 8px 24px rgba(0,0,0,.22) !important;
+}
+
+.sidebar{
+    background:
+        linear-gradient(180deg, rgba(74,7,16,.96), rgba(24,6,10,.98)) !important;
+    border-right: 1px solid rgba(239,68,68,.26) !important;
+    box-shadow: 12px 0 36px rgba(0,0,0,.24) !important;
+}
+
+.menu-item{
+    border-bottom: 1px solid rgba(239,68,68,.14) !important;
+}
+
+.menu-parent{
+    background: linear-gradient(90deg, rgba(239,68,68,.26), rgba(249,115,22,.08)) !important;
+    color: #fff5f6 !important;
+    border-left: 4px solid rgba(239,68,68,.86);
+}
+
+.submenu a{
+    color: #ffe4e6 !important;
+}
+
+.submenu a:hover{
+    background: rgba(239,68,68,.18) !important;
+    color:#fff !important;
+}
+
+.submenu a.active-link{
+    background: linear-gradient(90deg, rgba(239,68,68,.42), rgba(249,115,22,.18)) !important;
+    color:#fff !important;
+    box-shadow: inset 4px 0 0 #ef4444;
+}
+
+.content{
+    background:
+        radial-gradient(circle at 50% -18%, rgba(239,68,68,.22), transparent 34%),
+        linear-gradient(180deg, #17070b, #0b0507) !important;
+}
+
+iframe{
+    background: transparent !important;
+}
+
+.overlay.show{
+    background: rgba(20, 0, 4, .62) !important;
+}
+
+/* thanh cuộn sidebar đổi đỏ */
+.sidebar::-webkit-scrollbar{
+    width: 8px;
+}
+.sidebar::-webkit-scrollbar-track{
+    background: rgba(255,255,255,.04);
+}
+.sidebar::-webkit-scrollbar-thumb{
+    background: rgba(239,68,68,.55);
+    border-radius:999px;
+}
+.sidebar::-webkit-scrollbar-thumb:hover{
+    background: rgba(239,68,68,.78);
+}
+/* ===== DTU RED SHELL PATCH END ===== */
+
+
+/* ===== PATCH: THU NGẮN CHIỀU NGANG MENU START ===== */
+
+/* PC/tablet ngang: sidebar nhỏ lại */
+.sidebar{
+    width: 220px !important;
+    max-width: 220px !important;
+    min-width: 220px !important;
+}
+
+.menu-parent{
+    padding: 12px 14px !important;
+    font-size: 15px !important;
+}
+
+.submenu a{
+    padding: 9px 18px !important;
+    font-size: 14px !important;
+    line-height: 1.25 !important;
+}
+
+/* Mobile: menu trượt ra ngắn ngang hơn, không chiếm gần hết màn hình */
+@media (max-width: 768px) {
+    .sidebar{
+        width: 58vw !important;
+        max-width: 245px !important;
+        min-width: 210px !important;
+    }
+
+    .menu-parent{
+        padding: 11px 13px !important;
+        font-size: 14px !important;
+    }
+
+    .submenu a{
+        padding: 9px 16px !important;
+        font-size: 13.5px !important;
+    }
+}
+
+@media (max-width: 420px) {
+    .sidebar{
+        width: 62vw !important;
+        max-width: 230px !important;
+        min-width: 200px !important;
+    }
+}
+/* ===== PATCH: THU NGẮN CHIỀU NGANG MENU END ===== */
+
+</style>
+
+</head>
+
+<body>
+
+<div class="mobile-topbar">
+    <button class="menu-toggle" id="menuToggle">☰</button>
+    <span id="pageTitle">ALO</span>
+    <button class="menu-close" id="menuClose">✕</button>
+</div>
+
+<div class="overlay" id="overlay"></div>
+
+<div class="app">
+    <div class="sidebar" id="sidebar">
+
+```
+    <div class="menu-item">
+        <div class="menu-parent">Thông Tin</div>
+        <div class="submenu">
+            <a href="giaodien.html" target="frame">Trang chính</a>
+            <a href="asv.html" target="frame">Ảnh sinh viên</a>
+        </div>
+    </div>
+
+    <div class="menu-item">
+        <div class="menu-parent">Tính Điểm</div>
+        <div class="submenu">
+            <a href="tinhdiemhocphan.html" target="frame">Tính điểm học phần</a>
+            <a href="tinhdiemtichluy.html" target="frame">Tính điểm tích lũy</a>
+            <a href="dudoangpa.html" target="frame">Dự đoán GPA</a>
+            <a href="tinhdiemgpadukien.html" target="frame">GPA dự kiến</a>
+            <a href="tinhdiemGDTC.html" target="frame">GDTC</a>
+        </div>
+    </div>
+
+    <div class="menu-item">
+        <div class="menu-parent">Thi KTHP</div>
+        <div class="submenu">
+            <a href="lichthi.html" target="frame">Lịch thi</a>
+            <a href="phongthi.html" target="frame">Phòng thi</a>
+            <a href="danhsach.html" target="frame">Danh sách thi</a>
+        </div>
+    </div>
+
+    <div class="menu-item">
+        <div class="menu-parent">Kiểm tra</div>
+        <div class="submenu">
+            <a href="dinhdangcauhoilearning.html" target="frame">Định dạng câu hỏi</a>
+        </div>
+    </div>
+
+    <div class="menu-item">
+        <div class="menu-parent">Đăng ký tín chỉ</div>
+        <div class="submenu">
+            <a href="thoikhoabieu1.html" target="frame">Sắp TKB nhanh</a>
+            <a href="thoikhoabieu2.html" target="frame">Sắp TKB</a>
+            <a href="tongtinchi.html" target="frame">Tổng tín chỉ</a>
+        </div>
+    </div>
+
+    <div class="menu-item">
+        <div class="menu-parent">Tiện ích</div>
+        <div class="submenu">
+            <a href="danhsachmonhoc.html" target="frame">Môn học</a>
+            <a href="doitenfilenhanh.html" target="frame">Đổi tên file</a>
+            <a href="hocphi4nam.html" target="frame">Học phí 4 năm</a>
+            <a href="huongdanhocphi.html" target="frame">Hướng dẫn học phí</a>
+            <a href="phantramtinrot.html" target="frame">Tín rớt</a>
+            <a href="tinhhocphidtu.html" target="frame">Tính học phí</a>
+            <a href="tinhphantramtien.html" target="frame">% tiền</a>
+        </div>
+    </div>
+
+</div>
+
+<div class="content">
+    <iframe name="frame" src="giaodien.html"></iframe>
+</div>
+```
+
+</div>
+
+<script>
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("overlay");
+const menuToggle = document.getElementById("menuToggle");
+const menuClose = document.getElementById("menuClose");
+const pageTitle = document.getElementById("pageTitle");
+const body = document.body;
+
+function openMenu() {
+    sidebar.classList.add("show");
+    overlay.classList.add("show");
+    body.classList.add("menu-open");
+    menuToggle.style.visibility = "hidden";
+    menuClose.style.display = "inline-block";
+}
+
+function closeMenu() {
+    sidebar.classList.remove("show");
+    overlay.classList.remove("show");
+    body.classList.remove("menu-open");
+    menuToggle.style.visibility = "visible";
+    menuClose.style.display = "none";
+}
+
+menuToggle.addEventListener("click", openMenu);
+menuClose.addEventListener("click", closeMenu);
+overlay.addEventListener("click", closeMenu);
+
+document.querySelectorAll(".submenu a").forEach(link => {
+    link.addEventListener("click", () => {
+        document.querySelectorAll(".submenu a").forEach(a => a.classList.remove("active-link"));
+        link.classList.add("active-link");
+        pageTitle.innerText = link.innerText || "ALO";
+
+        if (window.innerWidth <= 768) {
+            closeMenu();
+        }
+    });
+});
+
+window.addEventListener("resize", () => {
+    if (window.innerWidth > 768) {
+        closeMenu();
+    }
+});
+</script>
+    
+     <script src="vien-7mau-tuyret.js"></script>
+
+
+</body></html>

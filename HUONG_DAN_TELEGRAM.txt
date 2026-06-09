@@ -1,0 +1,23 @@
+ALO - ĐÃ THÊM GỬI THẺ DỰ THI QUA TELEGRAM
+
+Đã sửa sẵn:
+1. cloudflare-worker.js
+   - Thêm route POST /send-card-telegram
+   - Vẫn giữ chức năng mở file/proxy cũ
+   - Không chứa token thật trong code
+
+2. phongthi_script.js và phongthi.html
+   - Thêm nút: 📤 GỬI TELEGRAM
+   - Khi bấm nút, web chụp thẻ thành ảnh PNG rồi gửi qua Worker
+   - URL Worker tự lấy từ proxy-config.js:
+     window.ALO_CLOUDFLARE_WORKER_PROXY = "https://round-bar-594d.tapcube2007.workers.dev";
+
+Bạn còn phải làm 2 việc trên Cloudflare Worker mở file:
+Settings -> Variables and Secrets -> Add
+
+TELEGRAM_BOT_TOKEN = token mới của bot từ BotFather  (nên để Secret)
+TELEGRAM_CHAT_ID = 5655216839                    (Text hoặc Secret)
+
+Sau đó Deploy Worker.
+
+Lưu ý: token cũ đã lộ trong chat thì nên vào @BotFather revoke/generate token mới rồi dùng token mới.

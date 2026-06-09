@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta name="theme-color" content="#0a2e7a">
+  <link rel="icon" href="favicon-dtu.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+<meta charset="UTF-8">
+<title>Rút gọn link</title>
+
+<style>
+body{
+font-family:sans-serif;
+background:#0b1120;
+color:#fff;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.box{
+background:#111827;
+padding:30px;
+border-radius:16px;
+box-shadow:0 20px 60px rgba(0,0,0,.5);
+width:400px;
+text-align:center;
+}
+
+input{
+width:100%;
+padding:12px;
+border-radius:10px;
+border:none;
+margin-bottom:10px;
+font-size:14px;
+}
+
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+background:#22d3ee;
+color:#000;
+font-weight:700;
+cursor:pointer;
+}
+
+#result{
+margin-top:15px;
+word-break:break-all;
+}
+
+.copy{
+margin-top:10px;
+background:#10b981;
+}
+</style>
+
+</head>
+<body>
+
+<div class="box">
+<h2>🔗 Rút gọn link</h2>
+
+<input id="longUrl" placeholder="Dán link cần rút gọn...">
+
+<button onclick="shorten()">Rút gọn</button>
+
+<div id="result"></div>
+<button class="copy" onclick="copyLink()">📋 Copy</button>
+</div>
+
+<script>
+let currentLink = "";
+
+async function shorten(){
+const url = document.getElementById("longUrl").value.trim();
+if(!url) return alert("Nhập link");
+
+document.getElementById("result").innerText = "Đang xử lý...";
+
+try{
+const res = await fetch(`https://api.shrtco.de/v2/shorten?url=${url}`);
+const data = await res.json();
+
+if(data.ok){
+currentLink = data.result.full_short_link;
+document.getElementById("result").innerHTML =
+`<a href="${currentLink}" target="_blank" style="color:#22d3ee">${currentLink}</a>`;
+}else{
+alert("Lỗi API");
+}
+}catch(e){
+alert("Không kết nối được");
+}
+}
+
+function copyLink(){
+if(!currentLink) return alert("Chưa có link");
+
+navigator.clipboard.writeText(currentLink).then(()=>{
+alert("Đã copy!");
+}).catch(()=>{
+const ta = document.createElement("textarea");
+ta.value = currentLink;
+document.body.appendChild(ta);
+ta.select();
+document.execCommand("copy");
+ta.remove();
+alert("Đã copy!");
+});
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+Bản này đã cấu hình sẵn Cloudflare Worker proxy:
+https://round-bar-594d.tapcube2007.workers.dev
+
+Cách dùng:
+1. Upload toàn bộ thư mục này lên GitHub Pages.
+2. Chờ GitHub Pages build xong.
+3. Vào web và bấm Ctrl + F5 để xóa cache.
+4. Test lại nút MỞ FILE / XEM THẺ.
+
+Lưu ý:
+- Không cần sửa proxy-config.js nữa, vì đã điền sẵn link Worker.
+- Không xóa file proxy-config.js.
+- Không xóa dòng <script src="proxy-config.js"></script> trong danhsach.html/phongthi.html.

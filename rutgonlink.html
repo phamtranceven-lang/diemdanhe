@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta name="theme-color" content="#0a2e7a">
+  <link rel="icon" href="favicon-dtu.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+<meta charset="UTF-8">
+<title>Rút gọn link</title>
+
+<style>
+body{
+background:#0b1120;
+color:#fff;
+font-family:sans-serif;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+
+.box{
+background:#111827;
+padding:30px;
+border-radius:16px;
+width:420px;
+text-align:center;
+box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+
+input{
+width:100%;
+padding:12px;
+border-radius:10px;
+border:none;
+margin-bottom:10px;
+font-size:14px;
+}
+
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:10px;
+background:#22d3ee;
+color:#000;
+font-weight:700;
+cursor:pointer;
+margin-top:5px;
+}
+
+.copy{
+background:#10b981;
+}
+
+#result{
+margin-top:15px;
+word-break:break-all;
+color:#22d3ee;
+font-weight:700;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+<h2>🔗 Rút gọn link</h2>
+
+<input id="url" placeholder="Dán link cần rút gọn...">
+
+<button onclick="make()">Tạo link</button>
+
+<div id="result"></div>
+
+<button class="copy" onclick="copyLink()">📋 Copy</button>
+</div>
+
+<script>
+let current = "";
+
+function make(){
+const url = document.getElementById("url").value.trim();
+
+if(!url){
+alert("Nhập link");
+return;
+}
+
+current = location.origin + "/ALO/go.html?u=" + encodeURIComponent(url);
+
+document.getElementById("result").innerHTML =
+`<a href="${current}" target="_blank">${current}</a>`;
+}
+
+function copyLink(){
+if(!current){
+alert("Chưa có link");
+return;
+}
+
+const ta = document.createElement("textarea");
+ta.value = current;
+document.body.appendChild(ta);
+ta.select();
+document.execCommand("copy");
+ta.remove();
+
+alert("Đã copy!");
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="theme-color" content="#0a2e7a">
+  <link rel="icon" href="favicon-dtu.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+<meta charset="UTF-8">
+
+<script>
+(function(){
+  const u = new URLSearchParams(location.search).get("u");
+  if(u){
+    try{
+      const d = decodeURIComponent(u);
+      if(d.startsWith("http")){
+        location.replace(d); // nhanh + không lưu history
+      }
+    }catch(e){}
+  }
+})();
+</script>
+
+<title>Redirect</title>
+</head>
+
+<body>
+</body>
+</html>

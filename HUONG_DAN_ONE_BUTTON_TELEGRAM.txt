@@ -1,0 +1,29 @@
+ALO - PATCH TRA & GUI TELEGRAM 1 NUT
+
+Da them flow mot nut vao cac file:
+1. danhsach.html
+   - Them nut: 🚀 TRA & GỬI TELEGRAM
+   - Nguoi dung nhap ten mon/ma mon o o tim kiem hien co.
+   - Nguoi dung nhap ho ten/MSSV o o "Ten tim trong lop".
+   - Bam nut moi, web se:
+     + Luu ten
+     + Loc danh sach theo mon/ma mon
+     + Tu check file nao co ten/MSSV
+     + Mo the du thi inline
+     + Gui anh the du thi qua Telegram
+
+2. phongthi.html
+   - Them tham so URL: autoSendTelegram=1
+   - Khi mo phongthi.html?url=...&name=...&autoSendTelegram=1, trang se tu render the va gui Telegram.
+
+3. phongthi_script.js
+   - Dong bo logic autoSendTelegram neu ban dang dung file JS rieng.
+
+Luu y:
+- Van can Cloudflare Worker route /send-card-telegram nhu ban da co.
+- Worker phai co Secrets/Variables:
+  TELEGRAM_BOT_TOKEN
+  TELEGRAM_CHAT_ID
+- Khong dat bot token trong frontend.
+- Neu ten bi trung, nen dung MSSV de tranh gui nham.
+- Neu PDF la anh scan hoac website truong/proxy bi chan, auto co the khong doc duoc file.

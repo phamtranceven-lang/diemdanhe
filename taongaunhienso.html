@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="vi"><head>
+  <meta name="theme-color" content="#0a2e7a">
+  <link rel="icon" href="favicon-dtu.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Number Generator 00-99</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    :root{
+      --cyan:#18e7ff;
+      --pink:#ff1fd1;
+      --green:#12f59b;
+      --yellow:#ffd95d;
+      --white:#f9fbff;
+      --border:rgba(255,255,255,.12);
+    }
+
+    html, body{
+      margin:0;
+      width:100%;
+      height:100%;
+      overflow:hidden;
+      font-family:"Segoe UI", Arial, sans-serif;
+      color:var(--white);
+      background:
+        radial-gradient(circle at 7% 18%, rgba(255,0,170,.34), transparent 25%),
+        radial-gradient(circle at 86% 84%, rgba(0,224,255,.22), transparent 32%),
+        linear-gradient(90deg, #060718 0%, #070b25 55%, #030414 100%);
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      background:
+        linear-gradient(0deg, rgba(255,255,255,.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+      background-size:30px 30px;
+      opacity:.12;
+      pointer-events:none;
+    }
+
+    .app{
+      width:min(1440px, 96vw);
+      height:100dvh;
+      margin:0 auto;
+      padding:12px 0;
+      display:grid;
+      grid-template-columns:minmax(0, 1.65fr) minmax(370px, .85fr);
+      gap:16px;
+      overflow:hidden;
+    }
+
+    .panel{
+      min-width:0;
+      min-height:0;
+      border-radius:26px;
+      border:1px solid var(--border);
+      background:
+        radial-gradient(circle at 86% 10%, rgba(88,145,255,.18), transparent 30%),
+        linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.028));
+      box-shadow:0 22px 70px rgba(0,0,0,.35);
+      backdrop-filter:blur(18px);
+      overflow:hidden;
+    }
+
+    .main-panel{
+      height:calc(100dvh - 24px);
+      padding:24px 28px 18px;
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+    }
+
+    .top-zone{
+      flex:1 1 auto;
+      min-height:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .main-inner{
+      width:100%;
+      max-width:760px;
+    }
+
+    .badge{
+      width:fit-content;
+      padding:7px 14px;
+      border-radius:999px;
+      color:var(--cyan);
+      border:1px solid rgba(24,231,255,.38);
+      background:rgba(24,231,255,.08);
+      font-size:13px;
+      font-weight:900;
+    }
+
+    h1{
+      margin:18px 0 10px;
+      font-size:clamp(44px, 5.8vw, 76px);
+      line-height:.92;
+      letter-spacing:-2px;
+      font-weight:900;
+    }
+
+    h1 span{
+      background:linear-gradient(90deg, #18e7ff, #8674ff, #ff22d3, #12f59b);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+    }
+
+    .sub{
+      max-width:640px;
+      margin:0;
+      color:#d7ddf4;
+      font-size:15px;
+      line-height:1.45;
+    }
+
+    .result-area{
+      margin:18px 0 14px;
+      display:flex;
+      justify-content:center;
+      gap:20px;
+    }
+
+    .number-box{
+      width:132px;
+      height:132px;
+      border-radius:24px;
+      border:2px solid rgba(255,31,209,.82);
+      background:
+        radial-gradient(circle at 50% 50%, rgba(24,231,255,.24), rgba(24,231,255,0) 48%),
+        linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.025));
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:58px;
+      font-weight:950;
+      color:var(--white);
+      text-shadow:0 0 20px rgba(24,231,255,.82);
+      box-shadow:0 0 24px rgba(255,31,209,.2), inset 0 0 34px rgba(255,255,255,.025);
+    }
+
+    .number-box.pop{ animation:pop .26s ease; }
+
+    @keyframes pop{
+      0% { transform:scale(.9); }
+      60% { transform:scale(1.05); }
+      100% { transform:scale(1); }
+    }
+
+    .controls{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:10px;
+      max-width:700px;
+      margin:0 auto;
+    }
+
+    .batch-control{
+      grid-column:1 / -1;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 14px;
+      border-radius:16px;
+      background:rgba(255,255,255,.075);
+      border:1px solid rgba(255,255,255,.09);
+    }
+
+    .batch-control label{
+      font-size:14px;
+      font-weight:900;
+      color:#e9eeff;
+      white-space:nowrap;
+    }
+
+    .batch-control input{
+      width:120px;
+      height:38px;
+      border:none;
+      outline:none;
+      border-radius:12px;
+      text-align:center;
+      font-size:18px;
+      font-weight:950;
+      color:#04141b;
+      background:linear-gradient(90deg, #12f59b, #18e7ff);
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.25);
+    }
+
+    .batch-hint{
+      color:#9ea8cb;
+      font-size:12px;
+      font-weight:700;
+      white-space:nowrap;
+    }
+
+
+    .mode-control{
+      grid-column:1 / -1;
+      padding:12px 14px;
+      border-radius:16px;
+      background:rgba(255,255,255,.075);
+      border:1px solid rgba(255,255,255,.09);
+    }
+
+    .mode-control label{
+      display:block;
+      margin-bottom:10px;
+      font-size:14px;
+      font-weight:950;
+      color:#e9eeff;
+    }
+
+    .mode-buttons{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:8px;
+    }
+
+    .mode-btn{
+      padding:10px 8px;
+      border-radius:13px;
+      background:linear-gradient(180deg, rgba(255,255,255,.13), rgba(255,255,255,.055));
+      border:1px solid rgba(255,255,255,.09);
+      color:#dbe4ff;
+      box-shadow:none;
+      font-size:13px;
+    }
+
+    .mode-btn.active{
+      color:#04141b;
+      background:linear-gradient(90deg, #ffd95d, #12f59b);
+      box-shadow:0 0 18px rgba(18,245,155,.18);
+    }
+
+    .mode-example{
+      display:block;
+      margin-top:8px;
+      color:#9ea8cb;
+      font-size:12px;
+      font-weight:750;
+    }
+
+    button{
+      border:none;
+      cursor:pointer;
+      border-radius:16px;
+      padding:12px 14px;
+      color:white;
+      font-size:14px;
+      font-weight:900;
+      box-shadow:0 12px 28px rgba(0,0,0,.2);
+      transition:.2s ease;
+    }
+
+    button:hover{ transform:translateY(-2px); }
+
+    .btn-grad{ background:linear-gradient(90deg, #28d8ff, #ff21c8); }
+    .btn-green{
+      background:linear-gradient(90deg, #12f59b, #17c8e8);
+      color:#04141b;
+    }
+    .btn-dark{
+      background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.07));
+      border:1px solid rgba(255,255,255,.1);
+    }
+    .btn-pink{
+      grid-column:1 / -1;
+      background:linear-gradient(90deg, #ff5872, #ff8bb3);
+    }
+
+    .message{
+      height:22px;
+      margin-top:8px;
+      text-align:center;
+      color:var(--yellow);
+      font-size:13px;
+      font-weight:850;
+      overflow:hidden;
+      white-space:nowrap;
+      text-overflow:ellipsis;
+    }
+
+    .stats{
+      margin-top:6px;
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+
+    .stat{
+      min-width:110px;
+      padding:9px 14px;
+      border-radius:16px;
+      background:rgba(255,255,255,.065);
+      border:1px solid rgba(255,255,255,.08);
+      color:#d3daf3;
+      text-align:center;
+      font-size:13px;
+    }
+
+    .stat b{
+      color:#fff;
+      font-size:16px;
+    }
+
+    .selected-panel{
+      flex:0 0 auto;
+      margin-top:14px;
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(3, 11, 30, .28);
+      padding:12px;
+      overflow:hidden;
+    }
+
+    .selected-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    .selected-head h2{
+      margin:0;
+      font-size:16px;
+      font-weight:950;
+    }
+
+    .pill{
+      padding:6px 12px;
+      border-radius:999px;
+      background:linear-gradient(90deg, #12f59b, #18e7ff);
+      color:#04141b;
+      font-size:12px;
+      font-weight:950;
+      white-space:nowrap;
+    }
+
+    .selected-grid{
+      display:grid;
+      grid-template-columns:repeat(20, minmax(0, 1fr));
+      gap:6px;
+    }
+
+    .cell{
+      height:26px;
+      min-width:0;
+      border-radius:8px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.055);
+      color:rgba(255,255,255,.45);
+      font-size:12px;
+      font-weight:950;
+    }
+
+    .cell.used{
+      background:linear-gradient(180deg, #24ffd6, #10eaa1);
+      color:#031915;
+      box-shadow:0 0 10px rgba(16,242,164,.16);
+    }
+
+    .cell.latest{
+      outline:2px solid #ff28d2;
+      outline-offset:-2px;
+      box-shadow:0 0 0 2px rgba(255,40,210,.15);
+    }
+
+    .selected-note{
+      margin-top:8px;
+      color:#9ea8cb;
+      text-align:right;
+      font-size:11px;
+    }
+
+    .history-panel{
+      height:calc(100dvh - 24px);
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+    }
+
+    .history-head{
+      flex:0 0 auto;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    }
+
+    .history-head h2{
+      margin:0;
+      font-size:17px;
+      font-weight:950;
+    }
+
+    .history-box{
+      flex:1 1 auto;
+      min-height:0;
+      border-radius:16px;
+      background:rgba(3, 11, 30, .32);
+      border:1px solid rgba(255,255,255,.045);
+      overflow-y:auto;
+      overflow-x:hidden;
+      overscroll-behavior:contain;
+    }
+
+    .history-box::-webkit-scrollbar{
+      width:10px;
+    }
+
+    .history-box::-webkit-scrollbar-track{
+      background:rgba(255,255,255,.06);
+      border-radius:999px;
+    }
+
+    .history-box::-webkit-scrollbar-thumb{
+      background:rgba(255,255,255,.42);
+      border-radius:999px;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      table-layout:fixed;
+      font-size:13px;
+    }
+
+    thead th{
+      position:sticky;
+      top:0;
+      z-index:2;
+    }
+
+    th{
+      padding:9px 6px;
+      color:var(--cyan);
+      background:rgba(24,231,255,.16);
+      backdrop-filter:blur(10px);
+      font-size:12px;
+      font-weight:950;
+    }
+
+    td{
+      padding:9px 6px;
+      text-align:center;
+      border-bottom:1px solid rgba(255,255,255,.055);
+      white-space:nowrap;
+      font-weight:700;
+    }
+
+    tbody tr:last-child td{
+      border-bottom:none;
+    }
+
+    .history-note{
+      margin-top:8px;
+      color:#9ea8cb;
+      text-align:right;
+      font-size:11px;
+      flex:0 0 auto;
+    }
+
+    .empty{
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#a7b1d3;
+      font-size:14px;
+      text-align:center;
+      padding:15px;
+    }
+
+    @media (max-width: 1150px){
+      .selected-grid{
+        grid-template-columns:repeat(10, minmax(0, 1fr));
+      }
+
+
+      .mode-buttons{
+        grid-template-columns:1fr;
+      }
+      .cell{
+        height:28px;
+      }
+    }
+
+    @media (max-width: 980px){
+      html, body{
+        overflow:auto;
+        height:auto;
+      }
+
+      .app{
+        height:auto;
+        display:block;
+        padding:12px 0;
+      }
+
+      .main-panel, .history-panel{
+        height:auto;
+      }
+
+      .main-panel{
+        margin-bottom:16px;
+      }
+
+      .history-panel{
+        min-height:520px;
+      }
+    }
+
+    @media (max-width:560px){
+      .controls{
+        grid-template-columns:1fr;
+      }
+
+      .btn-pink{
+        grid-column:auto;
+      }
+
+      .result-area{
+        gap:12px;
+      }
+
+      .number-box{
+        width:118px;
+        height:118px;
+        font-size:52px;
+      }
+
+      .selected-grid{
+        grid-template-columns:repeat(10, minmax(0, 1fr));
+      }
+
+
+      .mode-buttons{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="panel main-panel">
+      <div class="top-zone">
+        <div class="main-inner">
+          <div class="badge">⚡ RANDOM 00–99</div>
+
+          <h1><span>Number</span><br>Generator</h1>
+
+          <p class="sub">
+            Tạo số ngẫu nhiên từ 00 đến 99. Có thể bật tránh trùng, tạo 2 số tự do, cùng đầu hoặc cùng đuôi.
+          </p>
+
+          <div class="result-area">
+            <div class="number-box pop" id="number1">00</div>
+            <div class="number-box pop" id="number2">--</div>
+          </div>
+
+          <div class="controls">
+            <button class="btn-grad" onclick="randomOne()">🎲 Tạo 1 số</button>
+            <button class="btn-grad" onclick="randomTwo()">🧮 Tạo 2 số</button>
+
+            <div class="batch-control">
+              <label for="batchCount">🔢 Số kết quả muốn tạo</label>
+              <input id="batchCount" type="number" min="1" max="100" value="1">
+              <span class="batch-hint">VD: 5 lượt</span>
+            </div>
+
+            <div class="mode-control">
+              <label>🎯 Chế độ khi tạo 2 số</label>
+              <div class="mode-buttons">
+                <button class="mode-btn active" data-pair-mode="free" onclick="setPairMode('free')">Tự do</button>
+                <button class="mode-btn" data-pair-mode="head" onclick="setPairMode('head')">Cùng đầu</button>
+                <button class="mode-btn" data-pair-mode="tail" onclick="setPairMode('tail')">Cùng đuôi</button>
+              </div>
+              <span class="mode-example">Cùng đầu: 45 - 48 / 35 - 39 · Cùng đuôi: 32 - 92 / 88 - 58</span>
+            </div>
+
+            <button class="btn-green" id="uniqueBtn" onclick="toggleUnique()">✅ Tránh trùng: TẮT</button>
+            <button class="btn-dark" onclick="downloadTxt()">📄 Tải TXT kết quả</button>
+            <button class="btn-pink" onclick="resetAll()">🧹 Reset kết quả</button>
+          </div>
+
+          <div class="message" id="message"></div>
+
+          <div class="stats">
+            <div class="stat">Đã có: <b id="usedCount">0</b>/100</div>
+            <div class="stat">Còn lại: <b id="leftCount">100</b></div>
+            <div class="stat">Lượt quay: <b id="turnCount">0</b></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="selected-panel">
+        <div class="selected-head">
+          <h2>✅ Bảng số đã có</h2>
+          <div class="pill">00–99</div>
+        </div>
+
+        <div class="selected-grid" id="numberGrid"><div class="cell">00</div><div class="cell used">01</div><div class="cell">02</div><div class="cell">03</div><div class="cell">04</div><div class="cell">05</div><div class="cell">06</div><div class="cell">07</div><div class="cell">08</div><div class="cell">09</div><div class="cell">10</div><div class="cell">11</div><div class="cell">12</div><div class="cell">13</div><div class="cell">14</div><div class="cell">15</div><div class="cell">16</div><div class="cell">17</div><div class="cell">18</div><div class="cell">19</div><div class="cell">20</div><div class="cell">21</div><div class="cell">22</div><div class="cell">23</div><div class="cell">24</div><div class="cell">25</div><div class="cell">26</div><div class="cell">27</div><div class="cell">28</div><div class="cell">29</div><div class="cell">30</div><div class="cell">31</div><div class="cell">32</div><div class="cell">33</div><div class="cell">34</div><div class="cell">35</div><div class="cell">36</div><div class="cell">37</div><div class="cell">38</div><div class="cell">39</div><div class="cell">40</div><div class="cell">41</div><div class="cell">42</div><div class="cell">43</div><div class="cell">44</div><div class="cell">45</div><div class="cell">46</div><div class="cell used latest">47</div><div class="cell">48</div><div class="cell">49</div><div class="cell">50</div><div class="cell">51</div><div class="cell">52</div><div class="cell">53</div><div class="cell">54</div><div class="cell">55</div><div class="cell">56</div><div class="cell">57</div><div class="cell">58</div><div class="cell">59</div><div class="cell">60</div><div class="cell">61</div><div class="cell">62</div><div class="cell">63</div><div class="cell">64</div><div class="cell">65</div><div class="cell">66</div><div class="cell used">67</div><div class="cell">68</div><div class="cell">69</div><div class="cell">70</div><div class="cell">71</div><div class="cell">72</div><div class="cell">73</div><div class="cell">74</div><div class="cell">75</div><div class="cell">76</div><div class="cell">77</div><div class="cell">78</div><div class="cell">79</div><div class="cell">80</div><div class="cell">81</div><div class="cell">82</div><div class="cell">83</div><div class="cell">84</div><div class="cell">85</div><div class="cell">86</div><div class="cell">87</div><div class="cell">88</div><div class="cell">89</div><div class="cell used">90</div><div class="cell">91</div><div class="cell">92</div><div class="cell">93</div><div class="cell">94</div><div class="cell used">95</div><div class="cell">96</div><div class="cell">97</div><div class="cell">98</div><div class="cell">99</div></div>
+
+        <div class="selected-note">Ô viền hồng là số vừa tạo.</div>
+      </div>
+    </section>
+
+    <section class="panel history-panel">
+      <div class="history-head">
+        <h2>📌 Lịch sử kết quả</h2>
+        <div class="pill" id="modeBadge">Có thể trùng · Tự do</div>
+      </div>
+
+      <div class="history-box" id="historyBox">
+        <table>
+          <thead>
+            <tr>
+              <th>LƯỢT</th>
+              <th>KẾT QUẢ</th>
+              <th>GIỜ</th>
+            </tr>
+          </thead>
+          <tbody>
+        <tr>
+          <td>5</td>
+          <td><b>47</b></td>
+          <td>13:38:10</td>
+        </tr>
+      
+        <tr>
+          <td>4</td>
+          <td><b>95</b></td>
+          <td>13:38:10</td>
+        </tr>
+      
+        <tr>
+          <td>3</td>
+          <td><b>01</b></td>
+          <td>13:38:09</td>
+        </tr>
+      
+        <tr>
+          <td>2</td>
+          <td><b>90</b></td>
+          <td>13:38:09</td>
+        </tr>
+      
+        <tr>
+          <td>1</td>
+          <td><b>67</b></td>
+          <td>13:38:09</td>
+        </tr>
+      </tbody>
+        </table>
+      </div>
+
+      <div class="history-note">Lướt riêng trong bảng này để xem các lượt cũ. TXT lưu đầy đủ.</div>
+    </section>
+  </main>
+
+  <script>
+    let avoidDuplicate = false;
+    let pairMode = "free"; // free = tự do, head = cùng đầu, tail = cùng đuôi
+    let usedNumbers = new Set();
+    let latestNumbers = [];
+    let history = [];
+
+    const STORAGE_KEY = "random00to99StateV1";
+
+    const number1El = document.getElementById("number1");
+    const number2El = document.getElementById("number2");
+    const messageEl = document.getElementById("message");
+    const usedCountEl = document.getElementById("usedCount");
+    const leftCountEl = document.getElementById("leftCount");
+    const turnCountEl = document.getElementById("turnCount");
+    const historyBox = document.getElementById("historyBox");
+    const numberGrid = document.getElementById("numberGrid");
+    const uniqueBtn = document.getElementById("uniqueBtn");
+    const modeBadge = document.getElementById("modeBadge");
+    const batchCountEl = document.getElementById("batchCount");
+
+    function saveState(){
+      const state = {
+        avoidDuplicate,
+        pairMode,
+        usedNumbers: Array.from(usedNumbers),
+        latestNumbers,
+        history,
+        batchCount: Number(batchCountEl.value) || 1,
+        currentNumber1: number1El.textContent,
+        currentNumber2: number2El.textContent
+      };
+
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch(error) {
+        console.error("Không thể lưu dữ liệu:", error);
+        setMessage("Trình duyệt đang chặn lưu dữ liệu cục bộ.");
+      }
+    }
+
+    function loadState(){
+      // Giá trị mặc định khi chưa từng lưu hoặc sau khi đã Reset.
+      number1El.textContent = "00";
+      number2El.textContent = "--";
+
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(!raw) return;
+
+        const state = JSON.parse(raw);
+        const validNumber = value => typeof value === "string" && /^\d{2}$/.test(value);
+
+        avoidDuplicate = Boolean(state.avoidDuplicate);
+        pairMode = ["free", "head", "tail"].includes(state.pairMode) ? state.pairMode : "free";
+
+        const savedUsed = Array.isArray(state.usedNumbers)
+          ? state.usedNumbers.filter(validNumber)
+          : [];
+        usedNumbers = new Set(savedUsed);
+
+        latestNumbers = Array.isArray(state.latestNumbers)
+          ? state.latestNumbers.filter(validNumber)
+          : [];
+
+        history = Array.isArray(state.history)
+          ? state.history.filter(item => item && typeof item.result === "string")
+          : [];
+
+        const savedBatchCount = Number(state.batchCount);
+        batchCountEl.value = Number.isInteger(savedBatchCount) && savedBatchCount >= 1 && savedBatchCount <= 100
+          ? savedBatchCount
+          : 1;
+
+        number1El.textContent = validNumber(state.currentNumber1) ? state.currentNumber1 : "00";
+        number2El.textContent = validNumber(state.currentNumber2) ? state.currentNumber2 : "--";
+      } catch(error) {
+        console.error("Dữ liệu đã lưu bị lỗi:", error);
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    }
+
+    function syncControlsFromState(){
+      uniqueBtn.textContent = avoidDuplicate
+        ? "✅ Tránh trùng: BẬT"
+        : "✅ Tránh trùng: TẮT";
+
+      document.querySelectorAll("[data-pair-mode]").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.pairMode === pairMode);
+      });
+    }
+
+    function fmt(num){
+      return String(num).padStart(2, "0");
+    }
+
+    function allNumbers(){
+      return Array.from({ length: 100 }, (_, i) => fmt(i));
+    }
+
+    function remainingNumbers(extraBlocked = new Set()){
+      return allNumbers().filter(n => !usedNumbers.has(n) && !extraBlocked.has(n));
+    }
+
+    function anyRandom(){
+      return fmt(Math.floor(Math.random() * 100));
+    }
+
+    function pickRandom(arr){
+      if(arr.length === 0) return null;
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function headOf(num){
+      return num[0];
+    }
+
+    function tailOf(num){
+      return num[1];
+    }
+
+    function pairModeLabel(){
+      if(pairMode === "head") return "Cùng đầu";
+      if(pairMode === "tail") return "Cùng đuôi";
+      return "Tự do";
+    }
+
+    function pairModeDescription(){
+      if(pairMode === "head") return "2 số cùng đầu, ví dụ 45 - 48.";
+      if(pairMode === "tail") return "2 số cùng đuôi, ví dụ 32 - 92.";
+      return "2 số bất kỳ nhưng không trùng nhau trong cùng một lượt.";
+    }
+
+    function updateModeBadge(){
+      modeBadge.textContent = `${avoidDuplicate ? "Không trùng" : "Có thể trùng"} · ${pairModeLabel()}`;
+    }
+
+    function setPairMode(mode){
+      pairMode = mode;
+
+      document.querySelectorAll("[data-pair-mode]").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.pairMode === mode);
+      });
+
+      updateModeBadge();
+      setMessage(`Đã chọn chế độ ${pairModeLabel()}. ${pairModeDescription()}`);
+      saveState();
+    }
+
+    function uniqueRandom(extraBlocked = new Set()){
+      return pickRandom(remainingNumbers(extraBlocked));
+    }
+
+    function candidatePool(extraBlocked = new Set()){
+      return avoidDuplicate ? remainingNumbers(extraBlocked) : allNumbers();
+    }
+
+    function twoRandomDifferent(extraBlocked = new Set()){
+      const pool = candidatePool(extraBlocked);
+      if(pool.length < 2) return null;
+
+      const a = pickRandom(pool);
+      const bPool = pool.filter(n => n !== a);
+      const b = pickRandom(bPool);
+
+      return [a, b];
+    }
+
+    function twoSameHead(extraBlocked = new Set()){
+      const pool = candidatePool(extraBlocked);
+      const groups = [];
+
+      for(let head = 0; head <= 9; head++){
+        const group = pool.filter(n => headOf(n) === String(head));
+        if(group.length >= 2) groups.push(group);
+      }
+
+      if(groups.length === 0) return null;
+
+      const group = pickRandom(groups);
+      const a = pickRandom(group);
+      const b = pickRandom(group.filter(n => n !== a));
+      return [a, b];
+    }
+
+    function twoSameTail(extraBlocked = new Set()){
+      const pool = candidatePool(extraBlocked);
+      const groups = [];
+
+      for(let tail = 0; tail <= 9; tail++){
+        const group = pool.filter(n => tailOf(n) === String(tail));
+        if(group.length >= 2) groups.push(group);
+      }
+
+      if(groups.length === 0) return null;
+
+      const group = pickRandom(groups);
+      const a = pickRandom(group);
+      const b = pickRandom(group.filter(n => n !== a));
+      return [a, b];
+    }
+
+    function makePair(extraBlocked = new Set()){
+      if(pairMode === "head") return twoSameHead(extraBlocked);
+      if(pairMode === "tail") return twoSameTail(extraBlocked);
+      return twoRandomDifferent(extraBlocked);
+    }
+
+    function setMessage(text){
+      messageEl.textContent = text || "";
+    }
+
+    function getBatchCount(){
+      let count = Number(batchCountEl.value);
+
+      if(!Number.isInteger(count) || count < 1){
+        count = 1;
+      }
+
+      if(count > 100){
+        count = 100;
+      }
+
+      batchCountEl.value = count;
+      return count;
+    }
+
+    function addResultsBatch(results){
+      if(results.length === 0) return;
+
+      latestNumbers = [...results[results.length - 1]];
+
+      results.forEach(numbers => {
+        numbers.forEach(n => usedNumbers.add(n));
+
+        history.unshift({
+          result: numbers.join(" - "),
+          time: new Date().toLocaleTimeString("vi-VN", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+          }),
+          fullTime: new Date().toLocaleString("vi-VN")
+        });
+      });
+
+      const last = results[results.length - 1];
+      number1El.textContent = last[0];
+      number2El.textContent = last.length === 2 ? last[1] : "--";
+
+      refresh();
+      animateBoxes();
+      saveState();
+    }
+
+    function animateBoxes(){
+      [number1El, number2El].forEach(el => {
+        el.classList.remove("pop");
+        void el.offsetWidth;
+        el.classList.add("pop");
+      });
+    }
+
+    function randomOne(){
+      setMessage("");
+      const count = getBatchCount();
+      const results = [];
+      const blocked = new Set();
+
+      if(avoidDuplicate && remainingNumbers().length < count){
+        setMessage(`Không đủ ${count} số mới để tránh trùng. Hiện chỉ còn ${remainingNumbers().length} số.`);
+        return;
+      }
+
+      for(let i = 0; i < count; i++){
+        const num = avoidDuplicate ? uniqueRandom(blocked) : anyRandom();
+
+        if(num === null){
+          setMessage("Đã hết số để tránh trùng. Hãy reset để quay lại từ đầu.");
+          break;
+        }
+
+        results.push([num]);
+        if(avoidDuplicate) blocked.add(num);
+      }
+
+      addResultsBatch(results);
+
+      if(count > 1){
+        setMessage(`Đã tạo ${results.length} kết quả dạng 1 số.`);
+      }
+    }
+
+    function randomTwo(){
+      setMessage("");
+      const count = getBatchCount();
+      const results = [];
+      const blocked = new Set();
+
+      if(avoidDuplicate && remainingNumbers().length < count * 2){
+        setMessage(`Không đủ ${count * 2} số mới để tránh trùng. Hiện chỉ còn ${remainingNumbers().length} số.`);
+        return;
+      }
+
+      for(let i = 0; i < count; i++){
+        const pair = makePair(blocked);
+
+        if(!pair){
+          const modeText = pairMode === "head" ? "cùng đầu" : pairMode === "tail" ? "cùng đuôi" : "2 số";
+          setMessage(`Không đủ số để tạo cặp ${modeText}. Bấm Reset hoặc đổi chế độ.`);
+          break;
+        }
+
+        results.push(pair);
+        if(avoidDuplicate) pair.forEach(n => blocked.add(n));
+      }
+
+      addResultsBatch(results);
+
+      if(count > 1){
+        setMessage(`Đã tạo ${results.length} kết quả dạng 2 số - ${pairModeLabel()}.`);
+      }
+    }
+
+    function toggleUnique(){
+      avoidDuplicate = !avoidDuplicate;
+
+      if(avoidDuplicate){
+        uniqueBtn.textContent = "✅ Tránh trùng: BẬT";
+        setMessage("Đã bật tránh trùng. Số đã có sẽ không ra lại.");
+      } else {
+        uniqueBtn.textContent = "✅ Tránh trùng: TẮT";
+        setMessage("Đã tắt tránh trùng. Nhưng 2 số cùng lượt vẫn luôn khác nhau.");
+      }
+
+      updateModeBadge();
+      saveState();
+    }
+
+    function resetAll(){
+      usedNumbers.clear();
+      latestNumbers = [];
+      history = [];
+      number1El.textContent = "00";
+      number2El.textContent = "--";
+      localStorage.removeItem(STORAGE_KEY);
+      setMessage("Đã reset và xoá toàn bộ kết quả đã lưu.");
+      refresh();
+      saveState();
+    }
+
+    function renderGrid(){
+      numberGrid.innerHTML = "";
+
+      for(let i = 0; i < 100; i++){
+        const n = fmt(i);
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        cell.textContent = n;
+
+        if(usedNumbers.has(n)) cell.classList.add("used");
+        if(latestNumbers.includes(n)) cell.classList.add("latest");
+
+        numberGrid.appendChild(cell);
+      }
+    }
+
+    function renderHistory(){
+      if(history.length === 0){
+        historyBox.innerHTML = '<div class="empty">Chưa có dữ liệu.</div>';
+        return;
+      }
+
+      const rows = history.map((item, index) => `
+        <tr>
+          <td>${history.length - index}</td>
+          <td><b>${item.result}</b></td>
+          <td>${item.time}</td>
+        </tr>
+      `).join("");
+
+      historyBox.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>LƯỢT</th>
+              <th>KẾT QUẢ</th>
+              <th>GIỜ</th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      `;
+    }
+
+    function refresh(){
+      usedCountEl.textContent = usedNumbers.size;
+      leftCountEl.textContent = 100 - usedNumbers.size;
+      turnCountEl.textContent = history.length;
+      updateModeBadge();
+      renderHistory();
+      renderGrid();
+    }
+
+    function downloadTxt(){
+      let content = "";
+      content += "DANH SACH KET QUA RANDOM 00-99\n";
+      content += "====================================\n";
+      content += "Che do hien tai: " + (avoidDuplicate ? "Khong trung" : "Co the trung") + " - " + pairModeLabel() + "\n";
+      content += "Thoi gian tai file: " + new Date().toLocaleString("vi-VN") + "\n";
+      content += "Tong luot quay: " + history.length + "\n";
+      content += "Tong so da co: " + usedNumbers.size + "/100\n";
+      content += "Con lai: " + (100 - usedNumbers.size) + "\n\n";
+
+      content += "LICH SU KET QUA DAY DU\n";
+      content += "------------------------------------\n";
+      if(history.length === 0){
+        content += "Chua co ket qua nao.\n\n";
+      } else {
+        history.forEach((item, index) => {
+          content += `${history.length - index}. ${item.result} | ${item.fullTime}\n`;
+        });
+        content += "\n";
+      }
+
+      content += "CAC SO DA XUAT HIEN, SAP XEP TANG DAN\n";
+      content += "------------------------------------\n";
+      const sorted = Array.from(usedNumbers).sort((a, b) => Number(a) - Number(b));
+      content += sorted.length ? sorted.join(", ") : "Chua co so nao";
+      content += "\n";
+
+      const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const date = new Date().toISOString().slice(0, 19).replace(/[:T]/g, "-");
+      a.href = url;
+      a.download = `random_00_99_batch_mode_${date}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+
+      setMessage("Đã tải file TXT kết quả.");
+    }
+
+    batchCountEl.addEventListener("change", saveState);
+    window.addEventListener("beforeunload", saveState);
+
+    loadState();
+    syncControlsFromState();
+    refresh();
+  </script>
+
+
+</body></html>
