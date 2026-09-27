@@ -8182,9 +8182,38 @@ window.addEventListener("load", function(){
     const err=document.getElementById("entryGateError");
     if(!gate||!input||!btn) return;
 
-    document.body.classList.add("entry-gate-locked");
+    // Nếu đã lưu tên/MSSV hợp lệ từ lần trước thì F5/vào lại trang không hỏi nữa.
+    let savedName="";
+    try{
+      savedName=cleanGateName(
+        localStorage.getItem("dtu_saved_student_name") ||
+        localStorage.getItem("dtu_student_name_to_find") ||
+        ""
+      );
+    }catch(e){}
 
-    // Bắt nhập lại mỗi lần mở trang để người dùng thật sự xác nhận đúng tên.
+    if(isGateNameValid(savedName)){
+      input.value=savedName;
+      try{
+        localStorage.setItem("dtu_saved_student_name",savedName);
+        localStorage.setItem("dtu_student_name_to_find",savedName);
+      }catch(e){}
+
+      const mainInput=document.getElementById("studentNameInput");
+      if(mainInput) mainInput.value=savedName;
+
+      gate.hidden=true;
+      gate.setAttribute("aria-hidden","true");
+      document.body.classList.remove("entry-gate-locked");
+
+      try{
+        if(typeof updateStudentNameUI==="function") updateStudentNameUI();
+        if(typeof updateOpenFileButtonsRequirement==="function") updateOpenFileButtonsRequirement();
+      }catch(e){}
+      return;
+    }
+
+    document.body.classList.add("entry-gate-locked");
     input.value="";
 
     function refresh(){
