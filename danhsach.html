@@ -1,13 +1,17 @@
+
+
 <!DOCTYPE html>
-<html lang="vi"><head>
+
+<html lang="vi">
+<head>
   <meta name="theme-color" content="#0a2e7a">
   <link rel="icon" href="favicon.png" type="image/png">
   <link rel="icon" href="favicon-dtu.svg" type="image/svg+xml">
   <link rel="alternate icon" href="favicon.ico" type="image/x-icon">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
-<meta charset="utf-8">
-<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport">
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
 <title>Danh Sách Thi</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
@@ -5035,7 +5039,7 @@ body.entry-gate-locked{
 </style>
     <script src="proxy-config.js"></script>
 </head>
-<body class="entry-gate-locked">
+<body>
 
 <!-- Required read + name gate start -->
 <div class="entry-gate" id="entryGate" role="dialog" aria-modal="true" aria-labelledby="entryGateTitle">
@@ -5052,7 +5056,7 @@ body.entry-gate-locked{
       <div class="entry-gate-value"><span class="entry-gate-value-icon">👤</span><span><b>Nhập tên/MSSV một lần:</b> hệ thống dùng thông tin đó để dò bạn trong từng lớp/file phù hợp.</span></div>
       <div class="entry-gate-value"><span class="entry-gate-value-icon">☑</span><span><b>Check toàn bộ file:</b> hỗ trợ rà nhiều danh sách để giảm nguy cơ bỏ sót lớp hoặc môn có tên bạn.</span></div>
       <div class="entry-gate-value"><span class="entry-gate-value-icon">📂</span><span><b>MỞ FILE / TẢI FILE:</b> có thể xem đúng lớp và tự tìm tên, hoặc mở/tải file gốc Excel/PDF từ nguồn.</span></div>
-      <div class="entry-gate-value"><span class="entry-gate-value-icon">📨</span><span><b>Tra &amp; gửi Telegram:</b> dùng kết quả đã lọc để thao tác nhanh hơn khi cần gửi/kiểm tra thông tin.</span></div>
+      <div class="entry-gate-value"><span class="entry-gate-value-icon">📨</span><span><b>Tra & gửi Telegram:</b> dùng kết quả đã lọc để thao tác nhanh hơn khi cần gửi/kiểm tra thông tin.</span></div>
       <div class="entry-gate-value"><span class="entry-gate-value-icon">⚡</span><span><b>Tiết kiệm thao tác:</b> gom tìm môn + tìm tên + mở đúng file vào cùng một chỗ để kiểm tra nhanh hơn.</span></div>
     </div>
 
@@ -5066,9 +5070,9 @@ body.entry-gate-locked{
 
     <label class="entry-gate-label" for="entryGateName">Họ và tên / MSSV của bạn</label>
     <input id="entryGateName" type="text" autocomplete="name" placeholder="VD: Nguyễn Văn A hoặc MSSV" aria-describedby="entryGateError">
-    <div class="entry-gate-error" id="entryGateError" aria-live="polite">Vui lòng nhập họ tên hoặc MSSV trước khi vào trang.</div>
+    <div class="entry-gate-error" id="entryGateError" aria-live="polite"></div>
 
-    <button id="entryGateEnter" type="button" disabled="">🚀 VÀO TRANG</button>
+    <button id="entryGateEnter" type="button" disabled>🚀 VÀO TRANG</button>
   </div>
 </div>
 <!-- Required read + name gate end -->
@@ -5118,26 +5122,23 @@ body.entry-gate-locked{
 <div class="hero">
 <div class="hero-inner">
 <h1>DANH SÁCH THI</h1>
-<div id="report-bar" class="report-bar" aria-hidden="true" style="display: none;">
-                📊 Đợt này trường đã đăng được: <span class="report-total">0</span> danh sách thi<br>
-                📅 Hôm nay trường đã up thêm được: <span class="report-today">0</span> danh sách
-            </div>
+<div id="report-bar" class="report-bar">📊 Đang thống kê...</div>
 <button class="rules-btn" id="rules-open" type="button">Xem ngay quy tắc &amp; mẹo tra danh sách (tránh sót môn!)</button>
 <div class="search-box">
-<input autocomplete="off" autofocus="" id="search-box" placeholder="Cách tra:ENG128 or ENG 128,KHÔNG GÕ MÃ LỚP" type="text">
+<input autocomplete="off" autofocus="" id="search-box" placeholder="Cách tra:ENG128 or ENG 128,KHÔNG GÕ MÃ LỚP" type="text"/>
 
 </div>
 
 <div class="student-name-box" id="studentNameBox">
   <div class="student-name-row">
     <label class="student-name-label" for="studentNameInput">Tên tìm trong lớp</label>
-    <input id="studentNameInput" autocomplete="off" placeholder="VD: Nguyễn Văn A" type="text" data-ready="1">
-    <button id="saveStudentNameBtn" type="button" data-ready="1">Lưu tên</button>
-    <button id="clearStudentNameBtn" type="button" data-ready="1">Xoá</button>
+    <input id="studentNameInput" autocomplete="off" placeholder="VD: Nguyễn Văn A" type="text">
+    <button id="saveStudentNameBtn" type="button">Lưu tên</button>
+    <button id="clearStudentNameBtn" type="button">Xoá</button>
   </div>
 
-  <button id="toggleCheckAllNameBtn" type="button" aria-pressed="false" title="Đang tắt: chỉ check tên trong file sau khi bạn gõ môn/từ khóa ở ô tìm kiếm." data-ready="1">Bật check toàn bộ file</button>
-  <button id="oneClickTelegramBtn" type="button" style="margin-top:8px;width:100%;padding:12px 14px;border:0;border-radius:12px;background:#16a34a;color:#fff;font-weight:900;cursor:pointer;box-shadow:0 8px 18px rgba(22,163,74,.22);" data-ready="1">🚀 TRA &amp; GỬI VỀ TELEGRAM</button>
+  <button id="toggleCheckAllNameBtn" type="button" aria-pressed="false">Bật check toàn bộ file</button>
+  <button id="oneClickTelegramBtn" type="button" style="margin-top:8px;width:100%;padding:12px 14px;border:0;border-radius:12px;background:#16a34a;color:#fff;font-weight:900;cursor:pointer;box-shadow:0 8px 18px rgba(22,163,74,.22);">🚀 TRA & GỬI VỀ TELEGRAM</button>
 
   <div class="checkall-helper" id="checkallHelper">
     <div class="checkall-helper-line">✨ Đầu tiên bạn hãy lưu tên cần tìm danh sách để nút mở file được mở để bạn có thể dò cụ thể tên bạn.</div>
@@ -5148,7 +5149,7 @@ body.entry-gate-locked{
 </div>
 </div>
 <div class="container content">
-<div id="data-body" data-open-lop-ready="1" data-open-file-buttons-observer-ready="1"><div class="empty-state">CHƯA THẤY DANH SÁCH BÊN TRƯỜNG, NHỚ ĐỌC QUY TẮC</div></div>
+<div id="data-body"></div>
 </div>
 </main>
 <button class="fab-top" id="fab-top">↑</button>
@@ -8255,6 +8256,5 @@ window.addEventListener("load", function(){
 
      <script src="vien-7mau-tuyret.js"></script>
 
-
-
-</body></html>
+</body>
+</html>
