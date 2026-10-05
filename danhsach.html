@@ -5430,11 +5430,18 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
     opacity: 1;
   }
 }
-</style></head>
-<body class="entry-gate-locked">
+</style><style>
+#data-body.name-show-only-found .item.name-check-error { display:grid !important; }
+#data-body.name-show-only-found .day-group:has(.name-check-error) { display:block !important; }
+.name-file-error { margin-top:10px; padding:12px 14px; border:1px solid #f59e0b; border-radius:10px; background:#fff4d6; color:#78350f; font-size:14px; line-height:1.6; overflow-wrap:anywhere; }
+.name-file-error a { color:#92400e; text-decoration:underline; display:block; }
+.name-file-error[hidden] { display:none !important; }
+</style>
+</head>
+<body class="">
 
 <!-- Required read + name gate start -->
-<div class="entry-gate" id="entryGate" role="dialog" aria-modal="true" aria-labelledby="entryGateTitle">
+<div class="entry-gate" id="entryGate" role="dialog" aria-modal="true" aria-labelledby="entryGateTitle" hidden="" aria-hidden="true">
   <div class="entry-gate-card">
     <div class="entry-gate-badge">⚠ Thông báo bắt buộc</div>
     <h2 class="entry-gate-title" id="entryGateTitle">Đọc kỹ để dùng trang đúng cách</h2>
@@ -5462,7 +5469,7 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
 
     <label class="entry-gate-label" for="entryGateName">Họ và tên của bạn</label>
     <input id="entryGateName" type="text" autocomplete="name" placeholder="VD: Nguyễn Văn A" aria-describedby="entryGateError">
-    <div class="entry-gate-error" id="entryGateError" aria-live="polite">Vui lòng nhập họ tên trước khi vào trang. Nếu file lỗi là do file bên trường đang lỗi file</div>
+    <div class="entry-gate-error" id="entryGateError" aria-live="polite">Vui lòng nhập họ tên trước khi vào trang.</div>
 
     <button id="entryGateEnter" type="button" disabled="">🚀 VÀO TRANG</button>
   </div>
@@ -5527,13 +5534,13 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
 <div class="student-name-box" id="studentNameBox">
   <div class="student-name-row">
     <label class="student-name-label" for="studentNameInput">Tên tìm trong lớp</label>
-    <input id="studentNameInput" autocomplete="off" placeholder="VD: Nguyễn Văn A" type="text" data-ready="1">
-    <button id="saveStudentNameBtn" type="button" data-ready="1">Lưu tên</button>
-    <button id="clearStudentNameBtn" type="button" data-ready="1">Xoá</button>
+    <input id="studentNameInput" autocomplete="off" placeholder="VD: Nguyễn Văn A" type="text">
+    <button id="saveStudentNameBtn" type="button">Lưu tên</button>
+    <button id="clearStudentNameBtn" type="button">Xoá</button>
   </div>
 
-  <button id="toggleCheckAllNameBtn" type="button" aria-pressed="false" title="Đang tắt: chỉ check tên trong file sau khi bạn gõ môn/từ khóa ở ô tìm kiếm." data-ready="1">Bật check toàn bộ file</button>
-  <button id="oneClickTelegramBtn" type="button" style="margin-top:8px;width:100%;padding:12px 14px;border:0;border-radius:12px;background:#16a34a;color:#fff;font-weight:900;cursor:pointer;box-shadow:0 8px 18px rgba(22,163,74,.22);" data-ready="1">🚀 TRA &amp; GỬI VỀ TELEGRAM</button>
+  <button id="toggleCheckAllNameBtn" type="button" aria-pressed="false" title="Đang tắt: chỉ check tên trong file sau khi bạn gõ môn/từ khóa ở ô tìm kiếm.">Bật check toàn bộ file</button>
+  <button id="oneClickTelegramBtn" type="button" style="margin-top:8px;width:100%;padding:12px 14px;border:0;border-radius:12px;background:#16a34a;color:#fff;font-weight:900;cursor:pointer;box-shadow:0 8px 18px rgba(22,163,74,.22);">🚀 TRA &amp; GỬI VỀ TELEGRAM</button>
 
   <div class="checkall-helper" id="checkallHelper">
     <div class="checkall-helper-line">✨ Đầu tiên bạn hãy lưu tên cần tìm danh sách để nút mở file được mở để bạn có thể dò cụ thể tên bạn.</div>
@@ -5544,7 +5551,7 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
 </div>
 </div>
 <div class="container content">
-<div id="data-body" data-open-lop-ready="1" data-open-file-buttons-observer-ready="1">
+<div id="data-body">
                     <div class="day-group">
                         <div class="day-title">📅 05/10/2026</div>
                         <div class="list">
@@ -5563,6 +5570,63 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
                             <div class="item-action">
                                 <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64979&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
                                 <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64979&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64978&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    An Ninh Internet CS 427 (A)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64978&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64978&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64977&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Phân Tích Mã Độc CS 478 (A)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64977&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64977&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64976&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Đồ Án Chuyên Ngành Khoa Học Dữ Liệu DS 445 (E)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64976&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64976&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
                              
                             </div>
                         </div>
@@ -5586,6 +5650,63 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
                             </div>
                         </div>
                     
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64974&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Vật Liệu Xây Dựng CIE 321 (A-C)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64974&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64974&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64973&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Vật Liệu Xây Dựng CIE 321 (A-C)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64973&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64973&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64972&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Đồ Án CDIO DS 347 (E)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64972&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64972&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
                         <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64971&amp;lang=VN">
                             <div class="item-date">05/10/2026</div>
 
@@ -5605,6 +5726,44 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
                             </div>
                         </div>
                     
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64970&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    DS 103 (A-AG-AI-AM-AO-CG-CI-CM-CO-CQ-CU-CW-EA-I-K-U-Y)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64970&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64970&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64969&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    DS 103 (AE-AK-AQ-AS-CC-CK-CS-EC-S-W)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64969&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64969&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
                         <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64968&amp;lang=VN">
                             <div class="item-date">05/10/2026</div>
 
@@ -5620,6 +5779,885 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
                             <div class="item-action">
                                 <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64968&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
                                 <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64968&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64967&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Đồ án CDIO EE 347 (K)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64967&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64967&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64966&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Đồ án CDIO CR 447 (A)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64966&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64966&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64965&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Kỹ Thuật Xét Nghiệm Vi Sinh- MLT 304 (A)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64965&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64965&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64964&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Chỉnh Hình Răng - Mặt 1 - DEN 591 (A)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64964&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64964&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64963&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Điều Trị Loạn Năng Hệ Thống Nhai- DEN 664 (A)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64963&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64963&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64962&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Nha Chu 1- DEN 481 (C)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64962&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64962&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64961&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Thực Phẩm Chức Năng- NTR 431 (A)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64961&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64961&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64960&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Luật Kinh Doanh Bất Động Sản - LAW 378 (A)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64960&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64960&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64959&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Thống Kê Tư Pháp - STA 424 (A)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64959&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64959&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64958&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Điều Dưỡng cho Gia Đình có Người Già 2- NUR 406 (A-C)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64958&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64958&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64957&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Luật Tài Chính - LAW 375 (A)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64957&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64957&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64956&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Y Học Thảm Họa- MED 709 (A-C)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64956&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64956&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64955&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Nhật Ngữ Sơ Cấp 1 - JAP 101 (A-C-E-G)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64955&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64955&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64954&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Nội Bệnh Lý cho Răng - Hàm - Mặt- IMD 506 (A)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64954&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64954&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64953&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Truyền Thông &amp; Sự Kiện Thời Trang COM 488 (A)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64953&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64953&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64952&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Huyết Học- IMD 413 (C)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64952&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64952&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64951&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Thần Kinh (Bệnh Học)- PTH 604 (C)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64951&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64951&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64950&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Nội Bệnh Lý IV- IMD 709 (E)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64950&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64950&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64949&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Nội Bệnh Lý I - IMD 508 (A)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64949&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64949&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64948&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Ngoại Cơ Sở- SUR 253 (A-C)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64948&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64948&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64947&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Thong Gio_CIE 341 A
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64947&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64947&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64946&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    He Thong Thiet Bi Ky Thuat Cong Trinh_ARC 443
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64946&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64946&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64945&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Anh Van Chuyen Nganh Kien Truc_ENG 335
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64945&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64945&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64944&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Lich Su Kien Truc Phuong Dong &amp; Viet Nam_AHI 391
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64944&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64944&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64943&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Van Hoa Phuong Dong trong Thiet Ke Xay Dung (Phong Thuy)_CIE 443
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64943&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64943&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64942&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    06102026_18H00_PSUENG230_ANH VĂN CN CHO SV PSU 2
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64942&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64942&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64941&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    06102026_13H30_PSUMGT296_TRANH TÀI GIẢI PHÁP BPL
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64941&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64941&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64940&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    06102026_15H30_ISECO151_INTRODUCTION TO MIRCROECONOMICS
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64940&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64940&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64939&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    06102026_15H30_ISACC201_PRINCIPLES OF ACCOUNTING 1
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64939&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64939&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64938&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    06102026_13H30_PSUFIN296_TRANH TÀI GIẢI PHÁP PBL
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64938&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64938&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64937&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Truyền Thông Xã Hội - COM 405 (A)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64937&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64937&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64936&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Tổ Chức Sự Kiện - COM 335 (E-G)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64936&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64936&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64935&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Phong Tục Tập Quán Lễ Hội Việt Nam - CUL 416 (A)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64935&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64935&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64934&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Sự kiện &amp; Hoạt động Ngoài trời EVT 312 (A)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64934&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64934&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64933&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Quản Trị Sự Kiện TOU 411 (A-C-E-G)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64933&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64933&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64932&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Lịch sử Đảng Cộng Sản Việt Nam HIS 362 (G-I-K-M-O-S-U)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64932&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64932&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64931&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Triết học Marx-Lenin PHI 150 (C-G-K)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64931&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64931&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64930&amp;lang=VN">
+                            <div class="item-date">05/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    Tuyến Điểm Du Lịch Việt Nam Nâng Cao TOU 481 (A)
+                                    <span class="badge-new">NEW</span>
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64930&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64930&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                
+                    <div class="day-group">
+                        <div class="day-title">📅 03/10/2026</div>
+                        <div class="list">
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64929&amp;lang=VN">
+                            <div class="item-date">03/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    20261007_15h30_ENG422_DICH THUAT VAN CHUONG
+                                    
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64929&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64929&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64928&amp;lang=VN">
+                            <div class="item-date">03/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    20261007_15h30_ENG383_ANH VAN LE TAN
+                                    
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64928&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64928&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64927&amp;lang=VN">
+                            <div class="item-date">03/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    20261007_15h30_ENG219_SPEAKING LEVEL 3
+                                    
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64927&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64927&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64926&amp;lang=VN">
+                            <div class="item-date">03/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    20261007_13h30_ENG119_SPEAKING LEVEL 1
+                                    
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64926&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64926&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64925&amp;lang=VN">
+                            <div class="item-date">03/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    20261007_07h30_ENG208_NGHE 2
+                                    
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64925&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64925&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64924&amp;lang=VN">
+                            <div class="item-date">03/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    20261007_07h30_ENG119_SPEAKING LEVEL 1
+                                    
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64924&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64924&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64923&amp;lang=VN">
+                            <div class="item-date">03/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    20261006_18h00_ENG166_READING LEVEL 2
+                                    
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64923&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64923&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
+                             
+                            </div>
+                        </div>
+                    
+                        <div class="item" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64922&amp;lang=VN">
+                            <div class="item-date">03/10/2026</div>
+
+                            <div>
+                                <div class="item-title">
+                                    20261006_18h00_ENG119_SPEAKING LEVEL 1
+                                    
+                                
+                                </div>
+                                
+                            </div>
+
+                            <div class="item-action">
+                                <button type="button" class="btn-open btn-download-source" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64922&amp;lang=VN" title="Kết nối trang tải của trường và tải/mở đúng file gốc Excel/PDF">TẢI FILE</button>
+                                <button type="button" class="btn-open btn-open-class" data-detail-url="https://pdaotao.duytan.edu.vn/EXAM_LIST_Detail/?ID=64922&amp;lang=VN" title="Excel/PDF chuyển qua phòng thi, hiện ảnh/bảng gốc và tự tìm tên đã lưu">MỞ FILE</button>
                              
                             </div>
                         </div>
@@ -5765,6 +6803,18 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
         function setStatus(text, isError = false) {
             lastStatusText = text;
             lastStatusIsError = isError;
+            let status = document.getElementById("fileOperationError");
+            if (isError) {
+                if (!status) {
+                    status = document.createElement("div");
+                    status.id = "fileOperationError";
+                    status.className = "name-file-error";
+                    status.setAttribute("role", "alert");
+                    document.getElementById("studentNameBox")?.appendChild(status);
+                }
+                status.textContent = text;
+                status.hidden = false;
+            } else if (status && !/kiểm tra dữ liệu|Online|nền/i.test(text)) status.hidden = true;
         }
 
         function startCountdown() { return; }
@@ -6082,9 +7132,7 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
 
         function isValidStudentLookupName(value) {
             const name = cleanStudentName(value);
-            const digits = name.replace(/\D+/g, "");
-            if (digits.length >= 8) return true;
-            return name.split(/\s+/).filter(Boolean).length >= 2;
+            return !/\d/.test(name) && name.split(/\s+/).filter(Boolean).length >= 2;
         }
 
         function getSavedStudentName() {
@@ -6095,7 +7143,7 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
             const name = cleanStudentName(value);
             if (name) {
                 if (!isValidStudentLookupName(name)) {
-                    alert("Tên quá ngắn dễ tô nhầm người khác. Hãy nhập đủ họ tên hoặc MSSV.");
+                    alert("Tên quá ngắn dễ tô nhầm người khác. Hãy nhập đủ họ tên.");
                     return "";
                 }
                 localStorage.setItem(STUDENT_NAME_KEY, name);
@@ -6198,8 +7246,8 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
 
         function setupOpenFileButtonsObserver() {
             const body = document.getElementById('data-body');
-            if (!body || body.dataset.openFileButtonsObserverReady === '1') return;
-            body.dataset.openFileButtonsObserverReady = '1';
+            if (!body || body._openFileButtonsObserverReady === '1') return;
+            body._openFileButtonsObserverReady = '1';
             const observer = new MutationObserver(function() {
                 updateOpenFileButtonsRequirement();
             });
@@ -6218,24 +7266,35 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
             updateCheckAllNameToggleUI();
             setupOpenFileButtonsObserver();
 
-            if (saveBtn && !saveBtn.dataset.ready) {
-                saveBtn.dataset.ready = "1";
+            if (saveBtn && !saveBtn._studentNameHandlerReady) {
+                saveBtn._studentNameHandlerReady = "1";
                 saveBtn.addEventListener("click", function() {
-                    const name = saveStudentName(input ? input.value : "");
-                    alert(name ? "Đã lưu tên: " + name : "Chưa nhập tên để lưu");
+                    const value = cleanStudentName(input ? input.value : "");
+                    if (!value) { alert("Chưa nhập tên để lưu"); return; }
+                    const name = saveStudentName(value);
+                    if (name) alert("Đã lưu tên: " + name);
                 });
             }
 
-            if (clearBtn && !clearBtn.dataset.ready) {
-                clearBtn.dataset.ready = "1";
+            if (clearBtn && !clearBtn._studentNameHandlerReady) {
+                clearBtn._studentNameHandlerReady = "1";
                 clearBtn.addEventListener("click", function() {
                     if (input) input.value = "";
+                    const gateInput = document.getElementById("entryGateName");
+                    if (gateInput) gateInput.value = "";
+                    checkAllNameFilesEnabled = false;
+                    nameCheckRunToken += 1;
+                    cancelScheduledNameCheck();
+                    try { closeInlineExamCardModal(); } catch (e) {}
                     saveStudentName("");
+                    const status = document.getElementById("fileOperationError");
+                    if (status) status.hidden = true;
+                    if (input) input.focus();
                 });
             }
 
-            if (toggleCheckAllBtn && !toggleCheckAllBtn.dataset.ready) {
-                toggleCheckAllBtn.dataset.ready = "1";
+            if (toggleCheckAllBtn && !toggleCheckAllBtn._studentNameHandlerReady) {
+                toggleCheckAllBtn._studentNameHandlerReady = "1";
                 toggleCheckAllBtn.addEventListener("click", function() {
                     const saved = getSavedStudentName();
                     if (!saved) {
@@ -6253,23 +7312,25 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
                 });
             }
 
-            if (oneClickTelegramBtn && !oneClickTelegramBtn.dataset.ready) {
-                oneClickTelegramBtn.dataset.ready = "1";
+            if (oneClickTelegramBtn && !oneClickTelegramBtn._studentNameHandlerReady) {
+                oneClickTelegramBtn._studentNameHandlerReady = "1";
                 oneClickTelegramBtn.addEventListener("click", function() {
                     oneClickFindAndSendTelegram();
                 });
             }
 
-            if (input && !input.dataset.ready) {
-                input.dataset.ready = "1";
+            if (input && !input._studentNameHandlerReady) {
+                input._studentNameHandlerReady = "1";
                 input.addEventListener("keydown", function(e) {
                     if (e.key === "Enter") {
                         e.preventDefault();
                         saveStudentName(input.value);
                     }
                 });
-                input.addEventListener("blur", function() {
-                    if (input.value.trim()) saveStudentName(input.value);
+                input.addEventListener("blur", function(e) {
+                    if (e.relatedTarget === clearBtn || e.relatedTarget === saveBtn) return;
+                    const value = cleanStudentName(input.value);
+                    if (!value || isValidStudentLookupName(value)) saveStudentName(value);
                 });
             }
         }
@@ -6712,7 +7773,7 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
                 return;
             }
             if (!savedName || !isValidStudentLookupName(savedName)) {
-                alert("Nhập đủ họ tên hoặc MSSV trước để tránh gửi nhầm người.");
+                alert("Nhập đủ họ tên trước để tránh gửi nhầm người.");
                 nameInput && nameInput.focus();
                 return;
             }
@@ -6733,7 +7794,7 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
                 const matchedItems = await waitForAllNameFoundItems();
                 if (!matchedItems.length) {
                     setStatus("Không thấy file nào có tên đã nhập trong môn/từ khóa này.", true);
-                    alert("Không thấy tên trong các file vừa lọc. Thử nhập mã môn rõ hơn hoặc dùng MSSV để chính xác hơn.");
+                    alert("Không thấy tên trong các file vừa lọc. Thử nhập mã môn rõ hơn và nhập đầy đủ họ tên.");
                     setOneClickTelegramButtonState(false);
                     return;
                 }
@@ -6851,8 +7912,8 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
             try {
                 const savedName = getSavedStudentName();
                 if (!savedName || !isValidStudentLookupName(savedName)) {
-                    setStatus('⚠️ Bạn phải nhập đủ họ tên hoặc MSSV rồi bấm Lưu tên trước khi MỞ FILE.', true);
-                    alert('Bạn phải nhập đủ họ tên hoặc MSSV rồi bấm Lưu tên trước khi MỞ FILE để tránh tô nhầm người khác.');
+                    setStatus('⚠️ Bạn phải nhập đủ họ tên rồi bấm Lưu tên trước khi MỞ FILE.', true);
+                    alert('Bạn phải nhập đủ họ tên rồi bấm Lưu tên trước khi MỞ FILE để tránh tô nhầm người khác.');
                     focusStudentNameBox();
                     return false;
                 }
@@ -7114,8 +8175,8 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
             try {
                 const savedName = getSavedStudentName();
                 if (!savedName || !isValidStudentLookupName(savedName)) {
-                    setStatus('⚠️ Bạn phải nhập đủ họ tên hoặc MSSV rồi bấm Lưu tên trước khi xem thẻ.', true);
-                    alert('Bạn phải nhập đủ họ tên hoặc MSSV rồi bấm Lưu tên trước khi xem thẻ dự thi.');
+                    setStatus('⚠️ Bạn phải nhập đủ họ tên rồi bấm Lưu tên trước khi xem thẻ.', true);
+                    alert('Bạn phải nhập đủ họ tên rồi bấm Lưu tên trước khi xem thẻ dự thi.');
                     focusStudentNameBox();
                     return false;
                 }
@@ -7293,8 +8354,8 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
 
         function setupOpenLopButton() {
             const body = document.getElementById("data-body");
-            if (!body || body.dataset.openLopReady === "1") return;
-            body.dataset.openLopReady = "1";
+            if (!body || body._openLopReady === "1") return;
+            body._openLopReady = "1";
 
             body.addEventListener("click", function(e) {
                 const downloadBtn = e.target.closest(".btn-download-source");
@@ -7571,7 +8632,7 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
                 const raw = localStorage.getItem(getNameCheckCacheKey(detailUrl, name));
                 if (!raw) return null;
                 const data = JSON.parse(raw);
-                if (!data || !data.checkedAt || Date.now() - data.checkedAt > NAME_CHECK_CACHE_TTL) return null;
+                if (!data || data.error || !data.checkedAt || Date.now() - data.checkedAt > NAME_CHECK_CACHE_TTL) return null;
                 return data;
             } catch (e) {
                 return null;
@@ -7774,7 +8835,12 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
         }
 
         async function fetchFileBlobForNameCheck(url) {
-            return await fetchBlobWithFallbacks(url);
+            const blob = await fetchBlobWithFallbacks(url);
+            const head = await blob.slice(0, 512).text();
+            if (/^\s*(?:<!doctype html|<html|<head|<body)/i.test(head)) {
+                throw new Error("Máy chủ trường trả trang HTML lỗi thay vì file Excel/PDF. " + head.replace(/<[^>]*>/g, " ").slice(0, 120));
+            }
+            return blob;
         }
 
         async function sniffFileKindForNameCheck(url, blob) {
@@ -7873,6 +8939,7 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
                 console.error("Name check failed:", detailUrl, e);
                 result.ok = false;
                 result.error = e && e.message ? e.message : String(e);
+                try { localStorage.removeItem(getDownloadFileCacheKey(detailUrl)); } catch (_) {}
             }
 
             // Chỉ cache khi đọc được file. Nếu lỗi mạng/proxy/pdf tạm thời thì lần sau phải được thử lại, không giữ FALSE mãi.
@@ -7908,6 +8975,7 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
             itemEl.classList.remove("name-error-hidden");
             itemEl.classList.remove("name-check-error");
             itemEl.removeAttribute("data-name-check-error");
+            itemEl.querySelector(".name-file-error")?.remove();
             itemEl.style.display = "";
             ensureNameFoundBadge(itemEl);
             const status = itemEl.querySelector(".name-check-status");
@@ -7919,15 +8987,58 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
             }
         }
 
-        function keepErrorNameItemForRetry(itemEl) {
+        function describeExamFileError(error) {
+            const raw = String(error && error.message || error || "");
+            const status = raw.match(/HTTP (404|410|403|5\d\d)\b/);
+            if (status && (raw.includes("direct HTTP") || /Server Error|File or directory not found|DOCTYPE html/i.test(raw))) {
+                const code = status[1];
+                const reason = code === "404" || code === "410"
+                    ? "không tìm thấy file tại link trường đăng"
+                    : code === "403" ? "máy chủ trường từ chối truy cập file" : "máy chủ trường gặp lỗi khi tải file";
+                return `Bên trường đang lỗi file (HTTP ${code}: ${reason}). Khi trường sửa link/file, bấm “Check lại file lỗi” để web tải và dò tên lại.`;
+            }
+            if (/Máy chủ trường trả trang HTML lỗi/i.test(raw)) {
+                return "Bên trường đang trả trang báo lỗi thay vì file Excel/PDF. Khi trường sửa link/file, bấm “Check lại file lỗi” để web tải và dò tên lại.";
+            }
+            if (/Không tìm thấy.*(?:Excel|PDF)/i.test(raw)) {
+                return "Trang tải của trường chưa có link Excel/PDF hợp lệ. Khi trường bổ sung hoặc sửa link/file, web sẽ tải và dò tên lại.";
+            }
+            if (/timeout|AbortError|Failed to fetch|NetworkError|Worker fetch failed/i.test(raw)) {
+                return "Chưa tải được file do kết nối hoặc máy chủ/proxy không phản hồi. Chưa xác định lỗi từ trường; bấm “Check lại file lỗi” để thử lại.";
+            }
+            return "Chưa đọc được file danh sách. Hãy thử lại; hiện chưa thể kết luận file có hay không có tên bạn. " + raw.slice(0, 180).replace(/<[^>]*>/g, "");
+        }
+
+        function keepErrorNameItemForRetry(itemEl, result = {}) {
             if (!itemEl) return;
-            itemEl.classList.add("name-check-error", "name-error-hidden");
+            itemEl.classList.remove("name-pending", "name-error-hidden", "name-found");
+            itemEl.classList.add("name-check-error");
             itemEl.dataset.nameCheckError = "1";
-            itemEl.style.display = "none";
+            itemEl.style.display = "";
+            itemEl.querySelector(".name-found-badge")?.remove();
+            let note = itemEl.querySelector(".name-file-error");
+            if (!note) {
+                note = document.createElement("div");
+                note.className = "name-file-error";
+                note.setAttribute("role", "status");
+                (itemEl.querySelector(".item-title")?.parentElement || itemEl).appendChild(note);
+            }
+            note.replaceChildren();
+            const text = document.createElement("div");
+            text.textContent = "⚠️ " + describeExamFileError(result.error);
+            note.appendChild(text);
+            if (result.fileUrl) {
+                const link = document.createElement("a");
+                link.href = makeAbsoluteUrl(result.fileUrl, CONFIG.BASE_URL);
+                link.target = "_blank";
+                link.rel = "noopener noreferrer";
+                link.textContent = "File lỗi: " + getFileNameFromUrl(result.fileUrl, getNameCheckItemTitle(itemEl));
+                note.appendChild(link);
+            }
             const group = itemEl.closest(".day-group");
             if (group) {
-                const hasFound = !!group.querySelector(".item.name-found");
-                if (!hasFound) group.style.display = "none";
+                group.classList.add("name-group-visible");
+                group.style.display = "";
             }
         }
 
@@ -7944,7 +9055,7 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
                 const hasFound = !!group.querySelector(".item.name-found");
                 const hasRetry = !!group.querySelector('.item[data-name-check-error="1"]');
                 if (!hasFound && !hasRetry) group.remove();
-                else if (!hasFound && hasRetry) group.style.display = "none";
+                else if (!hasFound && hasRetry) { group.classList.add("name-group-visible"); group.style.display = ""; }
                 else group.style.display = "";
             });
         }
@@ -8038,7 +9149,7 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
                 return;
             }
 
-            const retryHtml = errors ? `<span class="small">⚠️ ${errors} file chưa đọc được.</span><button type="button" class="retry-error-btn" id="retryNameErrorFilesBtn">🔁 Check lại file lỗi</button>` : "";
+            const retryHtml = errors ? `<span class="small">⚠️ ${errors} file chưa đọc được; xem từng file và lý do bên dưới.</span><button type="button" class="retry-error-btn" id="retryNameErrorFilesBtn">🔁 Check lại file lỗi</button>` : "";
             const html = `✅ Đã check xong và thấy tên bạn trong <b>${matched}/${total}</b> danh sách.${retryHtml}`;
             if (bar.dataset.finishedHtml !== html) {
                 bar.innerHTML = html;
@@ -8093,7 +9204,7 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
                             revealMatchedNameItem(item);
                         } else if (result.error) {
                             stillError += 1;
-                            keepErrorNameItemForRetry(item);
+                            keepErrorNameItemForRetry(item, result);
                         } else {
                             noName += 1;
                             removeEmptyNameGroup(item);
@@ -8196,7 +9307,8 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
                         } else {
                             if (result.error) {
                                 errors += 1;
-                                itemsWithErrors.push(item);
+                                itemsWithErrors.push({ item, result });
+                                keepErrorNameItemForRetry(item, result);
                             } else if (NAME_CHECK_SMOOTH_BACKGROUND) {
                                 itemsToHideAfterDone.push(item);
                             } else {
@@ -8219,7 +9331,7 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
                     // Các file có tên đã được báo/đánh dấu ngay trong lúc quét.
                     // Đến cuối chỉ ẩn file không có tên để list không giật từng dòng.
                     itemsToHideAfterDone.forEach(removeEmptyNameGroup);
-                    itemsWithErrors.forEach(keepErrorNameItemForRetry);
+                    itemsWithErrors.forEach(({ item, result }) => keepErrorNameItemForRetry(item, result));
                     removeEmptyVisibleNameGroups();
                 }
 
@@ -8233,7 +9345,7 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
                     const retryOnlyBar = document.getElementById("nameCheckBar");
                     body.querySelectorAll(".empty-state").forEach(el => el.remove());
                     if (!body.querySelector(".empty-state")) {
-                        body.insertAdjacentHTML("beforeend", `<div class="empty-state">Chưa thấy danh sách có tên. Có file lỗi đọc, bấm nút check lại file lỗi ở trên.</div>`);
+                        body.insertAdjacentHTML("beforeend", `<div class="empty-state">Chưa thấy danh sách có tên. Các file chưa đọc được và lý do lỗi hiện bên dưới; chưa thể kết luận các file đó không có tên bạn.</div>`);
                     }
                     if (retryOnlyBar && retryOnlyBar.parentElement !== body) {
                         body.prepend(retryOnlyBar);
@@ -8406,6 +9518,9 @@ div[class^="tiktok"].--savior-overlay-z-index-reset {
                     applySearch(document.getElementById("search-box").value);
                 }
 
+                if (isAuto && dataUnchanged && getSavedStudentName() && getRetryErrorItems().length) {
+                    await retryNameCheckErrorFiles();
+                }
                 const maxPage = allExams.reduce((max, item) => Math.max(max, Number(item.page || 0)), 0);
                 nextRefreshAt = Date.now() + CONFIG.REFRESH_RATE;
                 setStatus(dataUnchanged
@@ -8646,9 +9761,7 @@ window.addEventListener("load", function(){
 
   function isGateNameValid(value){
     const name=cleanGateName(value);
-    const digits=name.replace(/\D+/g,"");
-    if(digits.length>=8) return true;
-    return name.split(/\s+/).filter(Boolean).length>=2;
+    return !/\d/.test(name) && name.split(/\s+/).filter(Boolean).length>=2;
   }
 
   function initEntryGate(){
@@ -8698,9 +9811,9 @@ window.addEventListener("load", function(){
       const valid=isGateNameValid(value);
       btn.disabled=!valid;
       if(!hasText){
-        err.textContent="Vui lòng nhập họ tên hoặc MSSV trước khi vào trang.";
+        err.textContent="Vui lòng nhập họ tên trước khi vào trang.";
       }else if(!valid){
-        err.textContent="Tên quá ngắn. Hãy nhập đủ họ tên (ít nhất 2 từ) hoặc MSSV.";
+        err.textContent="Tên quá ngắn. Hãy nhập đủ họ tên (ít nhất 2 từ).";
       }else{
         err.textContent="";
       }
@@ -8763,5 +9876,6 @@ window.addEventListener("load", function(){
 
 
 
-<en2vi-host class="corom-element" version="3" style="all: initial; position: absolute; top: 0; left: 0; right: 0; height: 0; margin: 0; text-align: left; z-index: 10000000000; pointer-events: none; border: none; display: block"></en2vi-host><savior-host style="all: unset; position: absolute; top: 0; left: 0; z-index: 99999999999999; display: block !important; overflow: unset"></savior-host>
-</body><en2vi-host class="corom-element" version="3" style="all: initial; position: absolute; top: 0; left: 0; right: 0; height: 0; margin: 0; text-align: left; z-index: 10000000000; pointer-events: none; border: none; display: block"></en2vi-host><savior-host style="all: unset; position: absolute; top: 0; left: 0; z-index: 99999999999999; display: block !important; overflow: unset"></savior-host></html>
+
+
+</body></html>
